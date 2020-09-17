@@ -31,25 +31,38 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate() {
         rb2D.MovePosition(rb2D.position + Movement * MovementSpeed * Time.deltaTime);
         if (Movement.x == -1) {
+            PlayerAnimator.SetBool("IsWalking", true);
+            PlayerAnimator.SetBool("IsIdle", false);
             PlayerAnimator.SetBool("Left", true);
             PlayerAnimator.SetBool("Right", false);
             PlayerAnimator.SetBool("Back", false);
             PlayerAnimator.SetBool("Front", false);
         } else if (Movement.x == 1) {
+            PlayerAnimator.SetBool("IsWalking", true);
+            PlayerAnimator.SetBool("IsIdle", false);
             PlayerAnimator.SetBool("Left", false);
             PlayerAnimator.SetBool("Right", true);
             PlayerAnimator.SetBool("Back", false);
             PlayerAnimator.SetBool("Front", false);
         } else if (Movement.y == -1) {
+            PlayerAnimator.SetBool("IsWalking", true);
+            PlayerAnimator.SetBool("IsIdle", false);
             PlayerAnimator.SetBool("Left", false);
             PlayerAnimator.SetBool("Right", false);
             PlayerAnimator.SetBool("Back", false);
             PlayerAnimator.SetBool("Front", true);
         } else if (Movement.y == 1) {
+            PlayerAnimator.SetBool("IsWalking", true);
+            PlayerAnimator.SetBool("IsIdle", false);
             PlayerAnimator.SetBool("Left", false);
             PlayerAnimator.SetBool("Right", false);
             PlayerAnimator.SetBool("Back", true);
             PlayerAnimator.SetBool("Front", false);
+        }
+        if(Movement.x == 0 && Movement.y == 0) {
+            PlayerAnimator.SetBool("IsWalking", false);
+            PlayerAnimator.SetBool("IsIdle", true);
+
         }
 
     }

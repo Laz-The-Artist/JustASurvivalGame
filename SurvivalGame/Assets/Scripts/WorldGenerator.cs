@@ -137,11 +137,10 @@ public class WorldGenerator : MonoBehaviour
         for (int x = 0; x < WorldSizeX; x++) {
             for (int y = 0; y < WorldSizeY; y++) {
                 if (worldPoints[x, y] == 1) {
-                    yield return new WaitForEndOfFrame();
                     WorldGrid.SetTile(new Vector3Int(x - XOffset, y - YOffset, z), Surface_rule);
                 }
-
             }
+            yield return new WaitForEndOfFrame();
         }
         //fill spawn region
         for (int spX = 0; spX < SpawnRegionSizeX; spX++) {

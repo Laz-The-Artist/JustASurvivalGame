@@ -329,17 +329,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   WorldGrid: {fileID: 1766652579}
-  WorldSizeX: 20
-  WorldSizeY: 20
-  XOffset: 10
-  YOffset: 10
+  WorldSizeX: 100
+  WorldSizeY: 100
+  XOffset: 50
+  YOffset: 50
   SmoothCycles: 40
   WorldSeed: 1917
   GenRandomSeed: 0
   FillPercent: 51
   Treshold: 4
-  SpawnRegionSizeX: 10
-  SpawnRegionSizeY: 10
+  SpawnRegionSizeX: 11
+  SpawnRegionSizeY: 11
   RegionOffsetX: 5
   RegionOffsetY: 5
   Surface:
