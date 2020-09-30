@@ -56,7 +56,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\PlayerController.cs" />
+    <Compile Include="Assets\GameTextures\Tiles\grass\GrassTileScript.cs" />
     <Compile Include="Assets\Scripts\WorldGenerator.cs" />
+    <Compile Include="Assets\Scripts\TileToColorMapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
