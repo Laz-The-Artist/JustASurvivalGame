@@ -53,8 +53,10 @@ public class WorldGenerator : MonoBehaviour {
     [HideInInspector] public Texture2D mapgen;
 
     private void Awake() {
+        IsWorldReady = true;
+        Debug.LogWarning("As of 2020.10.23 the WorldGeneratorScriptV2 is out of order, and the usage of this script is not recomended! This message will show up every time unless the script is removed from the scene or the attached gameobject is tunred off.");
         //Generate World by Cellular Automata functions
-        if (GenerateByCellularAutomata) {
+        /**if (GenerateByCellularAutomata) {
             StartMapping();
             if (GenBiomes) {
                 GenVoronoi();
@@ -62,15 +64,15 @@ public class WorldGenerator : MonoBehaviour {
             } else {
                 GenSurfaceCellular();
             }
-        }
+        }**/
 
     }
     
     void Start() {
         //Start Surface Population
-        if (GenerateByCellularAutomata) {
+        /**if (GenerateByCellularAutomata) {
              StartCoroutine(PopulateSurface());
-        }
+        }**/
 
     }
 
