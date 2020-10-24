@@ -190,7 +190,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc10b50174b05324caa6ba556bd3f202, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MovementSpeed: 40
+  MovementSpeed: 8
   rb2D: {fileID: 143805376}
   PlayerAnimator: {fileID: 1384646538}
   World: {fileID: 1468928729}
@@ -3626,6 +3626,7 @@ MonoBehaviour:
   map_Landmass: {fileID: 0}
   map_Biomes: {fileID: 0}
   map_Minimap: {fileID: 0}
+  PerlinMaps: []
 --- !u!4 &1577317665
 Transform:
   m_ObjectHideFlags: 0
@@ -5910,7 +5911,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1926527582}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -67.85778}
+  m_LocalPosition: {x: 0, y: 0, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

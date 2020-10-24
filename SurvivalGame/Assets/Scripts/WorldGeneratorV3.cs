@@ -36,6 +36,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
 
     [HideInInspector] public Texture2D map_Landmass;
     [HideInInspector] public Texture2D map_Biomes;
+    [HideInInspector] public Texture2D map_Biomes2;
     [HideInInspector] public Texture2D map_Minimap;
 
     int WorldSizeX;
@@ -45,7 +46,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
     int NumberOfWorldChunks;
     private int[,] WorldChunks;
     private int[,] CellularWorldPoints;
-    private Texture2D[] PerlinMaps;
+    public Texture2D[] PerlinMaps;
 
     int PlayerWorldPosX;
     int PlayerWorldPosY;
@@ -208,12 +209,19 @@ public class WorldGeneratorV3 : MonoBehaviour {
                 }
             }
             CurrentPerlin.Apply();
-            //PerlinMaps[BiomeLenght].SetPixels(CurrentPerlin.GetPixels());
+
+            //Storing the perlin noise
+            PerlinMaps[BiomeLenght] = CurrentPerlin;
+            PerlinMaps[BiomeLenght].SetPixels(CurrentPerlin.GetPixels());
 
             if (BiomeLenght == 0) {
-                map_Biomes.SetPixels(CurrentPerlin.GetPixels());
-                map_Biomes.Apply();
+                //map_Biomes.SetPixels(CurrentPerlin.GetPixels());
+               GenVoronoi();
+
             }
+
+
+
 
         }
 
@@ -233,17 +241,17 @@ public class WorldGeneratorV3 : MonoBehaviour {
     }
 
     //Voronoi Noise
-    Texture2D GenVoronoi(int BiomeID) {
-        Vector2Int[] centroids = new Vector2Int[VoronoiRegionAmount];
-        Color[] regions = new Color[VoronoiRegionAmount];
-        for (int i = 0; i < VoronoiRegionAmount; i++) {
+    Texture2D GenVoronoi() {
+        Vector2Int[] centroids = new Vector2Int[BiomesList.Length];
+        Color[] regions = new Color[BiomesList.Length];
+        for (int i = 0; i < BiomesList.Length; i++) {
             centroids[i] = new Vector2Int(Random.Range(0, WorldSizeX), Random.Range(0, WorldSizeY));
-            regions[i] = BiomesList[BiomeID].BiomeColor;
+            regions[i] = BiomesList[i].BiomeColor;
         }
         Color[] pixelColors = new Color[WorldSizeX * WorldSizeY];
         for (int x = 0; x < WorldSizeX; x++) {
             for (int y = 0; y < WorldSizeY; y++) {
-                int index = x * WorldSizeX + y;
+                int index = x * WorldSizeY + y;
                 pixelColors[index] = regions[GetClosestCentroidIndex(new Vector2Int(x, y), centroids)];
             }
         }
