@@ -3605,21 +3605,25 @@ MonoBehaviour:
   SettingGenSandEdges: 1
   SandTile: {fileID: 11400000, guid: 465765cb0d6153248be775d263a92dde, type: 2}
   SettingGenBiomes: 1
-  VoronoiRegionAmount: 50
+  SettingVoronoiSmallestDst: 151.73
   SettingPerlinScale: 25
   SettingPerlinMinDivisionValue: 0.55
   BiomesList:
-  - BiomeId: 0
-    BiomeName: Alpha Valley
+  - BiomeName: Alpha Valley
     Rarity: 1
     BiomeColor: {r: 0.49388155, g: 1, b: 0.033018887, a: 1}
+    BiomeColor32:
+      serializedVersion: 2
+      rgba: 65406
     SurfaceTiles:
     - {fileID: 11400000, guid: 465db0cd6a171fd48aa89db992cc865e, type: 2}
     SurfaceObjects: []
-  - BiomeId: 1
-    BiomeName: Test
+  - BiomeName: Test
     Rarity: 1
     BiomeColor: {r: 1, g: 0.21132764, b: 0.031372547, a: 1}
+    BiomeColor32:
+      serializedVersion: 2
+      rgba: 255
     SurfaceTiles:
     - {fileID: 11400000, guid: 465db0cd6a171fd48aa89db992cc865e, type: 2}
     SurfaceObjects: []
