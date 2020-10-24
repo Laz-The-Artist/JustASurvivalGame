@@ -6,6 +6,7 @@ using UnityEngine.Tilemaps;
 [System.Serializable]
 public class TileToColorMapper
 {
+    [Header("Biome Generator Settings For WorldGeneratorV2")]
     public Color color;
     public Tile Tile;
 }

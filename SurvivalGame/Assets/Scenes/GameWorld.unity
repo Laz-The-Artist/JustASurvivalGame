@@ -3589,12 +3589,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39f583e778b83064b9f72c394ba264b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Player: {fileID: 143805374}
   SettingWorldSize: 4096
   SettingWorldOffset: 2048
   SettingChunkSize: 32
-  Player: {fileID: 143805374}
+  SettingChunkLoadingRadius: 2
   GridLandmass: {fileID: 1040141534}
-  GrassForTest: {fileID: 11400000, guid: 465db0cd6a171fd48aa89db992cc865e, type: 2}
   map_display: {fileID: 1926527583}
   GenCellularMap: 1
   CellularSmoothCycles: 40
@@ -3602,16 +3602,30 @@ MonoBehaviour:
   WorldSeed: 35199
   CellularFillPercent: 50
   CellularTreshold: 4
-  SettingGenSand: 1
+  SettingGenSandEdges: 1
+  SandTile: {fileID: 11400000, guid: 465765cb0d6153248be775d263a92dde, type: 2}
   SettingGenBiomes: 1
+  VoronoiRegionAmount: 50
+  SettingPerlinScale: 25
+  SettingPerlinMinDivisionValue: 0.55
+  BiomesList:
+  - BiomeId: 0
+    BiomeName: Alpha Valley
+    Rarity: 1
+    BiomeColor: {r: 0.49388155, g: 1, b: 0.033018887, a: 1}
+    SurfaceTiles:
+    - {fileID: 11400000, guid: 465db0cd6a171fd48aa89db992cc865e, type: 2}
+    SurfaceObjects: []
+  - BiomeId: 1
+    BiomeName: Test
+    Rarity: 1
+    BiomeColor: {r: 1, g: 0.21132764, b: 0.031372547, a: 1}
+    SurfaceTiles:
+    - {fileID: 11400000, guid: 465db0cd6a171fd48aa89db992cc865e, type: 2}
+    SurfaceObjects: []
   map_Landmass: {fileID: 0}
   map_Biomes: {fileID: 0}
-  map_Combined: {fileID: 0}
-  PlayerWorldPosX: 0
-  PlayerWorldPosY: 0
-  PlayerChunkX: 0
-  PlayerChunkY: 0
-  Joska: 0
+  map_Minimap: {fileID: 0}
 --- !u!4 &1577317665
 Transform:
   m_ObjectHideFlags: 0
@@ -5836,7 +5850,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &1926527583
 SpriteRenderer:
   m_ObjectHideFlags: 0
