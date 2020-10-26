@@ -240,10 +240,11 @@ public class WorldGeneratorV3 : MonoBehaviour {
     //Voronoi Noise
 
     public Texture2D GenVoronoiV2() {
+        System.Random randChoice = new System.Random(WorldSeed.GetHashCode());
         Vector2Int[] centroids = new Vector2Int[BiomesList.Length];
         Color32[] regions = new Color32[BiomesList.Length];
         for (int BiomLength = 0; BiomLength < BiomesList.Length; BiomLength++) {
-            centroids[BiomLength] = new Vector2Int(Random.Range(0, WorldSizeX), Random.Range(0, WorldSizeY));
+            centroids[BiomLength] = new Vector2Int(randChoice.Next(0, WorldSizeX), randChoice.Next(0, WorldSizeY));
             regions[BiomLength] = BiomesList[BiomLength].BiomeColor32;
         }
         Color32[] PixelColors = new Color32[WorldSizeX * WorldSizeY];
@@ -262,7 +263,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
     }
 
     int GenCentroidIndex(Vector2Int PixelPos, Vector2Int[] centroids) {
-        float smallestDst = WorldSeed;
+        float smallestDst = SettingVoronoiSmallestDst;
         int index = 0;
         for (int i = 0; i < centroids.Length; i++) {
             if (Vector2.Distance(PixelPos, centroids[i]) < smallestDst) {
@@ -273,51 +274,13 @@ public class WorldGeneratorV3 : MonoBehaviour {
         return index;
     }
 
-    Texture2D GenVoronoi() {
-        Vector2Int[] centroids = new Vector2Int[BiomesList.Length];
-        Color[] regions = new Color[BiomesList.Length];
-        for (int i = 0; i < BiomesList.Length; i++) {
-            centroids[i] = new Vector2Int(Random.Range(0, WorldSizeX), Random.Range(0, WorldSizeY));
-            regions[i] = BiomesList[i].BiomeColor;
-        }
-        Color[] pixelColors = new Color[WorldSizeX * WorldSizeY];
-        for (int x = 0; x < WorldSizeX; x++) {
-            for (int y = 0; y < WorldSizeY; y++) {
-                int index = x * WorldSizeY + y;
-                pixelColors[index] = regions[GetClosestCentroidIndex(new Vector2Int(x, y), centroids)];
-            }
-        }
-        return GetImageFromColorArray(pixelColors);
-    }
-
-    //Voronoi Noise Indexing
-    int GetClosestCentroidIndex(Vector2Int pixelPos, Vector2Int[] centroids) {
-        float smallestDst = float.MaxValue;
-        int index = 0;
-        for (int i = 0; i < centroids.Length; i++) {
-            if (Vector2.Distance(pixelPos, centroids[i]) < smallestDst) {
-                smallestDst = Vector2.Distance(pixelPos, centroids[1]);
-                index = i;
-            }
-        }
-        return index;
-    }
-
-    //Voronoi noise complement
-    Texture2D GetImageFromColorArray(Color[] pixelColors) {
-        //Texture2D VoronoiMap = new Texture2D(WorldSizeX, WorldSizeY);
-        //VoronoiMap.filterMode = FilterMode.Point;
-        map_Biomes.SetPixels(pixelColors);
-        map_Biomes.Apply();
-        return map_Biomes;
-    }
-
     public void MapChunksToWorld() {
         for (int chunkX = 0; chunkX < WorldSizeX/SettingChunkSize; chunkX++) {
             for (int chunkY = 0; chunkY < WorldSizeY/SettingChunkSize; chunkY++) {
 
                 WorldChunks[chunkX, chunkY] = 0;
 
+                //This down here, it stays. what if i'd need it in the future?
                 /**for (int iX = 0; iX < SettingChunkSize; iX++) {
                     for (int iY = 0; iY < SettingChunkSize; iY++) {
 
@@ -332,10 +295,8 @@ public class WorldGeneratorV3 : MonoBehaviour {
                 }**/
 
             }
-            //yield return new WaitForEndOfFrame();
         }
         Debug.Log("Mapped Chunks");
-        //map_Landmass.Apply();
     }
 
     public void LocatePlayer(int CurrentChunkX, int CurrentChunkY) {
@@ -366,8 +327,6 @@ public class WorldGeneratorV3 : MonoBehaviour {
                 }
             }
         }
-
-        //Debug.Log("Chunk " + chunkX + "," + chunkY + " generated succesfully!");
         WorldChunks[((SettingWorldSize / SettingChunkSize) / 2) + PlayerChunkX, ((SettingWorldSize / SettingChunkSize) / 2) + PlayerChunkY] = 1;
     }
 }
