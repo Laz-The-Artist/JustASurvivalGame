@@ -46,6 +46,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
     private int[,] WorldChunks;
     private int[,] CellularWorldPoints;
     public Texture2D[] PerlinMaps;
+    Vector2Int[] centroids;
 
     int PlayerWorldPosX;
     int PlayerWorldPosY;
@@ -112,6 +113,8 @@ public class WorldGeneratorV3 : MonoBehaviour {
         WorldChunks = new int[SettingWorldSize / SettingChunkSize, SettingWorldSize / SettingChunkSize];
         PerlinMaps = new Texture2D[BiomesList.Length];
 
+        centroids = new Vector2Int[BiomesList.Length];
+
         //Generate the random seed, if its set to generate one
         if (GenRandomSeed) {
             int RandomSeed = Random.Range(0, 100000);
@@ -126,7 +129,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
         map_Biomes.filterMode = FilterMode.Point;
         map_Minimap.filterMode = FilterMode.Point;
         //Input map_ in the Sprite Renderer; Displaying in-world.
-        Sprite maprendersprite = Sprite.Create(map_Biomes, new Rect(0.0f, 0.0f, WorldSizeX, WorldSizeY), new Vector2(0.5f, 0.5f), 100.0f);
+        Sprite maprendersprite = Sprite.Create(map_Minimap, new Rect(0.0f, 0.0f, WorldSizeX, WorldSizeY), new Vector2(0.5f, 0.5f), 100.0f);
         map_display.GetComponent<SpriteRenderer>().sprite = maprendersprite;
 
         Debug.Log("World Initialised succesfully!");
@@ -192,41 +195,42 @@ public class WorldGeneratorV3 : MonoBehaviour {
 
     //Generate Biome Map by Voronoi Noise And Perlin Noise
     public void GenerateBiomeMap() {
-        GenVoronoiV2();
-        for (int BiomeLenght = 0; BiomeLenght < BiomesList.Length; BiomeLenght++) {
 
-            int NextPerlin = BiomeLenght * 5;
-            Texture2D CurrentPerlin = new Texture2D(WorldSizeX, WorldSizeY);
-            CurrentPerlin.filterMode = FilterMode.Point;
+        //Defining the temporary VoronoiMap and PerlinMap
+        Texture2D VoronoiMap = new Texture2D(WorldSizeX, WorldSizeY);
+        VoronoiMap.filterMode = FilterMode.Point;
+        Texture2D PerlinMapNormal = new Texture2D(WorldSizeX, WorldSizeY);
+        PerlinMapNormal.filterMode = FilterMode.Point;
 
-            //making the perlin noise
-            for (int x = 0; x < WorldSizeX; x++) {
+        //making the voronoi noise
+        VoronoiMap.SetPixels32(GenVoronoiV2());
+
+        //making the perlin noise
+        for (int x = 0; x < WorldSizeX; x++) {
                 for (int y = 0; y < WorldSizeY; y++) {
-                    Color color = CalcPerlin(x, y, NextPerlin);
-                    CurrentPerlin.SetPixel(x, y, color);
+                    Color color = CalcPerlin(x, y);
+                    PerlinMapNormal.SetPixel(x, y, color);
                 }
             }
-            CurrentPerlin.Apply();
-
-            //Storing the perlin noise
-            PerlinMaps[BiomeLenght] = CurrentPerlin;
-            PerlinMaps[BiomeLenght].SetPixels(CurrentPerlin.GetPixels());
-
-            if (BiomeLenght == 0) {
-                //map_Biomes.SetPixels(CurrentPerlin.GetPixels());
-                
+        PerlinMapNormal.Apply();
+        
+        //Combining the VoronoiMap and PerlinMap - Step 1
+        for (int x = 0; x < WorldSizeX; x++) {
+            for (int y = 0; y < WorldSizeY; y++) {
+                Color modifiedPix = PerlinMapNormal.GetPixel(x, y) * VoronoiMap.GetPixel(x, y);
+                map_Minimap.SetPixel(x,y,modifiedPix);
             }
-
-
-
-
         }
+        map_Minimap.Apply();
+
+        //Refining the CombinedMap - Step 2
+        
 
     }
 
-    Color CalcPerlin(int PerlX, int PerlY, int NextPerlinValue) {
-        float xCoord = (((float)PerlX / WorldSizeX) * SettingPerlinScale) + (WorldSeed * NextPerlinValue);
-        float yCoord = (((float)PerlY / WorldSizeY) * SettingPerlinScale) + (WorldSeed * NextPerlinValue);
+    Color CalcPerlin(int PerlX, int PerlY) {
+        float xCoord = (((float)PerlX / WorldSizeX) * SettingPerlinScale) + WorldSeed;
+        float yCoord = (((float)PerlY / WorldSizeY) * SettingPerlinScale) + WorldSeed;
 
         float sample = Mathf.PerlinNoise(xCoord, yCoord);
         if (sample >= SettingPerlinMinDivisionValue) {
@@ -237,11 +241,10 @@ public class WorldGeneratorV3 : MonoBehaviour {
         return new Color(sample, sample, sample);
     }
 
-    //Voronoi Noise
 
-    public Texture2D GenVoronoiV2() {
+    //Voronoi Noise
+    public Color32[] GenVoronoiV2() {
         System.Random randChoice = new System.Random(WorldSeed.GetHashCode());
-        Vector2Int[] centroids = new Vector2Int[BiomesList.Length];
         Color32[] regions = new Color32[BiomesList.Length];
         for (int BiomLength = 0; BiomLength < BiomesList.Length; BiomLength++) {
             centroids[BiomLength] = new Vector2Int(randChoice.Next(0, WorldSizeX), randChoice.Next(0, WorldSizeY));
@@ -255,11 +258,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
             }
         }
 
-        //Texture2D VoronoiMap = new Texture2D(WorldSizeX, WorldSizeY);
-        //VoronoiMap.filterMode = FilterMode.Point;
-        map_Biomes.SetPixels32(PixelColors);
-        map_Biomes.Apply();
-        return map_Biomes;
+        return PixelColors;
     }
 
     int GenCentroidIndex(Vector2Int PixelPos, Vector2Int[] centroids) {
