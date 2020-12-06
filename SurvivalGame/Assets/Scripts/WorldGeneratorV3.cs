@@ -3,36 +3,53 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 
 public class WorldGeneratorV3 : MonoBehaviour {
+
+    //JAWG - Just A World Engine
 
     [Header("Main Generator Settings")]
     [Space]
     [Header("World Generator V3")]
-    public GameObject Player;
-    public int SettingWorldSize = 512; //always use a number that is a power of 2; otherwise things WILL go wrong
-    public int SettingWorldOffset = 0;
-    public int SettingChunkSize = 16; //always use a number that is a power of 2; otherwise things WILL go wrong
-    [Range(2, 4)] public int SettingChunkLoadingRadius = 1;
-    public Tilemap GridLandmass;
-    public Renderer map_display;
+        public GameObject Player;
+        public int SettingWorldSize = 512; //always use a number that is a power of 2; otherwise things WILL go wrong
+        public int SettingWorldOffset = 0;
+        public int SettingChunkSize = 16; //always use a number that is a power of 2; otherwise things WILL go wrong
+        [Range(2, 4)] public int SettingChunkLoadingRadius = 1;
+        public Tilemap GridLandmass;
+        public Renderer map_display;
 
     [Header("Cellular Automata Settings")]
-    public bool GenCellularMap = true;
-    public int CellularSmoothCycles;
-    public bool GenRandomSeed = true;
-    [Range(0, 100000)] public int WorldSeed;
-    [Range(0, 100)] public int CellularFillPercent;
-    [Range(0, 8)] public int CellularTreshold;
+        public bool GenCellularMap = true;
+        public int CellularSmoothCycles;
+        public bool GenRandomSeed = true;
+        [Range(0, 100000)] public int WorldSeed;
+        [Range(0, 100)] public int CellularFillPercent;
+        [Range(0, 8)] public int CellularTreshold;
 
     [Header("Biome Generator Settings")]
-    public bool SettingGenSandEdges = true;
-    public Tile SandTile;
-    public bool SettingGenBiomes = true;
-    public float SettingVoronoiSmallestDst;
-    public float SettingPerlinScale;
-    [Range(0, 1)] public float SettingPerlinMinDivisionValue = 0.55f;
-    public WorldBiomes[] BiomesList;
+        public bool SettingGenSandEdges = true;
+        public Tile SandTile;
+        public bool SettingGenBiomes = true;
+        public float SettingVoronoiSmallestDst;
+        public float SettingPerlinScale;
+        [Range(0, 1)] public float SettingPerlinMinDivisionValue = 0.55f;
+        public WorldBiomes[] BiomesList;
+
+    [Header("Day-Night Cycle References")]
+        public bool SettingCycleDayNight = true;
+        public GameObject WorldGlobalLight;
+        UnityEngine.Experimental.Rendering.Universal.Light2D WorldGlobalLight2D;
+        public Image UI_icon_dayphase_day;
+        public Image UI_icon_dayphase_night;
+        public Image UI_icon_dayphase_fog;
+
+    [Header("Day-Night Cycle Settings")]
+        public float SettingDayNightCycleLength = 12000;
+        public float WorldTime;
+        public int phase;
+        
 
     [HideInInspector] public Texture2D map_Landmass;
     [HideInInspector] public Texture2D map_Biomes;
@@ -45,14 +62,18 @@ public class WorldGeneratorV3 : MonoBehaviour {
     int NumberOfWorldChunks;
     private int[,] WorldChunks;
     private int[,] CellularWorldPoints;
-    public Texture2D[] PerlinMaps;
+    //public Texture2D[] PerlinMaps;
     Vector2Int[] centroids;
 
     int PlayerWorldPosX;
     int PlayerWorldPosY;
-    [Space]
     int PlayerChunkX;
     int PlayerChunkY;
+
+    Texture2D VoronoiMap;
+    Texture2D PerlinMapNormal;
+
+    [HideInInspector] public bool IsWorldComplete = false;
 
 
     //Where it all begins
@@ -67,10 +88,12 @@ public class WorldGeneratorV3 : MonoBehaviour {
             GenerateBiomeMap();
         }
 
+        IsWorldComplete = true;
     }
 
     void Start() {
-
+        WorldGlobalLight2D = WorldGlobalLight.GetComponent<UnityEngine.Experimental.Rendering.Universal.Light2D>();
+        
     }
 
     void FixedUpdate() {
@@ -97,6 +120,16 @@ public class WorldGeneratorV3 : MonoBehaviour {
             }
         }
 
+        //StartCoroutine(DayNightCycleWorld());
+        DayNightCycleWorld();
+
+        WorldGlobalLight2D.intensity = Mathf.Clamp(WorldTime / SettingDayNightCycleLength, 0.13f, 1f);
+
+        /*var Opacity = UI_icon_dayphase_night.color;
+        Opacity.a = WorldTime / SettingDayNightCycleLength;
+        UI_icon_dayphase_night.color = Opacity;*/
+
+        UI_icon_dayphase_night.fillAmount = WorldTime / SettingDayNightCycleLength;
 
     }
 
@@ -111,7 +144,13 @@ public class WorldGeneratorV3 : MonoBehaviour {
         NumberOfWorldChunks = SettingWorldSize * SettingWorldSize / SettingChunkSize;
         Debug.Log(NumberOfWorldChunks + " Chunks will be generated");
         WorldChunks = new int[SettingWorldSize / SettingChunkSize, SettingWorldSize / SettingChunkSize];
-        PerlinMaps = new Texture2D[BiomesList.Length];
+
+        VoronoiMap = new Texture2D(WorldSizeX, WorldSizeY);
+        VoronoiMap.filterMode = FilterMode.Point;
+        PerlinMapNormal = new Texture2D(WorldSizeX, WorldSizeY);
+        PerlinMapNormal.filterMode = FilterMode.Point;
+
+        //PerlinMaps = new Texture2D[BiomesList.Length];
 
         centroids = new Vector2Int[BiomesList.Length];
 
@@ -129,8 +168,11 @@ public class WorldGeneratorV3 : MonoBehaviour {
         map_Biomes.filterMode = FilterMode.Point;
         map_Minimap.filterMode = FilterMode.Point;
         //Input map_ in the Sprite Renderer; Displaying in-world.
-        Sprite maprendersprite = Sprite.Create(map_Minimap, new Rect(0.0f, 0.0f, WorldSizeX, WorldSizeY), new Vector2(0.5f, 0.5f), 100.0f);
+        Sprite maprendersprite = Sprite.Create(VoronoiMap, new Rect(0.0f, 0.0f, WorldSizeX, WorldSizeY), new Vector2(0.5f, 0.5f), 100.0f);
         map_display.GetComponent<SpriteRenderer>().sprite = maprendersprite;
+
+        //World Settings
+        WorldTime = SettingDayNightCycleLength;
 
         Debug.Log("World Initialised succesfully!");
 
@@ -197,13 +239,11 @@ public class WorldGeneratorV3 : MonoBehaviour {
     public void GenerateBiomeMap() {
 
         //Defining the temporary VoronoiMap and PerlinMap
-        Texture2D VoronoiMap = new Texture2D(WorldSizeX, WorldSizeY);
-        VoronoiMap.filterMode = FilterMode.Point;
-        Texture2D PerlinMapNormal = new Texture2D(WorldSizeX, WorldSizeY);
-        PerlinMapNormal.filterMode = FilterMode.Point;
+        
 
         //making the voronoi noise
         VoronoiMap.SetPixels32(GenVoronoiV2());
+        VoronoiMap.Apply();
 
         //making the perlin noise
         for (int x = 0; x < WorldSizeX; x++) {
@@ -213,17 +253,17 @@ public class WorldGeneratorV3 : MonoBehaviour {
                 }
             }
         PerlinMapNormal.Apply();
-        
-        //Combining the VoronoiMap and PerlinMap - Step 1
-        for (int x = 0; x < WorldSizeX; x++) {
+
+        //Combining the VoronoiMap and PerlinMap
+        GenTestBiomeNoise();
+
+        /**for (int x = 0; x < WorldSizeX; x++) {
             for (int y = 0; y < WorldSizeY; y++) {
                 Color modifiedPix = PerlinMapNormal.GetPixel(x, y) * VoronoiMap.GetPixel(x, y);
                 map_Minimap.SetPixel(x,y,modifiedPix);
             }
         }
-        map_Minimap.Apply();
-
-        //Refining the CombinedMap - Step 2
+        map_Minimap.Apply();**/
         
 
     }
@@ -240,7 +280,6 @@ public class WorldGeneratorV3 : MonoBehaviour {
         }
         return new Color(sample, sample, sample);
     }
-
 
     //Voronoi Noise
     public Color32[] GenVoronoiV2() {
@@ -271,6 +310,42 @@ public class WorldGeneratorV3 : MonoBehaviour {
             }
         }
         return index;
+    }
+
+    //TestBiomeNoise
+    public void GenTestBiomeNoise() {
+        for (int BiomeNum = 0; BiomeNum < BiomesList.Length; BiomeNum++) {
+
+            for (int x = 0; x < WorldSizeX; x++) {
+                for (int y = 0; y < WorldSizeY; y++) {
+
+                    for (int xB = -1; xB < 2; xB++) {
+                        for (int yB = -1; yB < 2; yB++) {
+
+                            if (x + xB >= 0 && y + yB >= 0 && x + xB <= WorldSizeX - 1 && y + yB <= WorldSizeY - 1) {
+                                if (PerlinMapNormal.GetPixel(x + xB, y + yB) == Color.black && VoronoiMap.GetPixel(x, y) == BiomesList[BiomeNum].BiomeColor32) {
+                                    VoronoiMap.SetPixel(x + xB, y + yB, BiomesList[BiomeNum].BiomeColor32);
+                                }
+                            }
+
+                        }
+                    }
+
+                }
+            }
+
+            //Count the areas
+            /**for (int x = 0; x < WorldSizeX; x++) {
+                for (int y = 0; y < WorldSizeY; y++) {
+                    if (VoronoiMap.GetPixel(x, y) == BiomesList[BiomeNum].BiomeColor32) {
+                        BiomesList[BiomeNum].BiomeArea++;
+                    }
+                }
+            }**/
+
+        }
+
+        VoronoiMap.Apply();
     }
 
     public void MapChunksToWorld() {
@@ -327,6 +402,19 @@ public class WorldGeneratorV3 : MonoBehaviour {
             }
         }
         WorldChunks[((SettingWorldSize / SettingChunkSize) / 2) + PlayerChunkX, ((SettingWorldSize / SettingChunkSize) / 2) + PlayerChunkY] = 1;
+    }
+
+    public void DayNightCycleWorld() {
+        if (phase == 0) {
+            WorldTime--;
+            if (WorldTime <= 0) { phase = 1; }
+            //yield return new WaitForEndOfFrame();
+        } else if (phase == 1) {
+            WorldTime++;
+            if (WorldTime >= SettingDayNightCycleLength) { phase = 0; }
+            //yield return new WaitForEndOfFrame();
+        }
+
     }
 }
 
