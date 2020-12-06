@@ -4,6 +4,7 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
+using TMPro;
 
 public class WorldGeneratorV3 : MonoBehaviour {
 
@@ -41,14 +42,12 @@ public class WorldGeneratorV3 : MonoBehaviour {
         public bool SettingCycleDayNight = true;
         public GameObject WorldGlobalLight;
         UnityEngine.Experimental.Rendering.Universal.Light2D WorldGlobalLight2D;
-        public Image UI_icon_dayphase_day;
-        public Image UI_icon_dayphase_night;
-        public Image UI_icon_dayphase_fog;
 
     [Header("Day-Night Cycle Settings")]
         public float SettingDayNightCycleLength = 12000;
         public float WorldTime;
         public int phase;
+        public string CurrentDaytime;
         
 
     [HideInInspector] public Texture2D map_Landmass;
@@ -120,16 +119,9 @@ public class WorldGeneratorV3 : MonoBehaviour {
             }
         }
 
-        //StartCoroutine(DayNightCycleWorld());
+        //Day-Night Cycle
         DayNightCycleWorld();
-
         WorldGlobalLight2D.intensity = Mathf.Clamp(WorldTime / SettingDayNightCycleLength, 0.13f, 1f);
-
-        /*var Opacity = UI_icon_dayphase_night.color;
-        Opacity.a = WorldTime / SettingDayNightCycleLength;
-        UI_icon_dayphase_night.color = Opacity;*/
-
-        UI_icon_dayphase_night.fillAmount = WorldTime / SettingDayNightCycleLength;
 
     }
 
@@ -413,6 +405,16 @@ public class WorldGeneratorV3 : MonoBehaviour {
             WorldTime++;
             if (WorldTime >= SettingDayNightCycleLength) { phase = 0; }
             //yield return new WaitForEndOfFrame();
+        }
+
+        if (phase == 0 && WorldTime >= SettingDayNightCycleLength / 2) {
+            CurrentDaytime = ("Forenoon");
+        }else if (phase == 0 && WorldTime <= SettingDayNightCycleLength / 2) {
+            CurrentDaytime = ("Afternoon");
+        }else if (phase == 1 && WorldTime >= SettingDayNightCycleLength / 2) {
+            CurrentDaytime = ("Dawn");
+        } else if (phase == 1 && WorldTime <= SettingDayNightCycleLength / 2) {
+            CurrentDaytime = ("Night");
         }
 
     }
