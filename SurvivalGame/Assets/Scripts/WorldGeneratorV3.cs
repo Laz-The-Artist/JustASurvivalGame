@@ -8,25 +8,25 @@ using TMPro;
 
 public class WorldGeneratorV3 : MonoBehaviour {
 
-    //JAWG - Just A World Engine
+    
 
     [Header("Main Generator Settings")]
     [Space]
-    [Header("World Generator V3")]
+    [Header("Worldgen References")]
+    public GameObject Player;
+    public Tilemap GridLandmass;
+    public Tilemap GridLandmass_;
+    public Tilemap GridLandmass__;
+    public Renderer map_display;
+
+    [Header("JAWG - Just A World Engine")] //JAWG - Just A World Engine
         public bool GenRandomSeed = true;
         [Range(0, 100000)] public int WorldSeed;
-        public GameObject Player;
         public int SettingWorldSize = 512; //always use a number that is a power of 2; otherwise things WILL go wrong
         public int SettingWorldOffset = 0;
         public int SettingChunkSize = 16; //always use a number that is a power of 2; otherwise things WILL go wrong
         [Range(2, 4)] public int SettingChunkLoadingRadius = 2;
         [Range(4, 8)] public int SettingChunkUnloadDistance = 4;
-
-    [Header("Worldgen References")]
-        public Tilemap GridLandmass;
-        public Tilemap GridLandmass_;
-        public Tilemap GridLandmass__;
-        public Renderer map_display;
 
     [Header("Cellular Automata Settings")]
         public bool GenCellularMap = true;
@@ -35,11 +35,11 @@ public class WorldGeneratorV3 : MonoBehaviour {
         [Range(0, 8)] public int CellularTreshold;
 
     [Header("Biome Generator Settings")]
+        public bool SettingGenBiomes = true;
         public bool SettingGenSandEdges = true;
         public Tile SandTile;
         public AnimatedTile WaterTile;
         public Tile Seafloor;
-        public bool SettingGenBiomes = true;
         public float SettingVoronoiSmallestDst;
         public float SettingPerlinScale;
         [Range(0, 1)] public float SettingPerlinMinDivisionValue = 0.55f;
