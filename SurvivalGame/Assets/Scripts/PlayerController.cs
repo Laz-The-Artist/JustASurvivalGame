@@ -4,6 +4,7 @@ public class PlayerController : MonoBehaviour {
     [Header("Player Settings")]
         public float MovementSpeed = 5f;
         public Rigidbody2D rb2D;
+        public int PlayerTemp;
     [Header("Animation Settings")]
         public Animator PlayerAnimator;
     [Space]
@@ -23,6 +24,9 @@ public class PlayerController : MonoBehaviour {
             Movement.x = Input.GetAxisRaw("Horizontal");
             Movement.y = Input.GetAxisRaw("Vertical");
         }
+
+        //Calc player temp and effects related
+        //CalcPlayerTemp(); i said i cant sry
 
     }
 
@@ -63,5 +67,17 @@ public class PlayerController : MonoBehaviour {
             PlayerAnimator.SetBool("Back", false);
             PlayerAnimator.SetBool("Front", false);
         }
+    }
+
+    void CalcPlayerTemp() {
+        //no i cant sry.
+        if (WorldGenScript.CurrentBiomeTemp < 0) {
+            PlayerTemp = WorldGenScript.CurrentBiomeTemp*2 - WorldGenScript.CurrentBiomeTemp/3;
+        } else if (WorldGenScript.CurrentBiomeTemp >= 0) {
+            PlayerTemp = 36 - WorldGenScript.CurrentBiomeTemp / 3;
+            //PlayerTemp = 36 + (((WorldGenScript.CurrentBiomeTemp / 2) * WorldGenScript.CurrentBiomeTemp) / 36);
+        }
+        //
+
     }
 }
