@@ -17,6 +17,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
     public Tilemap GridLandmass;
     public Tilemap GridLandmass_;
     public Tilemap GridLandmass__;
+    public GameObject ResourcesLayer;
     public Renderer map_display;
 
     [Header("JAWG - Just A World Engine")] //JAWG - Just A World Engine
@@ -36,6 +37,8 @@ public class WorldGeneratorV3 : MonoBehaviour {
 
     [Header("Biome Generator Settings")]
         public bool SettingGenBiomes = true;
+        public bool SettingGenResources = true;
+        [Range(0, 100)] public int ResourceFillPercent;
         public bool SettingGenSandEdges = true;
         public Tile SandTile;
         public AnimatedTile WaterTile;
@@ -73,6 +76,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
     int NumberOfWorldChunks;
     private int[,] WorldChunks;
     private int[,] CellularWorldPoints;
+    [HideInInspector] public int[,] RandomResourcePoints;
     Vector2Int[] centroids;
     Color Transparent = new Color(0f, 0f, 0f, 0f);
 
@@ -88,6 +92,12 @@ public class WorldGeneratorV3 : MonoBehaviour {
     //Where it all begins
     private void Awake() {
         InitialiseWorld();
+    }
+
+    void Start() {
+
+        //Initialise the sun 
+        WorldGlobalLight2D = WorldGlobalLight.GetComponent<UnityEngine.Experimental.Rendering.Universal.Light2D>();
 
         if (GenCellularMap) {
             GenLandmassCellular();
@@ -96,13 +106,13 @@ public class WorldGeneratorV3 : MonoBehaviour {
         if (SettingGenBiomes) {
             GenerateBiomeMap();
         }
+        if (SettingGenResources) {
+            GenResources();
+        }
+
 
         IsWorldComplete = true;
-    }
 
-    void Start() {
-        WorldGlobalLight2D = WorldGlobalLight.GetComponent<UnityEngine.Experimental.Rendering.Universal.Light2D>();
-        
     }
 
     void FixedUpdate() {
@@ -154,6 +164,8 @@ public class WorldGeneratorV3 : MonoBehaviour {
         Debug.Log(NumberOfWorldChunks + " Chunks will be generated");
         WorldChunks = new int[SettingWorldSize / SettingChunkSize, SettingWorldSize / SettingChunkSize];
 
+        RandomResourcePoints = new int[WorldSizeX, WorldSizeY];
+        CellularWorldPoints = new int[WorldSizeX, WorldSizeY];
 
         centroids = new Vector2Int[BiomesList.Length];
 
@@ -191,7 +203,6 @@ public class WorldGeneratorV3 : MonoBehaviour {
 
     //CellularAutomata based landmass generator
     public void GenLandmassCellular() {
-        CellularWorldPoints = new int[WorldSizeX, WorldSizeY];
         //Seed generation
         System.Random randChoice = new System.Random(WorldSeed.GetHashCode());
         for (int x = 0; x < WorldSizeX; x++) {
@@ -364,7 +375,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
                         //This here generates the whole world
                         if (CellularWorldPoints[chunkX * SettingChunkSize + iX, chunkY * SettingChunkSize + iY] == 1) {
                             
-                            //that is nice, but i want the world to load around the player; this generates like how it used to but with an extra step and less lag;
+                            //this is nice, but i want the world to load around the player; this generates like how it used to but with an extra step and less lag;
                             GridLandmass.SetTile(new Vector3Int( (chunkX * SettingChunkSize - WorldOffsetX)+ iX, (chunkY * SettingChunkSize - WorldOffsetY)+ iY, 0), GrassForTest);
                             //map_Landmass.SetPixel((chunkX * SettingChunkSize) + iX, (chunkY * SettingChunkSize) + iY, Color.black);
                         }
@@ -376,9 +387,21 @@ public class WorldGeneratorV3 : MonoBehaviour {
         Debug.Log("Mapped Chunks");
     }
 
+    public void GenResources() {
+        System.Random randChoice = new System.Random(WorldSeed.GetHashCode());
+        for (int x = 0; x < WorldSizeX; x++) {
+            for (int y = 0; y < WorldSizeY; y++) {
+                if (randChoice.Next(0, 100) < ResourceFillPercent) {
+                    RandomResourcePoints[x, y] = 1;
+                }
+
+            }
+        }
+    }
+
     public void LocatePlayer(int CurrentChunkX, int CurrentChunkY) {
 
-        PlayerWorldPosX = (int)Player.transform.position.x;
+        PlayerWorldPosX = ((int)Player.transform.position.x);
         PlayerWorldPosY = (int)Player.transform.position.y;
 
         //loacting player
@@ -422,12 +445,21 @@ public class WorldGeneratorV3 : MonoBehaviour {
                 int CoordX = (chunkX * SettingChunkSize) + iX;
                 int CoordY = (chunkY * SettingChunkSize) + iY;
 
-                if (CellularWorldPoints[chunkX * SettingChunkSize + WorldOffsetX + iX, chunkY * SettingChunkSize + WorldOffsetY + iY] == 1) {
+                if (CellularWorldPoints[CoordX + WorldOffsetX, CoordY + WorldOffsetY] == 1) {
                     for (int b = 0; b < BiomesList.Length; b++) {
-                        if (map_Biomes.GetPixel(chunkX * SettingChunkSize + WorldOffsetX + iX, chunkY * SettingChunkSize + WorldOffsetY + iY) == BiomesList[b].BiomeColor32) {
+                        if (map_Biomes.GetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY) == BiomesList[b].BiomeColor32) {
+                            //Load Surface
                             GridLandmass.SetTile(new Vector3Int(CoordX, CoordY, 0), BiomesList[b].SurfaceRuleTiles[0]);
                             GridLandmass_.SetTile(new Vector3Int(CoordX, CoordY, 0), WaterTile);
                             GridLandmass__.SetTile(new Vector3Int(CoordX, CoordY, 0), Seafloor);
+                            //Load resources
+                            if (RandomResourcePoints[CoordX + WorldOffsetX, CoordY + WorldOffsetY] == 1 && BiomesList[b].SurfaceObjects.Length != 0) {
+                                GameObject tmpObj = Instantiate(BiomesList[b].SurfaceObjects[0]);
+                                tmpObj.name = "" + BiomesList[b].BiomeName + "_" + BiomesList[b].SurfaceObjects[0].name + "_X" + CoordX + "_Y" + CoordY;
+                                tmpObj.transform.position = new Vector3(CoordX - 0.5f, CoordY - 0.5f, 99);
+                                tmpObj.transform.SetParent(ResourcesLayer.transform);
+                                RandomResourcePoints[CoordX + WorldOffsetX, CoordY + WorldOffsetY] = 2;
+                            }
                         }
                     }
 
