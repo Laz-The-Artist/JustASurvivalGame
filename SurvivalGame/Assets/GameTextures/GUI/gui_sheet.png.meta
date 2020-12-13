@@ -35,6 +35,30 @@ TextureImporter:
   - first:
       213: -4722997755921602442
     second: UI_tooltip
+  - first:
+      213: 7101253462081356206
+    second: Selector_TL
+  - first:
+      213: -1307755872679361219
+    second: Selector_TR
+  - first:
+      213: -4636138653659298678
+    second: Selector_BL
+  - first:
+      213: 5564733676383101749
+    second: Selector_BR
+  - first:
+      213: 2081153124975782367
+    second: Selector_TL_pressed
+  - first:
+      213: 7622215681735852150
+    second: Selector_TR_pressed
+  - first:
+      213: 97077263095194410
+    second: Selector_BL_pressed
+  - first:
+      213: -6731122195652805888
+    second: Selector_BR_pressed
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -348,6 +372,174 @@ TextureImporter:
       bones: []
       spriteID: 6786353809a847eb0800000000000000
       internalID: -4722997755921602442
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Selector_TL
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 957
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ea14f535668bc8260800000000000000
+      internalID: 7101253462081356206
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Selector_TR
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 957
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d35040c66fae9dde0800000000000000
+      internalID: -1307755872679361219
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Selector_BL
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 949
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a840e23357029afb0800000000000000
+      internalID: -4636138653659298678
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Selector_BR
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 949
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 533e772abc7e93d40800000000000000
+      internalID: 5564733676383101749
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Selector_TL_pressed
+      rect:
+        serializedVersion: 2
+        x: 23
+        y: 957
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fd92061adbdb1ec10800000000000000
+      internalID: 2081153124975782367
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Selector_TR_pressed
+      rect:
+        serializedVersion: 2
+        x: 30
+        y: 957
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 670074f37cc87c960800000000000000
+      internalID: 7622215681735852150
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Selector_BL_pressed
+      rect:
+        serializedVersion: 2
+        x: 23
+        y: 949
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a236e86a143e85100800000000000000
+      internalID: 97077263095194410
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Selector_BR_pressed
+      rect:
+        serializedVersion: 2
+        x: 30
+        y: 949
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 00bfd5ca6004692a0800000000000000
+      internalID: -6731122195652805888
       vertices: []
       indices: 
       edges: []

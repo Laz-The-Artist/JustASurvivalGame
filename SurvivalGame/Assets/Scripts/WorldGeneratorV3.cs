@@ -154,6 +154,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
 
 
     public void InitialiseWorld() {
+        
         //set initial values that are required
         WorldSizeX = SettingWorldSize;
         WorldSizeY = SettingWorldSize;
