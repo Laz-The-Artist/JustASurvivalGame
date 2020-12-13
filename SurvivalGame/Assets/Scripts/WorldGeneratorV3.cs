@@ -8,21 +8,23 @@ using TMPro;
 
 public class WorldGeneratorV3 : MonoBehaviour {
 
-    
+
 
     [Header("Main Generator Settings")]
     [Space]
     [Header("Worldgen References")]
-    public GameObject Player;
-    public Tilemap GridLandmass;
-    public Tilemap GridLandmass_;
-    public Tilemap GridLandmass__;
-    public GameObject ResourcesLayer;
-    public Renderer map_display;
+        GlobalVariableHandler GVH;
+        public GameObject Player;
+        public Tilemap GridLandmass;
+        public Tilemap GridLandmass_;
+        public Tilemap GridLandmass__;
+        public GameObject ResourcesLayer;
+        public Renderer map_display;
 
     [Header("JAWG - Just A World Engine")] //JAWG - Just A World Engine
+        public bool ReadStartMenuSettingToGenerate = true;
         public bool GenRandomSeed = true;
-        [Range(0, 100000)] public int WorldSeed;
+        [Range(0, 999999)] public int WorldSeed;
         public int SettingWorldSize = 512; //always use a number that is a power of 2; otherwise things WILL go wrong
         public int SettingWorldOffset = 0;
         public int SettingChunkSize = 16; //always use a number that is a power of 2; otherwise things WILL go wrong
@@ -91,13 +93,17 @@ public class WorldGeneratorV3 : MonoBehaviour {
 
     //Where it all begins
     private void Awake() {
-        InitialiseWorld();
     }
 
     void Start() {
 
         //Initialise the sun 
         WorldGlobalLight2D = WorldGlobalLight.GetComponent<UnityEngine.Experimental.Rendering.Universal.Light2D>();
+
+        GameObject tmp = GameObject.FindWithTag("GlobalReference");
+        GVH = tmp.GetComponent<GlobalVariableHandler>();
+
+        InitialiseWorld();
 
         if (GenCellularMap) {
             GenLandmassCellular();
@@ -154,7 +160,12 @@ public class WorldGeneratorV3 : MonoBehaviour {
 
 
     public void InitialiseWorld() {
-        
+
+        if (ReadStartMenuSettingToGenerate) {
+            WorldSeed = GVH.seed;
+            GenRandomSeed = GVH.genRandomSeed;
+        }
+
         //set initial values that are required
         WorldSizeX = SettingWorldSize;
         WorldSizeY = SettingWorldSize;
@@ -171,6 +182,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
         centroids = new Vector2Int[BiomesList.Length];
 
         //Generate the random seed, if its set to generate one
+
         if (GenRandomSeed) {
             int RandomSeed = Random.Range(0, 100000);
             WorldSeed = RandomSeed;

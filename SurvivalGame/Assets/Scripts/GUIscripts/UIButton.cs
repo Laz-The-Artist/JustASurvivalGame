@@ -1,13 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class UIButton : MonoBehaviour {
 
-    [Header("General Settings")]
-        public bool MainPlayButton = false;
-        public bool SettingsButton = false;
-        public bool ExitButton = false;
+    [Header("Load Scene Functions")]
+        public string SceneName = "";
+        public float LoadProgress;
+        public bool UseProgressBar = false;
+        public GameObject LoadScreen;
+        public Image LoadingProgressBar;
 
     Animator ButtonAnimator;
     bool IsSelected = false;
@@ -18,16 +22,15 @@ public class UIButton : MonoBehaviour {
 
     void Update() {
         if (IsSelected == true && Input.GetMouseButtonDown(0)) {
-            if (MainPlayButton) {
-                Play();
-                ButtonAnimator.Play("btn_press");
-            }else if (SettingsButton) {
+            /*if (LoadSceneBTN) {
+                StartCoroutine(LoadSceneAsync(SceneName));
+            } else if (OpenMenuBTN) {
                 Settings();
-                ButtonAnimator.Play("btn_press");
-            }else if (ExitButton) {
+            }else if (ExitGameBTN) {
                 ExitGame();
-                ButtonAnimator.Play("btn_press");
-            }
+            }*/
+
+            ButtonAnimator.Play("btn_press");
         }
     }
 
@@ -41,13 +44,30 @@ public class UIButton : MonoBehaviour {
         ButtonAnimator.Play("btn_hover_exit");
     }
 
-    public void Play() {
-        Debug.Log("well played, gg");
+    public void LoadScene() {
+        StartCoroutine(LoadSceneAsync(SceneName));
     }
+
+    public IEnumerator LoadSceneAsync(string __sceneName) {
+        LoadScreen.SetActive(true);
+        AsyncOperation SceneLoadOp = SceneManager.LoadSceneAsync(__sceneName);
+
+        while (!SceneLoadOp.isDone) {
+            LoadProgress = SceneLoadOp.progress;
+            if (UseProgressBar) {
+                LoadingProgressBar.fillAmount = LoadProgress;
+            }
+            Debug.Log("Loading Scene " + __sceneName + "; progress: " + LoadProgress);
+            yield return null;
+        }
+        
+    }
+
     public void Settings() {
         Debug.Log("Entered the settings menu");
     }
     public void ExitGame() {
+        Application.Quit();
         Debug.Log("Exited game");
     }
 
