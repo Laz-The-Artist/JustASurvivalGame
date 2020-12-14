@@ -7,13 +7,12 @@ using UnityEngine.UI;
 using TMPro;
 
 public class WorldGeneratorV3 : MonoBehaviour {
-
-
-
-    [Header("Main Generator Settings")]
-    [Space]
-    [Header("Worldgen References")]
+    
+    
         GlobalVariableHandler GVH;
+    [Header("Worldgen References")]
+    [Space]
+    [Header("JAWG - Just A World Engine")]
         public GameObject Player;
         public Tilemap GridLandmass;
         public Tilemap GridLandmass_;
@@ -21,7 +20,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
         public GameObject ResourcesLayer;
         public Renderer map_display;
 
-    [Header("JAWG - Just A World Engine")] //JAWG - Just A World Engine
+    [Header("Main Settings")]
         public bool ReadStartMenuSettingToGenerate = true;
         public bool GenRandomSeed = true;
         [Range(0, 999999)] public int WorldSeed;
@@ -41,8 +40,6 @@ public class WorldGeneratorV3 : MonoBehaviour {
         public bool SettingGenBiomes = true;
         public bool SettingGenResources = true;
         [Range(0, 100)] public int ResourceFillPercent;
-        public bool SettingGenSandEdges = true;
-        public Tile SandTile;
         public AnimatedTile WaterTile;
         public Tile Seafloor;
         public float SettingVoronoiSmallestDst;
@@ -101,7 +98,10 @@ public class WorldGeneratorV3 : MonoBehaviour {
         WorldGlobalLight2D = WorldGlobalLight.GetComponent<UnityEngine.Experimental.Rendering.Universal.Light2D>();
 
         GameObject tmp = GameObject.FindWithTag("GlobalReference");
-        GVH = tmp.GetComponent<GlobalVariableHandler>();
+        if (tmp != null) {
+            GVH = tmp.GetComponent<GlobalVariableHandler>();
+        }
+        
 
         InitialiseWorld();
 
@@ -161,7 +161,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
 
     public void InitialiseWorld() {
 
-        if (ReadStartMenuSettingToGenerate) {
+        if (ReadStartMenuSettingToGenerate && GVH != null) {
             WorldSeed = GVH.seed;
             GenRandomSeed = GVH.genRandomSeed;
         }
