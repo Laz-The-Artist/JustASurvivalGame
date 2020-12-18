@@ -1,13 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class UIButton : MonoBehaviour {
 
+    GlobalVariableHandler GVH;
     [Header("Load Scene Functions")]
-        public string SceneName = "";
+        public string LoadSceneName = "";
+        public string Path;
         public float LoadProgress;
         public bool UseProgressBar = false;
         public GameObject LoadScreen;
@@ -18,18 +21,17 @@ public class UIButton : MonoBehaviour {
 
     void Start() {
         ButtonAnimator = this.GetComponent<Animator>();
+
+        GameObject tmp = GameObject.FindWithTag("GlobalReference");
+        if (tmp != null) {
+            GVH = tmp.GetComponent<GlobalVariableHandler>();
+            Path = Application.persistentDataPath + "/" + GVH.worldName;
+        }
+
     }
 
     void Update() {
         if (IsSelected == true && Input.GetMouseButtonDown(0)) {
-            /*if (LoadSceneBTN) {
-                StartCoroutine(LoadSceneAsync(SceneName));
-            } else if (OpenMenuBTN) {
-                Settings();
-            }else if (ExitGameBTN) {
-                ExitGame();
-            }*/
-
             ButtonAnimator.Play("btn_press");
         }
     }
@@ -44,8 +46,15 @@ public class UIButton : MonoBehaviour {
         ButtonAnimator.Play("btn_hover_exit");
     }
 
-    public void LoadScene() {
-        StartCoroutine(LoadSceneAsync(SceneName));
+    public void LoadExistingWorld() {
+        GVH.loadExisting = true;
+        StartCoroutine(LoadSceneAsync(LoadSceneName));
+    }
+
+    public void CreateNewGameWorld() {
+        GVH.loadExisting = false;
+        StartCoroutine(LoadSceneAsync(LoadSceneName));
+
     }
 
     public IEnumerator LoadSceneAsync(string __sceneName) {

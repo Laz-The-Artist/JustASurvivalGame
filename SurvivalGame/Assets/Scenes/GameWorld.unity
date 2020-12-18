@@ -6402,6 +6402,8 @@ MonoBehaviour:
   GridLandmass__: {fileID: 1938467165}
   ResourcesLayer: {fileID: 1556720384}
   map_display: {fileID: 1926527583}
+  SettingWorldName: TestWorld1_2020.12.18_23.38.05
+  LoadExistingWorld: 1
   ReadStartMenuSettingToGenerate: 0
   GenRandomSeed: 0
   WorldSeed: 35199
@@ -6417,8 +6419,6 @@ MonoBehaviour:
   SettingGenBiomes: 1
   SettingGenResources: 1
   ResourceFillPercent: 9
-  SettingGenSandEdges: 0
-  SandTile: {fileID: 11400000, guid: 465765cb0d6153248be775d263a92dde, type: 2}
   WaterTile: {fileID: 11400000, guid: f0a847b7454a960489989504f4d6f8c8, type: 2}
   Seafloor: {fileID: 11400000, guid: 1c496373609671747a2aceeff62ba340, type: 2}
   SettingVoronoiSmallestDst: 3000
@@ -6482,7 +6482,23 @@ MonoBehaviour:
   gen_PerlinMap: {fileID: 0}
   map_Landmass: {fileID: 0}
   map_Biomes: {fileID: 0}
+  map_Resources: {fileID: 0}
   map_Minimap: {fileID: 0}
+  SettingWorldPath: 
+  WorldMapPath: 
+  WorldDataPath: 
+  SaveObj:
+    s_WorldSize: 0
+    s_WorldOffset: 0
+    s_ChunkSize: 0
+    s_WorldSeed: 0
+    s_DayNightCycleLength: 0
+    s_DoDayNightCycle: 0
+    s_WorldTime: 0
+    s_phase: 0
+    s_CurrentDayTime: 
+    s_PlayerCoordX: 0
+    s_PlayerCoordY: 0
   IsWorldComplete: 0
 --- !u!4 &1577317665
 Transform:
@@ -10070,7 +10086,7 @@ Tilemap:
       - {fileID: 3786995188241939477, guid: 625214c0758103f4e81d81694ea91c76, type: 3}
       - {fileID: 2473945965257259777, guid: 625214c0758103f4e81d81694ea91c76, type: 3}
       - {fileID: -5434306751725826435, guid: 625214c0758103f4e81d81694ea91c76, type: 3}
-      m_AnimationSpeed: 5.0000005
+      m_AnimationSpeed: 5
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: 3, y: -3, z: 0}
@@ -10103,7 +10119,7 @@ Tilemap:
       - {fileID: 3786995188241939477, guid: 625214c0758103f4e81d81694ea91c76, type: 3}
       - {fileID: 2473945965257259777, guid: 625214c0758103f4e81d81694ea91c76, type: 3}
       - {fileID: -5434306751725826435, guid: 625214c0758103f4e81d81694ea91c76, type: 3}
-      m_AnimationSpeed: 5.0000005
+      m_AnimationSpeed: 5
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: -2, y: -2, z: 0}
@@ -10224,7 +10240,7 @@ Tilemap:
       - {fileID: 3786995188241939477, guid: 625214c0758103f4e81d81694ea91c76, type: 3}
       - {fileID: 2473945965257259777, guid: 625214c0758103f4e81d81694ea91c76, type: 3}
       - {fileID: -5434306751725826435, guid: 625214c0758103f4e81d81694ea91c76, type: 3}
-      m_AnimationSpeed: 5.0000005
+      m_AnimationSpeed: 5
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: 1, y: -1, z: 0}
@@ -10488,7 +10504,7 @@ Tilemap:
       - {fileID: 3786995188241939477, guid: 625214c0758103f4e81d81694ea91c76, type: 3}
       - {fileID: 2473945965257259777, guid: 625214c0758103f4e81d81694ea91c76, type: 3}
       - {fileID: -5434306751725826435, guid: 625214c0758103f4e81d81694ea91c76, type: 3}
-      m_AnimationSpeed: 5.0000005
+      m_AnimationSpeed: 5
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: 1, y: 2, z: 0}

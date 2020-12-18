@@ -6,9 +6,13 @@ using TMPro;
 
 public class GlobalVariableHandler : MonoBehaviour
 {
-    public TMP_InputField WorldSeed;
-    public Toggle useRandomSeedInstead;
+    public TMP_InputField WorldSeedInput;
+    public TMP_InputField WorldNameInput;
+    public Toggle useRandomSeedInsteadInput;
 
+    public string worldName;
+    public bool loadExisting;
+    public bool ReadStartSettingsForGen = true;
     public int seed;
     public bool genRandomSeed;
 
@@ -23,8 +27,9 @@ public class GlobalVariableHandler : MonoBehaviour
 
     void Update()
     {
-        int.TryParse(WorldSeed.text, out seed);
-        genRandomSeed = useRandomSeedInstead.isOn;
+        int.TryParse(WorldSeedInput.text, out seed);
+        WorldNameInput.text = worldName;
+        genRandomSeed = useRandomSeedInsteadInput.isOn;
     }
 
 

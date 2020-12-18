@@ -21,6 +21,8 @@ public class WorldGeneratorV3 : MonoBehaviour {
         public Renderer map_display;
 
     [Header("Main Settings")]
+        public string SettingWorldName;
+        public bool LoadExistingWorld;
         public bool ReadStartMenuSettingToGenerate = true;
         public bool GenRandomSeed = true;
         [Range(0, 999999)] public int WorldSeed;
@@ -66,7 +68,14 @@ public class WorldGeneratorV3 : MonoBehaviour {
 
     [HideInInspector] public Texture2D map_Landmass;
     [HideInInspector] public Texture2D map_Biomes;
+    [HideInInspector] public Texture2D map_Resources;
     [HideInInspector] public Texture2D map_Minimap;
+
+    [HideInInspector] public string SettingWorldPath;
+    [HideInInspector] public string WorldMapPath;
+    [HideInInspector] public string WorldDataPath;
+
+    [HideInInspector] public SaveObject SaveObj;
 
     int WorldSizeX;
     int WorldSizeY;
@@ -93,31 +102,41 @@ public class WorldGeneratorV3 : MonoBehaviour {
     }
 
     void Start() {
-
         //Initialise the sun 
         WorldGlobalLight2D = WorldGlobalLight.GetComponent<UnityEngine.Experimental.Rendering.Universal.Light2D>();
 
         GameObject tmp = GameObject.FindWithTag("GlobalReference");
         if (tmp != null) {
             GVH = tmp.GetComponent<GlobalVariableHandler>();
+            LoadExistingWorld = GVH.loadExisting;
+            ReadStartMenuSettingToGenerate = GVH.ReadStartSettingsForGen;
         }
         
+        if (LoadExistingWorld) {
+            if (ReadStartMenuSettingToGenerate) { SettingWorldName = GVH.worldName; }
+            SettingWorldPath = Application.persistentDataPath + "/" + SettingWorldName + "/";
+            WorldMapPath = SettingWorldPath + "/map_" + SettingWorldName + "/";
+            WorldDataPath = SettingWorldPath + "/data_" + SettingWorldName + "/";
+            LoadWorld();
+        } else {
+            if (!Directory.Exists(Application.persistentDataPath + "/" + SettingWorldName + "/")) {
+                SettingWorldPath = Application.persistentDataPath + "/" + SettingWorldName + "/";
+            } else {
+                string time = System.DateTime.Now.ToString("_yyyy.MM.dd_HH.mm.ss");
+                SettingWorldPath = Application.persistentDataPath + "/" + SettingWorldName + time + "/";
+                SettingWorldName = SettingWorldName + time;
+                Debug.LogWarning("This world location already exists. To prevent overwriting, the current time was added to the world's name: " + SettingWorldName);
+            }
 
-        InitialiseWorld();
+            WorldMapPath = SettingWorldPath + "/map_" + SettingWorldName + "/";
+            WorldDataPath = SettingWorldPath + "/data_" + SettingWorldName + "/";
 
-        if (GenCellularMap) {
-            GenLandmassCellular();
-            MapChunksToWorld();
+            Directory.CreateDirectory(SettingWorldPath);
+            Directory.CreateDirectory(WorldMapPath);
+            Directory.CreateDirectory(WorldDataPath);
+
+            GenerateNewWorld();
         }
-        if (SettingGenBiomes) {
-            GenerateBiomeMap();
-        }
-        if (SettingGenResources) {
-            GenResources();
-        }
-
-
-        IsWorldComplete = true;
 
     }
 
@@ -159,58 +178,113 @@ public class WorldGeneratorV3 : MonoBehaviour {
     }
 
 
-    public void InitialiseWorld() {
 
-        if (ReadStartMenuSettingToGenerate && GVH != null) {
-            WorldSeed = GVH.seed;
-            GenRandomSeed = GVH.genRandomSeed;
+    public void GenerateNewWorld() {
+
+        InitializeWorld(false);
+
+        if (GenCellularMap) {
+            GenLandmassCellular();
+            MapChunksToWorld();
+        }
+        if (SettingGenBiomes) {
+            GenerateBiomeMap();
+        }
+        if (SettingGenResources) {
+            GenResources();
         }
 
-        //set initial values that are required
-        WorldSizeX = SettingWorldSize;
-        WorldSizeY = SettingWorldSize;
+        IntSaveWorldData();
 
-        WorldOffsetX = SettingWorldOffset;
-        WorldOffsetY = SettingWorldOffset;
-        NumberOfWorldChunks = SettingWorldSize * SettingWorldSize / SettingChunkSize;
-        Debug.Log(NumberOfWorldChunks + " Chunks will be generated");
-        WorldChunks = new int[SettingWorldSize / SettingChunkSize, SettingWorldSize / SettingChunkSize];
+        IsWorldComplete = true;
+    }
 
-        RandomResourcePoints = new int[WorldSizeX, WorldSizeY];
-        CellularWorldPoints = new int[WorldSizeX, WorldSizeY];
+    public void LoadWorld() {
 
-        centroids = new Vector2Int[BiomesList.Length];
+        IntLoadWorldData();
 
-        //Generate the random seed, if its set to generate one
+        InitializeWorld(true);
 
-        if (GenRandomSeed) {
-            int RandomSeed = Random.Range(0, 100000);
-            WorldSeed = RandomSeed;
+        MapChunksToWorld();
+
+        IsWorldComplete = true;
+    }
+
+
+
+    public void InitializeWorld(bool isLoadingExisting) {
+
+        if (!isLoadingExisting) {
+            if (ReadStartMenuSettingToGenerate && GVH != null) {
+                WorldSeed = GVH.seed;
+                GenRandomSeed = GVH.genRandomSeed;
+            }
+
+            //set initial values that are required
+            WorldSizeX = SettingWorldSize;
+            WorldSizeY = SettingWorldSize;
+
+            WorldOffsetX = SettingWorldOffset;
+            WorldOffsetY = SettingWorldOffset;
+            NumberOfWorldChunks = SettingWorldSize * SettingWorldSize / SettingChunkSize;
+            Debug.Log(NumberOfWorldChunks + " Chunks will be generated");
+            WorldChunks = new int[SettingWorldSize / SettingChunkSize, SettingWorldSize / SettingChunkSize];
+
+            RandomResourcePoints = new int[WorldSizeX, WorldSizeY];
+            CellularWorldPoints = new int[WorldSizeX, WorldSizeY];
+
+            centroids = new Vector2Int[BiomesList.Length];
+
+            //Generate the random seed, if its set to generate one
+
+            if (GenRandomSeed) {
+                int RandomSeed = Random.Range(0, 100000);
+                WorldSeed = RandomSeed;
+            }
+
+            //start mapping; making the textures for maps; set the filter mode to point
+            
+
+            gen_VoronoiMap.filterMode = FilterMode.Point;
+            gen_PerlinMap.filterMode = FilterMode.Point;
+
+            map_Landmass.filterMode = FilterMode.Point;
+            map_Biomes.filterMode = FilterMode.Point;
+            map_Resources.filterMode = FilterMode.Point;
+            map_Minimap.filterMode = FilterMode.Point;
+
+            //Input map_ in the Sprite Renderer; Displaying in-world.
+            Sprite maprendersprite = Sprite.Create(map_Biomes, new Rect(0.0f, 0.0f, WorldSizeX, WorldSizeY), new Vector2(0.5f, 0.5f), 100.0f);
+            map_display.GetComponent<SpriteRenderer>().sprite = maprendersprite;
+
+            //World Settings
+            WorldTime = SettingDayNightCycleLength;
+
+            Debug.Log("World Initialised succesfully!");
+
+        } else if(isLoadingExisting) {
+
+            GenRandomSeed = false;
+
+            //set initial values that are required
+            WorldSizeX = SettingWorldSize;
+            WorldSizeY = SettingWorldSize;
+            WorldOffsetX = SettingWorldOffset;
+            WorldOffsetY = SettingWorldOffset;
+            NumberOfWorldChunks = SettingWorldSize * SettingWorldSize / SettingChunkSize;
+            Debug.Log(NumberOfWorldChunks + " Chunks will be generated");
+            WorldChunks = new int[SettingWorldSize / SettingChunkSize, SettingWorldSize / SettingChunkSize];
+
+            //Input map_ in the Sprite Renderer; Displaying in-world.
+            Sprite maprendersprite = Sprite.Create(map_Biomes, new Rect(0.0f, 0.0f, WorldSizeX, WorldSizeY), new Vector2(0.5f, 0.5f), 100.0f);
+            map_display.GetComponent<SpriteRenderer>().sprite = maprendersprite;
+
+            //World Settings
+            WorldTime = SettingDayNightCycleLength;
+
+            Debug.Log("World Initialised succesfully!");
         }
-
-        //start mapping; making the textures for maps; set the filter mode to point
-        gen_VoronoiMap = new Texture2D(WorldSizeX, WorldSizeY);
-        gen_PerlinMap = new Texture2D(WorldSizeX, WorldSizeY);
-
-        map_Landmass = new Texture2D(WorldSizeX, WorldSizeY);
-        map_Biomes = new Texture2D(WorldSizeX, WorldSizeY);
-        map_Minimap = new Texture2D(WorldSizeX, WorldSizeY);
-
-        gen_VoronoiMap.filterMode = FilterMode.Point;
-        gen_PerlinMap.filterMode = FilterMode.Point;
-
-        map_Landmass.filterMode = FilterMode.Point;
-        map_Biomes.filterMode = FilterMode.Point;
-        map_Minimap.filterMode = FilterMode.Point;
-
-        //Input map_ in the Sprite Renderer; Displaying in-world.
-        Sprite maprendersprite = Sprite.Create(map_Landmass, new Rect(0.0f, 0.0f, WorldSizeX, WorldSizeY), new Vector2(0.5f, 0.5f), 100.0f);
-        map_display.GetComponent<SpriteRenderer>().sprite = maprendersprite;
-
-        //World Settings
-        WorldTime = SettingDayNightCycleLength;
-
-        Debug.Log("World Initialised succesfully!");
+        
 
     }
 
@@ -362,11 +436,12 @@ public class WorldGeneratorV3 : MonoBehaviour {
         map_Biomes.SetPixels(gen_VoronoiMap.GetPixels());
         map_Biomes.Apply();
 
-        map_Landmass.SetPixels(map_Biomes.GetPixels());
         for (int x = 0; x < WorldSizeX; x++) {
             for (int y = 0; y < WorldSizeY; y++) {
                 if (CellularWorldPoints[x, y] == 0) {
-                    map_Landmass.SetPixel(x, y, Transparent);
+                    map_Landmass.SetPixel(x, y, Color.white);
+                } else if (CellularWorldPoints[x, y] == 1){
+                    map_Landmass.SetPixel(x, y, Color.black);
                 }
             }
         }
@@ -405,13 +480,79 @@ public class WorldGeneratorV3 : MonoBehaviour {
         for (int x = 0; x < WorldSizeX; x++) {
             for (int y = 0; y < WorldSizeY; y++) {
                 if (randChoice.Next(0, 100) < ResourceFillPercent) {
-                    RandomResourcePoints[x, y] = 1;
+                    map_Resources.SetPixel(x,y,Color.red);
+                } else {
+                    map_Resources.SetPixel(x, y, Color.white);
                 }
 
             }
         }
     }
 
+    public void IntSaveWorldData() {
+
+        SaveObj.s_WorldSize = SettingWorldSize;
+        SaveObj.s_WorldOffset = SettingWorldOffset;
+        SaveObj.s_ChunkSize = SettingChunkSize;
+        SaveObj.s_WorldSeed = WorldSeed;
+        SaveObj.s_DayNightCycleLength = SettingDayNightCycleLength;
+
+        string jsonSave = JsonUtility.ToJson(SaveObj, true);
+        File.WriteAllText(WorldDataPath + "gen_" + SettingWorldName + ".json", jsonSave);
+        Debug.Log("World_Data Json Saved Succesfully");
+
+        var bytes_Landmass = map_Landmass.EncodeToPNG();
+        var bytes_Biomes = map_Biomes.EncodeToPNG();
+        var bytes_Resources = map_Resources.EncodeToPNG();
+
+        File.WriteAllBytes(WorldMapPath + "map_Landmass.png", bytes_Landmass);
+        File.WriteAllBytes(WorldMapPath + "map_Biomes.png", bytes_Biomes);
+        File.WriteAllBytes(WorldMapPath + "map_Resources.png", bytes_Resources);
+        Debug.Log("World_Map png Saved Succesfully");
+    }
+
+    public void IntLoadWorldData() {
+        if (File.Exists(WorldDataPath + "gen_" + SettingWorldName + ".json")) {
+            string jsonLoad = File.ReadAllText(WorldDataPath + "gen_" + SettingWorldName + ".json");
+            SaveObj = JsonUtility.FromJson<SaveObject>(jsonLoad);
+            SettingWorldSize = SaveObj.s_WorldSize;
+            SettingWorldOffset = SaveObj.s_WorldOffset;
+            SettingChunkSize = SaveObj.s_ChunkSize;
+            WorldSeed = SaveObj.s_WorldSeed;
+            SettingDayNightCycleLength = SaveObj.s_DayNightCycleLength;
+            Player.transform.position = new Vector3(SaveObj.s_PlayerCoordX, SaveObj.s_PlayerCoordY, 0);
+            Debug.Log("World_Data Json Loaded Succesfully");
+        }
+
+        if (File.Exists(WorldMapPath + "map_Landmass.png") && File.Exists(WorldMapPath + "map_Biomes.png") && File.Exists(WorldMapPath + "map_Resources.png")) {
+            byte[] bytes_Landmass;
+            byte[] bytes_Biomes;
+            byte[] bytes_Resources;
+
+            bytes_Landmass = File.ReadAllBytes(WorldMapPath + "map_Landmass.png");
+            bytes_Biomes = File.ReadAllBytes(WorldMapPath + "map_Biomes.png");
+            bytes_Resources = File.ReadAllBytes(WorldMapPath + "map_Resources.png");
+
+            map_Landmass = new Texture2D(2, 2);
+            map_Biomes = new Texture2D(2, 2);
+            map_Resources = new Texture2D(2, 2);
+
+            map_Landmass.LoadImage(bytes_Landmass);
+            map_Biomes.LoadImage(bytes_Biomes);
+            map_Resources.LoadImage(bytes_Resources);
+
+            map_Landmass.filterMode = FilterMode.Point;
+            map_Biomes.filterMode = FilterMode.Point;
+            map_Resources.filterMode = FilterMode.Point;
+
+            Debug.Log("World_Map png Loaded Succesfully");
+        }
+
+
+    }
+
+
+    //Post-init functions
     public void LocatePlayer(int CurrentChunkX, int CurrentChunkY) {
 
         PlayerWorldPosX = ((int)Player.transform.position.x);
@@ -458,7 +599,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
                 int CoordX = (chunkX * SettingChunkSize) + iX;
                 int CoordY = (chunkY * SettingChunkSize) + iY;
 
-                if (CellularWorldPoints[CoordX + WorldOffsetX, CoordY + WorldOffsetY] == 1) {
+                if (map_Landmass.GetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY) == Color.black) {
                     for (int b = 0; b < BiomesList.Length; b++) {
                         if (map_Biomes.GetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY) == BiomesList[b].BiomeColor32) {
                             //Load Surface
@@ -466,12 +607,12 @@ public class WorldGeneratorV3 : MonoBehaviour {
                             GridLandmass_.SetTile(new Vector3Int(CoordX, CoordY, 0), WaterTile);
                             GridLandmass__.SetTile(new Vector3Int(CoordX, CoordY, 0), Seafloor);
                             //Load resources
-                            if (RandomResourcePoints[CoordX + WorldOffsetX, CoordY + WorldOffsetY] == 1 && BiomesList[b].SurfaceObjects.Length != 0) {
+                            if (map_Resources.GetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY) == Color.red && BiomesList[b].SurfaceObjects.Length != 0) {
                                 GameObject tmpObj = Instantiate(BiomesList[b].SurfaceObjects[0]);
                                 tmpObj.name = "" + BiomesList[b].BiomeName + "_" + BiomesList[b].SurfaceObjects[0].name + "_X" + CoordX + "_Y" + CoordY;
                                 tmpObj.transform.position = new Vector3(CoordX - 0.5f, CoordY - 0.5f, 99);
                                 tmpObj.transform.SetParent(ResourcesLayer.transform);
-                                RandomResourcePoints[CoordX + WorldOffsetX, CoordY + WorldOffsetY] = 2;
+                                map_Resources.SetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY, Color.green);
                             }
                         }
                     }
