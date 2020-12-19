@@ -29,7 +29,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
         public int SettingWorldSize = 512; //always use a number that is a power of 2; otherwise things WILL go wrong
         public int SettingWorldOffset = 0;
         public int SettingChunkSize = 16; //always use a number that is a power of 2; otherwise things WILL go wrong
-        [Range(2, 4)] public int SettingChunkLoadingRadius = 2;
+        [Range(1, 4)] public int SettingChunkLoadingRadius = 2;
         [Range(4, 8)] public int SettingChunkUnloadDistance = 4;
 
     [Header("Cellular Automata Settings")]
@@ -210,7 +210,6 @@ public class WorldGeneratorV3 : MonoBehaviour {
 
         IsWorldComplete = true;
     }
-
 
 
     public void InitializeWorld(bool isLoadingExisting) {
@@ -631,6 +630,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
         }
         //Mark the chunk as loaded
         WorldChunks[((SettingWorldSize / SettingChunkSize) / 2) + PlayerChunkX, ((SettingWorldSize / SettingChunkSize) / 2) + PlayerChunkY] = 1;
+        
     }
 
     public void UnloadChunk(int chunkX, int chunkY) {

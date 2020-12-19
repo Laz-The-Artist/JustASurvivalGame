@@ -624,7 +624,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.011184583, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 4.76001, y: -9.118121}
+  m_AnchoredPosition: {x: 4.76001, y: -9.118119}
   m_SizeDelta: {x: 10.935486, y: 0}
   m_Pivot: {x: 0.5, y: 0.981}
 --- !u!114 &150352411
@@ -5486,8 +5486,6 @@ MonoBehaviour:
   WorldsLoc: []
   WorldsNames: []
   WorldSavesLocation: 
-  WorldEntrys: []
-  tmpObj: {fileID: 0}
 --- !u!1 &1454104226
 GameObject:
   m_ObjectHideFlags: 0
@@ -6731,7 +6729,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1608616971}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.9999245
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
