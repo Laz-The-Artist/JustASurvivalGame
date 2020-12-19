@@ -65,6 +65,12 @@ TextureImporter:
   - first:
       213: -1406325859530767317
     second: checkmark
+  - first:
+      213: -6676560931065867018
+    second: scrollbar_handle
+  - first:
+      213: 8625231970958111795
+    second: play_button
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -580,7 +586,7 @@ TextureImporter:
         width: 14
         height: 11
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -588,6 +594,48 @@ TextureImporter:
       bones: []
       spriteID: b240930f41abb7ce0800000000000000
       internalID: -1406325859530767317
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: scrollbar_handle
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 940
+        width: 5
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6f4519605371853a0800000000000000
+      internalID: -6676560931065867018
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: play_button
+      rect:
+        serializedVersion: 2
+        x: 51
+        y: 953
+        width: 7
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 334fc4677caf2b770800000000000000
+      internalID: 8625231970958111795
       vertices: []
       indices: 
       edges: []

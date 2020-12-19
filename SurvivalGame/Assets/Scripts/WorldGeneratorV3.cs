@@ -113,12 +113,13 @@ public class WorldGeneratorV3 : MonoBehaviour {
         }
         
         if (LoadExistingWorld) {
-            if (ReadStartMenuSettingToGenerate) { SettingWorldName = GVH.worldName; }
+            if (ReadStartMenuSettingToGenerate) { SettingWorldName = GVH.LoadworldName; }
             SettingWorldPath = Application.persistentDataPath + "/" + SettingWorldName + "/";
             WorldMapPath = SettingWorldPath + "/map_" + SettingWorldName + "/";
             WorldDataPath = SettingWorldPath + "/data_" + SettingWorldName + "/";
             LoadWorld();
         } else {
+            if (ReadStartMenuSettingToGenerate) { SettingWorldName = GVH.GenworldName; }
             if (!Directory.Exists(Application.persistentDataPath + "/" + SettingWorldName + "/")) {
                 SettingWorldPath = Application.persistentDataPath + "/" + SettingWorldName + "/";
             } else {
@@ -243,7 +244,12 @@ public class WorldGeneratorV3 : MonoBehaviour {
             }
 
             //start mapping; making the textures for maps; set the filter mode to point
-            
+            gen_VoronoiMap = new Texture2D(WorldSizeX, WorldSizeY);
+            gen_PerlinMap = new Texture2D(WorldSizeX, WorldSizeY);
+
+            map_Landmass = new Texture2D(WorldSizeX, WorldSizeY);
+            map_Biomes = new Texture2D(WorldSizeX, WorldSizeY);
+            map_Resources = new Texture2D(WorldSizeX, WorldSizeY);
 
             gen_VoronoiMap.filterMode = FilterMode.Point;
             gen_PerlinMap.filterMode = FilterMode.Point;
@@ -251,7 +257,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
             map_Landmass.filterMode = FilterMode.Point;
             map_Biomes.filterMode = FilterMode.Point;
             map_Resources.filterMode = FilterMode.Point;
-            map_Minimap.filterMode = FilterMode.Point;
+            //map_Minimap.filterMode = FilterMode.Point;
 
             //Input map_ in the Sprite Renderer; Displaying in-world.
             Sprite maprendersprite = Sprite.Create(map_Biomes, new Rect(0.0f, 0.0f, WorldSizeX, WorldSizeY), new Vector2(0.5f, 0.5f), 100.0f);

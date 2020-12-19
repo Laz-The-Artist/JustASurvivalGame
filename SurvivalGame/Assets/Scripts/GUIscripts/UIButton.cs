@@ -9,8 +9,9 @@ public class UIButton : MonoBehaviour {
 
     GlobalVariableHandler GVH;
     [Header("Load Scene Functions")]
+        public bool isAnimatable = true;
         public string LoadSceneName = "";
-        public string Path;
+        public string WorldName;
         public float LoadProgress;
         public bool UseProgressBar = false;
         public GameObject LoadScreen;
@@ -25,13 +26,13 @@ public class UIButton : MonoBehaviour {
         GameObject tmp = GameObject.FindWithTag("GlobalReference");
         if (tmp != null) {
             GVH = tmp.GetComponent<GlobalVariableHandler>();
-            Path = Application.persistentDataPath + "/" + GVH.worldName;
         }
 
     }
 
     void Update() {
-        if (IsSelected == true && Input.GetMouseButtonDown(0)) {
+        if (IsSelected == true && Input.GetMouseButtonDown(0) && isAnimatable) {
+
             ButtonAnimator.Play("btn_press");
         }
     }
@@ -48,11 +49,14 @@ public class UIButton : MonoBehaviour {
 
     public void LoadExistingWorld() {
         GVH.loadExisting = true;
+        GVH.ReadStartSettingsForGen = true;
+        GVH.LoadworldName = WorldName;
         StartCoroutine(LoadSceneAsync(LoadSceneName));
     }
 
     public void CreateNewGameWorld() {
         GVH.loadExisting = false;
+        GVH.ReadStartSettingsForGen = true;
         StartCoroutine(LoadSceneAsync(LoadSceneName));
 
     }
