@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
@@ -15,10 +16,12 @@ public class WorldGeneratorV3 : MonoBehaviour {
     [Header("JAWG - Just A World Engine")]
         public GameObject Player;
         public Tilemap GridLandmass;
+        public Tilemap GridLandmass_collider;
         public Tilemap GridLandmass_;
         public Tilemap GridLandmass__;
         public GameObject ResourcesLayer;
         public Renderer map_display;
+        public Tile ColliderTile;
 
     [Header("Main Settings")]
         public string SettingWorldName;
@@ -484,7 +487,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
         System.Random randChoice = new System.Random(WorldSeed.GetHashCode());
         for (int x = 0; x < WorldSizeX; x++) {
             for (int y = 0; y < WorldSizeY; y++) {
-                if (randChoice.Next(0, 100) < ResourceFillPercent) {
+                if (randChoice.Next(0, 1000) < ResourceFillPercent) {
                     map_Resources.SetPixel(x,y,Color.red);
                 } else {
                     map_Resources.SetPixel(x, y, Color.white);
@@ -613,16 +616,18 @@ public class WorldGeneratorV3 : MonoBehaviour {
                             GridLandmass__.SetTile(new Vector3Int(CoordX, CoordY, 0), Seafloor);
                             //Load resources
                             if (map_Resources.GetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY) == Color.red && BiomesList[b].SurfaceObjects.Length != 0) {
-                                GameObject tmpObj = Instantiate(BiomesList[b].SurfaceObjects[0]);
-                                tmpObj.name = "" + BiomesList[b].BiomeName + "_" + BiomesList[b].SurfaceObjects[0].name + "_X" + CoordX + "_Y" + CoordY;
+                                GameObject tmpObj = Instantiate(GetResource(b));
+                                tmpObj.name = "" + BiomesList[b].BiomeName + "_" + BiomesList[b].SurfaceObjects[0].ResourceObj.name + "_X" + CoordX + "_Y" + CoordY;
                                 tmpObj.transform.position = new Vector3(CoordX - 0.5f, CoordY - 0.5f, 99);
                                 tmpObj.transform.SetParent(ResourcesLayer.transform);
                                 map_Resources.SetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY, Color.green);
+                                
                             }
                         }
                     }
 
                 } else {
+                    GridLandmass_collider.SetTile(new Vector3Int(CoordX, CoordY, 0), ColliderTile);
                     GridLandmass_.SetTile(new Vector3Int(CoordX, CoordY, 0), WaterTile);
                     GridLandmass__.SetTile(new Vector3Int(CoordX, CoordY, 0), Seafloor);
                 }
@@ -630,6 +635,12 @@ public class WorldGeneratorV3 : MonoBehaviour {
         }
         //Mark the chunk as loaded
         WorldChunks[((SettingWorldSize / SettingChunkSize) / 2) + PlayerChunkX, ((SettingWorldSize / SettingChunkSize) / 2) + PlayerChunkY] = 1;
+        
+    }
+
+    GameObject GetResource(int CurrentBiome) {
+        int obj = Random.Range(0, BiomesList[CurrentBiome].SurfaceObjects.Length);
+        return BiomesList[CurrentBiome].SurfaceObjects[obj].ResourceObj;
         
     }
 

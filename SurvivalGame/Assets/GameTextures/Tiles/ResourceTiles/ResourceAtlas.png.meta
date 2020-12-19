@@ -20,6 +20,15 @@ TextureImporter:
   - first:
       213: 8520829300205832036
     second: Resource_rock
+  - first:
+      213: 5228954090924326849
+    second: object_stick
+  - first:
+      213: 442607074427694339
+    second: Object_OakTree
+  - first:
+      213: 5576688943592393092
+    second: Object_OakTree_Stem
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -228,6 +237,69 @@ TextureImporter:
       bones: []
       spriteID: 467428e6a11104670800000000000000
       internalID: 8520829300205832036
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: object_stick
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 976
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1cfbe50aa0af09840800000000000000
+      internalID: 5228954090924326849
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Object_OakTree
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 896
+        width: 48
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 30d66560ac4742600800000000000000
+      internalID: 442607074427694339
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Object_OakTree_Stem
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 896
+        width: 16
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4894ca13c01646d40800000000000000
+      internalID: 5576688943592393092
       vertices: []
       indices: 
       edges: []

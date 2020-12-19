@@ -14,8 +14,14 @@ public class WorldBiomes {
         [Range(-99, 99)] public int Temperature = 1;
         public Color32 BiomeColor32;
     [Header("Generator Info")]
-        public Tile[] SurfaceTiles;
         public RuleTile[] SurfaceRuleTiles;
-        public GameObject[] SurfaceObjects; //trees, ores, plants and such
+        public SurfaceObjects[] SurfaceObjects;//trees, ores, plants and such
+        
 
+}
+
+[System.Serializable]
+public class SurfaceObjects {
+    public GameObject ResourceObj;
+    [Range(1, 100)] public int ResourceChance;
 }
