@@ -56,20 +56,17 @@ public class WorldGeneratorV3 : MonoBehaviour {
         public bool SettingCycleDayNight = true; //this grants the power of ZA WARUDO
         public GameObject WorldGlobalLight;
         UnityEngine.Experimental.Rendering.Universal.Light2D WorldGlobalLight2D;
-        public float SettingDayNightCycleLength = 12000;
-        public float WorldTime;
-        public int phase;
+        public float CurrentWorldTimeMinutes;
+        [HideInInspector] public float CurrentWorldTimeMinutesCounter;
+        [HideInInspector] public float ScaledCurrentWorldTimeMinutesCounter;
+        public float CurrentWorldTimeHours;
+        public float CurrentWorldTimeDays;
+        public TextMeshProUGUI worldTimeDisp;
         public string CurrentDaytime;
 
     [Header("World Runtime")]
         public string CurrentBiomeName;
         public int CurrentBiomeTemp;
-        public int SettingWorldDayCicleLenght;
-        public float CurrentWorldTimeMinutes;
-        [HideInInspector] float CurrentWorldTimeMinutesCounter;
-        public float CurrentWorldTimeHours;
-        public float CurrentWorldTimeDays;
-        public TextMeshProUGUI worldTimeDisp;
 
 
     [HideInInspector] public Texture2D gen_VoronoiMap;
@@ -282,9 +279,6 @@ public class WorldGeneratorV3 : MonoBehaviour {
             Sprite maprendersprite = Sprite.Create(map_Biomes, new Rect(0.0f, 0.0f, WorldSizeX, WorldSizeY), new Vector2(0.5f, 0.5f), 100.0f);
             map_display.GetComponent<SpriteRenderer>().sprite = maprendersprite;
 
-            //World Settings
-            WorldTime = SettingDayNightCycleLength;
-
             Debug.Log("World Initialised succesfully!");
 
         } else if(isLoadingExisting) {
@@ -303,9 +297,6 @@ public class WorldGeneratorV3 : MonoBehaviour {
             //Input map_ in the Sprite Renderer; Displaying in-world.
             Sprite maprendersprite = Sprite.Create(map_Biomes, new Rect(0.0f, 0.0f, WorldSizeX, WorldSizeY), new Vector2(0.5f, 0.5f), 100.0f);
             map_display.GetComponent<SpriteRenderer>().sprite = maprendersprite;
-
-            //World Settings
-            WorldTime = SettingDayNightCycleLength;
 
             Debug.Log("World Initialised succesfully!");
         }
@@ -516,11 +507,10 @@ public class WorldGeneratorV3 : MonoBehaviour {
 
     public void IntSaveWorldData() {
 
-        SaveObj.s_WorldSize = SettingWorldSize;
-        SaveObj.s_WorldOffset = SettingWorldOffset;
-        SaveObj.s_ChunkSize = SettingChunkSize;
-        SaveObj.s_WorldSeed = WorldSeed;
-        SaveObj.s_DayNightCycleLength = SettingDayNightCycleLength;
+        SaveWorldGenData.s_WorldSize = SettingWorldSize;
+        SaveWorldGenData.s_WorldOffset = SettingWorldOffset;
+        SaveWorldGenData.s_ChunkSize = SettingChunkSize;
+        SaveWorldGenData.s_WorldSeed = WorldSeed;
 
         string jsonSave = JsonUtility.ToJson(SaveObj, true);
         File.WriteAllText(WorldDataPath + "gen_" + SettingWorldName + ".json", jsonSave);
@@ -544,7 +534,6 @@ public class WorldGeneratorV3 : MonoBehaviour {
             SettingWorldOffset = SaveObj.s_WorldOffset;
             SettingChunkSize = SaveObj.s_ChunkSize;
             WorldSeed = SaveObj.s_WorldSeed;
-            SettingDayNightCycleLength = SaveObj.s_DayNightCycleLength;
             Player.transform.position = new Vector3(SaveObj.s_PlayerCoordX, SaveObj.s_PlayerCoordY, 0);
             Debug.Log("World_Data Json Loaded Succesfully");
         }
@@ -688,9 +677,9 @@ public class WorldGeneratorV3 : MonoBehaviour {
 
         worldTimeDisp.text = "Time: " + Mathf.Round(CurrentWorldTimeMinutes) + "m " + CurrentWorldTimeHours + "h " + CurrentWorldTimeDays + "d";
 
-        float ConvTime = scale(0F, 781F, 0F, 1F, CurrentWorldTimeMinutesCounter);
-        WorldGlobalLight2D.intensity = ConvTime;
-        Debug.Log(ConvTime);
+        ScaledCurrentWorldTimeMinutesCounter = scale(0F, 781F, 0F, 1F, CurrentWorldTimeMinutesCounter);
+        WorldGlobalLight2D.intensity = ScaledCurrentWorldTimeMinutesCounter;
+        Debug.Log(ScaledCurrentWorldTimeMinutesCounter);
 
         if (CurrentWorldTimeHours > 0 && CurrentWorldTimeHours <= 11) {
             CurrentDaytime = ("Morning");

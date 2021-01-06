@@ -30,7 +30,6 @@ public class JAWGSaveWorldGenData {
     public int s_WorldOffset;
     public int s_ChunkSize;
     public int s_WorldSeed;
-    public float s_DayNightCycleLength;
 }
 
 [System.Serializable]

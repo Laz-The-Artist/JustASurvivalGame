@@ -41,10 +41,10 @@ public class UIHandler : MonoBehaviour
         MainCam.orthographicSize = FieldOfView;
 
         //Celestial Watch
-        UI_icon_dayphase_day.fillAmount = WorldGenScript.WorldTime / WorldGenScript.SettingDayNightCycleLength;
-        Disp_Time.text = "" + WorldGenScript.WorldTime;
+        UI_icon_dayphase_day.fillAmount = WorldGenScript.ScaledCurrentWorldTimeMinutesCounter;
+        //Disp_Time.text = "" + WorldGenScript.WorldTime;
         Disp_Phase.text = "" + WorldGenScript.CurrentDaytime;
-        int Degrees = (int)WorldGenScript.CurrentBiomeTemp + (int)((WorldGenScript.WorldTime / WorldGenScript.SettingDayNightCycleLength) * 4);
+        int Degrees = (int)WorldGenScript.CurrentBiomeTemp + (int)(WorldGenScript.ScaledCurrentWorldTimeMinutesCounter * 4);
         Disp_LocalTemp.text = "" + Degrees;
 
     }
