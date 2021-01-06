@@ -64,6 +64,12 @@ public class WorldGeneratorV3 : MonoBehaviour {
     [Header("World Runtime")]
         public string CurrentBiomeName;
         public int CurrentBiomeTemp;
+        public int SettingWorldDayCicleLenght;
+        public float CurrentWorldTimeMinutes;
+        [HideInInspector] float CurrentWorldTimeMinutesCounter;
+        public float CurrentWorldTimeHours;
+        public float CurrentWorldTimeDays;
+        public TextMeshProUGUI worldTimeDisp;
 
 
     [HideInInspector] public Texture2D gen_VoronoiMap;
@@ -78,7 +84,12 @@ public class WorldGeneratorV3 : MonoBehaviour {
     [HideInInspector] public string WorldMapPath;
     [HideInInspector] public string WorldDataPath;
 
+
+    //SaveClasses
     [HideInInspector] public SaveObject SaveObj;
+    [HideInInspector] public JAWGSaveWorldGenData SaveWorldGenData;
+    [HideInInspector] public JAWGSaveWorldRuntimeData SaveWorldRuntimeData;
+
 
     int WorldSizeX;
     int WorldSizeY;
@@ -95,7 +106,6 @@ public class WorldGeneratorV3 : MonoBehaviour {
     int PlayerWorldPosY;
     int PlayerChunkX;
     int PlayerChunkY;
-
 
     [HideInInspector] public bool IsWorldComplete = false;
 
@@ -142,6 +152,13 @@ public class WorldGeneratorV3 : MonoBehaviour {
             GenerateNewWorld();
         }
 
+        if (CurrentWorldTimeHours >= 12) {
+            CurrentWorldTimeMinutesCounter = ((CurrentWorldTimeHours-12) * 60) + CurrentWorldTimeMinutes;
+        } else {
+            CurrentWorldTimeMinutesCounter = (CurrentWorldTimeHours * 60) + CurrentWorldTimeMinutes;
+        }
+        
+
     }
 
     void FixedUpdate() {
@@ -177,7 +194,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
 
         //Day-Night Cycle
         if (SettingCycleDayNight) {
-            DayNightCycleWorld();
+            CycleDayNight();
         }
     }
 
@@ -649,29 +666,51 @@ public class WorldGeneratorV3 : MonoBehaviour {
         //Basically setting every tile to null at [chunkX,chunkY]; with the same method used in LoadChunk()
     }
 
-    public void DayNightCycleWorld() {
-        if (phase == 0) {
-            WorldTime--;
-            if (WorldTime <= 0) { phase = 1; }
-            //yield return new WaitForEndOfFrame();
-        } else if (phase == 1) {
-            WorldTime++;
-            if (WorldTime >= SettingDayNightCycleLength) { phase = 0; }
-            //yield return new WaitForEndOfFrame();
+    public void CycleDayNight() {
+        CurrentWorldTimeMinutes += Time.deltaTime;
+        
+        //Real life Seconds are ingame minutes;
+        if (CurrentWorldTimeMinutes >= 60) {
+            CurrentWorldTimeMinutes = 0;
+            CurrentWorldTimeHours += 1;
+        }
+        //Minutes are ingame hours;
+        if (CurrentWorldTimeHours >= 24) {
+            CurrentWorldTimeHours = 0;
+            CurrentWorldTimeDays += 1;
         }
 
-        if (phase == 0 && WorldTime >= SettingDayNightCycleLength / 2) {
-            CurrentDaytime = ("Forenoon");
-        }else if (phase == 0 && WorldTime <= SettingDayNightCycleLength / 2) {
+        if (CurrentWorldTimeHours <= 12) {
+            CurrentWorldTimeMinutesCounter += Time.deltaTime;
+        } else {
+            CurrentWorldTimeMinutesCounter -= Time.deltaTime;
+        }
+
+        worldTimeDisp.text = "Time: " + Mathf.Round(CurrentWorldTimeMinutes) + "m " + CurrentWorldTimeHours + "h " + CurrentWorldTimeDays + "d";
+
+        float ConvTime = scale(0F, 781F, 0F, 1F, CurrentWorldTimeMinutesCounter);
+        WorldGlobalLight2D.intensity = ConvTime;
+        Debug.Log(ConvTime);
+
+        if (CurrentWorldTimeHours > 0 && CurrentWorldTimeHours <= 11) {
+            CurrentDaytime = ("Morning");
+        } else if (CurrentWorldTimeHours > 11 && CurrentWorldTimeHours <= 13) {
+            CurrentDaytime = ("Noon");
+        } else if (CurrentWorldTimeHours > 13 && CurrentWorldTimeHours <= 18) {
             CurrentDaytime = ("Afternoon");
-        }else if (phase == 1 && WorldTime >= SettingDayNightCycleLength / 2) {
-            CurrentDaytime = ("Dawn");
-        } else if (phase == 1 && WorldTime <= SettingDayNightCycleLength / 2) {
-            CurrentDaytime = ("Night");
+        } else if (CurrentWorldTimeHours > 18 && CurrentWorldTimeHours <= 24) {
+            CurrentDaytime = ("Evening");
         }
 
+    }
 
-        WorldGlobalLight2D.intensity = Mathf.Clamp(WorldTime / SettingDayNightCycleLength, 0.13f, 1f);
+    public float scale(float OldMin, float OldMax, float NewMin, float NewMax, float OldValue) {
+
+        float OldRange = (OldMax - OldMin);
+        float NewRange = (NewMax - NewMin);
+        float NewValue = (((OldValue - OldMin) * NewRange) / OldRange) + NewMin;
+
+        return (NewValue);
     }
 }
 

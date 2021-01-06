@@ -20,3 +20,27 @@ public class SaveObject{
         public float s_PlayerCoordY;
 
 }
+
+
+[System.Serializable]
+public class JAWGSaveWorldGenData {
+
+    [Header("JAWG - Generate")]
+    public int s_WorldSize;
+    public int s_WorldOffset;
+    public int s_ChunkSize;
+    public int s_WorldSeed;
+    public float s_DayNightCycleLength;
+}
+
+[System.Serializable]
+public class JAWGSaveWorldRuntimeData {
+
+    [Header("JAWG - Runtime")]
+    public bool s_GameRuleDoDayCycle;
+    public float s_CurrentMinutes;
+    public float s_CurrentHours;
+    public float s_CurrentDays;
+    public float s_PlayerCoordX;
+    public float s_PlayerCoordY;
+}

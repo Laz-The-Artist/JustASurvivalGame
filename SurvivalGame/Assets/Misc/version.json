@@ -1,0 +1,13 @@
+{
+  "name": "JASG",
+  "version": {
+    "name": "WorldGenTest - TechDemo 1",
+    "versionNumber": "0.0.0"
+  },
+  "iconURL": "./res/img/game_icon_jasg.png",
+  "previewURL": "./res/img/preview_jasg.png",
+  "descriptionTitle": "Just a survival game",
+  "description": "JASG is a fantasy 8-bit Survival game, within a topdown-perspective world.<br><br>This amazing new experience comes with a lot of exploration, advancing through this mysterious world, achieving magic, defeating bosses, crafting equipment and many more! Have i mentioned that its like 70% procedural?",
+  "downloadURL": "",
+  "color": "#140C1F"
+}
