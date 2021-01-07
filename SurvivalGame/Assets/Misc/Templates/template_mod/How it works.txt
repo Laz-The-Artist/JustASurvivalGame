@@ -3,3 +3,11 @@ like so:
 
 mods/asdasd/mod_asdasd.json
 mods/testmod/mod_testmod.json
+
+
+
+modding biomes is easy; in the biomes_modname.json, you will have to reference your assets and such.
+also the nameing follows the same spirit, like so:
+
+mods/asdasd/biomes_asdasd.json
+mods/testmod/biomes_testmod.json

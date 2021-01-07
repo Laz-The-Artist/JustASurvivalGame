@@ -1,5 +1,6 @@
 {
   "ModName": "You can have anything here, its independent of the filename itself",
   "ModDescription": "Same here. you can have anything here as well",
-  "ModAuthor": "Again, same here. but i prefer the creator's name here"
+  "ModAuthor": "Again, same here. but i prefer the creator's name here",
+  "loadBiomes": true
 }

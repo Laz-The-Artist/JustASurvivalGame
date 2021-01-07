@@ -1,14 +1,14 @@
 {
     "s_BiomesList": [
         {
-            "BiomeName": "Modded1",
+            "BiomeName": "TemplateBiome",
             "BiomeID": 0,
             "Temperature": 0,
             "BiomeColor32": {
-                "r": 183,
+                "r": 0,
                 "g": 0,
                 "b": 0,
-                "a": 0
+                "a": 1
             },
             "SurfaceRuleTiles": [
                 {

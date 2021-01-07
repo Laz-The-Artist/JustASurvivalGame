@@ -68,4 +68,5 @@ public class ModsList {
     public string ModName;
     public string ModDescription;
     public string ModAuthor;
+    public bool loadBiomes;
 }

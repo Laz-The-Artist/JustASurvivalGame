@@ -134,9 +134,9 @@ public class WorldGeneratorV3 : MonoBehaviour {
         }
 
 
-        /*SaveBiomeData.s_BiomesList = BiomesList;
+        SaveBiomeData.s_BiomesList = BiomesListModdable;
        
-        string jsonSaveBiomes = JsonUtility.ToJson(SaveBiomeData, true);
+        /*string jsonSaveBiomes = JsonUtility.ToJson(SaveBiomeData, true);
         File.WriteAllText(ResourceGameLocation + "biomes_0.0.0.json", jsonSaveBiomes);
         Debug.Log("World_Biomes Json Saved Succesfully");*/
 
@@ -646,6 +646,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
             }
         }
 
+        //validating found mods
         LoadedMods = new ModsList[validModsCount];
         ValidModsNames = new string[validModsCount];
         ValidModsLoc = new string[validModsCount];
@@ -661,21 +662,41 @@ public class WorldGeneratorV3 : MonoBehaviour {
             }
         }
 
-
-        //validating found mods
+        //Loading mod_ identifier files
         for (int i = 0; i < ValidModsNames.Length; i++) {
             if (File.Exists(ValidModsLoc[i] + "/mod_" + ValidModsNames[i] + ".json")) {
-                string jsonLoad = File.ReadAllText(ValidModsLoc[i] + "/mod_" + ValidModsNames[i] + ".json");
-                Debug.Log(ValidModsLoc[i] + "/mod_" + ValidModsNames[i] + ".json");
+                string ModjsonLoad = File.ReadAllText(ValidModsLoc[i] + "/mod_" + ValidModsNames[i] + ".json");
                 ModsList tmp_LoadedMods_item;
-                tmp_LoadedMods_item = JsonUtility.FromJson<ModsList>(jsonLoad);
-                LoadedMods[i] = new ModsList();
-                LoadedMods[i].ModName = tmp_LoadedMods_item.ModName;
-                LoadedMods[i].ModDescription = tmp_LoadedMods_item.ModDescription;
-                LoadedMods[i].ModAuthor = tmp_LoadedMods_item.ModAuthor;
-                Debug.Log("mod_" + ValidModsNames[i] + " Json Loaded Succesfully");
+                tmp_LoadedMods_item = JsonUtility.FromJson<ModsList>(ModjsonLoad);
+                if (tmp_LoadedMods_item != null) {
+                    LoadedMods[i] = new ModsList();
+                    LoadedMods[i].ModName = tmp_LoadedMods_item.ModName;
+                    LoadedMods[i].ModDescription = tmp_LoadedMods_item.ModDescription;
+                    LoadedMods[i].ModAuthor = tmp_LoadedMods_item.ModAuthor;
+                    LoadedMods[i].loadBiomes = tmp_LoadedMods_item.loadBiomes;
+                    Debug.Log("mod_" + ValidModsNames[i] + " Json Loaded Succesfully");
+                } else {
+                    Debug.Log("mod_" + ValidModsNames[i] + " Is either corrupted or invalid.");
+                }
             } else {
                 Debug.Log(ValidModsLoc[i] + "/mod_" + ValidModsNames[i] + ".json Does Not Exist");
+            }
+        }
+
+        //Loading mod contetns
+        for (int i = 0; i < LoadedMods.Length; i++) {
+            if (LoadedMods[i].loadBiomes == true) {
+                if (File.Exists(ValidModsLoc[i] + "/biomes_" + ValidModsNames[i] + ".json")) {
+                    string BiomejsonLoad = File.ReadAllText(ValidModsLoc[i] + "/biomes_" + ValidModsNames[i] + ".json");
+                    SaveBiomes tmpBiomesModded;
+                    tmpBiomesModded = JsonUtility.FromJson<SaveBiomes>(BiomejsonLoad);
+                    int previousModdedBiomesArrayLength = BiomesListModdable.Length;
+                    Array.Resize(ref BiomesListModdable, previousModdedBiomesArrayLength + tmpBiomesModded.s_BiomesList.Length);
+                    Array.Copy(tmpBiomesModded.s_BiomesList, 0, BiomesListModdable, previousModdedBiomesArrayLength, tmpBiomesModded.s_BiomesList.Length);
+
+                } else {
+                    Debug.Log(ValidModsLoc[i] + "/biomes_" + ValidModsNames[i] + ".json");
+                }
             }
         }
 
