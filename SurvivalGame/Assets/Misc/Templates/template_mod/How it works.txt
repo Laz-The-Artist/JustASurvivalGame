@@ -1,0 +1,5 @@
+the mod json file itself needs to have the same name as the folder its inside of, except with a mod_ suffix.
+like so:
+
+mods/asdasd/mod_asdasd.json
+mods/testmod/mod_testmod.json

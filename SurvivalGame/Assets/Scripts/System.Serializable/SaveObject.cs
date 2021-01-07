@@ -35,8 +35,9 @@ public class JAWGSaveWorldGenData {
 [System.Serializable]
 public class JAWGSaveWorldRuntimeData {
 
-    [Header("JAWG - Runtime")]
+    public string c_1;
     public bool s_GameRuleDoDayCycle;
+    public string c_2;
     public float s_CurrentMinutes;
     public float s_CurrentHours;
     public float s_CurrentDays;
@@ -62,3 +63,9 @@ public class GameVersion {
     public string color;
 }
 
+[System.Serializable]
+public class ModsList {
+    public string ModName;
+    public string ModDescription;
+    public string ModAuthor;
+}

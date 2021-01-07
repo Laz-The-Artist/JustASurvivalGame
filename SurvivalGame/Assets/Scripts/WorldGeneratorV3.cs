@@ -52,23 +52,27 @@ public class WorldGeneratorV3 : MonoBehaviour {
         public float SettingPerlinScale;
         [Range(0, 1)] public float SettingPerlinMinDivisionValue = 0.55f;
         public WorldBiomes[] BiomesList;
-        public WorldBiomes[] BiomesListModdable;
 
     [Header("Day-Night Cycle Settings")]
         public bool SettingCycleDayNight = true; //this grants the power of ZA WARUDO
         public GameObject WorldGlobalLight;
         UnityEngine.Experimental.Rendering.Universal.Light2D WorldGlobalLight2D;
+        public TextMeshProUGUI worldTimeDisp;
+
+    [Header("World Runtime")]
+        public string CurrentBiomeName;
+        public int CurrentBiomeTemp;
         public float CurrentWorldTimeMinutes;
         [HideInInspector] public float CurrentWorldTimeMinutesCounter;
         [HideInInspector] public float ScaledCurrentWorldTimeMinutesCounter;
         public float CurrentWorldTimeHours;
         public float CurrentWorldTimeDays;
-        public TextMeshProUGUI worldTimeDisp;
         public string CurrentDaytime;
 
-    [Header("World Runtime")]
-        public string CurrentBiomeName;
-        public int CurrentBiomeTemp;
+    [Header("Modded Content")]
+        public ModsList[] LoadedMods;
+        public WorldBiomes[] BiomesListModdable;
+
 
 
     [HideInInspector] public Texture2D gen_VoronoiMap;
@@ -92,6 +96,8 @@ public class WorldGeneratorV3 : MonoBehaviour {
     [HideInInspector] public string ResourceGameLocation;
     [HideInInspector] public string[] ModsLoc;
     [HideInInspector] public string[] ModsNames;
+    [HideInInspector] public string[] ValidModsNames;
+    [HideInInspector] public string[] ValidModsLoc;
     [HideInInspector] public string GameModsLocation;
 
 
@@ -128,16 +134,17 @@ public class WorldGeneratorV3 : MonoBehaviour {
         }
 
 
-        SaveBiomeData.s_BiomesList = BiomesList;
-
+        /*SaveBiomeData.s_BiomesList = BiomesList;
+       
         string jsonSaveBiomes = JsonUtility.ToJson(SaveBiomeData, true);
         File.WriteAllText(ResourceGameLocation + "biomes_0.0.0.json", jsonSaveBiomes);
-        Debug.Log("World_Biomes Json Saved Succesfully");
+        Debug.Log("World_Biomes Json Saved Succesfully");*/
 
         LoadModdables();
     }
 
     void Start() {
+
         //Initialise the sun 
         WorldGlobalLight2D = WorldGlobalLight.GetComponent<UnityEngine.Experimental.Rendering.Universal.Light2D>();
 
@@ -220,7 +227,6 @@ public class WorldGeneratorV3 : MonoBehaviour {
             CycleDayNight();
         }
     }
-
 
 
     public void GenerateNewWorld() {
@@ -538,6 +544,8 @@ public class WorldGeneratorV3 : MonoBehaviour {
         SaveWorldGenData.s_ChunkSize = SettingChunkSize;
         SaveWorldGenData.s_WorldSeed = WorldSeed;
 
+        SaveWorldRuntimeData.c_1 = "GameRules down below:";
+        SaveWorldRuntimeData.c_2 = "Runtime Data below:";
         SaveWorldRuntimeData.s_CurrentMinutes = CurrentWorldTimeMinutes;
         SaveWorldRuntimeData.s_CurrentHours = CurrentWorldTimeHours;
         SaveWorldRuntimeData.s_CurrentDays = CurrentWorldTimeDays;
@@ -621,15 +629,56 @@ public class WorldGeneratorV3 : MonoBehaviour {
     }
 
     public void LoadModdables() {
+        //looking for mods in the mods folder at presistentDataPath/mods/
         GameModsLocation = Application.persistentDataPath + "/mods/";
         Array.Clear(ModsLoc, 0, ModsLoc.Length);
         Array.Clear(ModsNames, 0, ModsNames.Length);
         ModsLoc = Directory.GetDirectories(GameModsLocation);
         ModsNames = Directory.GetDirectories(GameModsLocation);
 
+        int validModsCount = 0;
         for (int i = 0; i < ModsLoc.Length; i++) {
             ModsNames[i] = ModsLoc[i].Replace(GameModsLocation, "");
+            if (File.Exists(ModsLoc[i] + "/mod_" + ModsNames[i] + ".json")) {
+                validModsCount += 1;
+            } else {
+                ModsNames[i] = "mod_ contents not found!";
+            }
         }
+
+        LoadedMods = new ModsList[validModsCount];
+        ValidModsNames = new string[validModsCount];
+        ValidModsLoc = new string[validModsCount];
+
+        for (int i = 0; i < ModsNames.Length; i++) {
+            int index = Array.IndexOf(ValidModsNames, null);
+            if (index != -1) {
+                if (ModsNames[i] != "mod_ contents not found!") {
+                    ValidModsNames[index] = ModsNames[i];
+                    ValidModsLoc[index] = ModsLoc[i];
+                    Debug.Log(ValidModsLoc[index] +"/mod_"+ ValidModsNames[index]+".json");
+                }
+            }
+        }
+
+
+        //validating found mods
+        for (int i = 0; i < ValidModsNames.Length; i++) {
+            if (File.Exists(ValidModsLoc[i] + "/mod_" + ValidModsNames[i] + ".json")) {
+                string jsonLoad = File.ReadAllText(ValidModsLoc[i] + "/mod_" + ValidModsNames[i] + ".json");
+                Debug.Log(ValidModsLoc[i] + "/mod_" + ValidModsNames[i] + ".json");
+                ModsList tmp_LoadedMods_item;
+                tmp_LoadedMods_item = JsonUtility.FromJson<ModsList>(jsonLoad);
+                LoadedMods[i] = new ModsList();
+                LoadedMods[i].ModName = tmp_LoadedMods_item.ModName;
+                LoadedMods[i].ModDescription = tmp_LoadedMods_item.ModDescription;
+                LoadedMods[i].ModAuthor = tmp_LoadedMods_item.ModAuthor;
+                Debug.Log("mod_" + ValidModsNames[i] + " Json Loaded Succesfully");
+            } else {
+                Debug.Log(ValidModsLoc[i] + "/mod_" + ValidModsNames[i] + ".json Does Not Exist");
+            }
+        }
+
     }
 
     //Post-init and and Runtime functions
@@ -759,6 +808,8 @@ public class WorldGeneratorV3 : MonoBehaviour {
     }
 
     public void RuntimeSaveWorld() {
+        SaveWorldRuntimeData.c_1 = "GameRules down below:";
+        SaveWorldRuntimeData.c_2 = "Runtime Data below:";
         SaveWorldRuntimeData.s_CurrentMinutes = CurrentWorldTimeMinutes;
         SaveWorldRuntimeData.s_CurrentHours = CurrentWorldTimeHours;
         SaveWorldRuntimeData.s_CurrentDays = CurrentWorldTimeDays;
@@ -791,6 +842,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
         return (NewValue);
     }
 }
+
 
 
 
