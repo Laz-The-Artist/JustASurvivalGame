@@ -5,6 +5,7 @@ public class PlayerController : MonoBehaviour {
         public float MovementSpeed = 5f;
         public Rigidbody2D rb2D;
         public int PlayerTemp;
+        public GameObject EscapeMenu;
     [Header("Animation Settings")]
         public Animator PlayerAnimator;
     [Space]
@@ -23,6 +24,9 @@ public class PlayerController : MonoBehaviour {
         if (WorldGenScript.IsWorldComplete) {
             Movement.x = Input.GetAxisRaw("Horizontal");
             Movement.y = Input.GetAxisRaw("Vertical");
+            if (Input.GetKeyDown("escape")) {
+                EscapeMenu.SetActive(!EscapeMenu.activeSelf);
+            }
         }
 
         //Calc player temp and effects related
