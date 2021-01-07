@@ -26,8 +26,19 @@ public class GlobalVariableHandler : MonoBehaviour {
     [HideInInspector] public string[] WorldsLoc;
     [HideInInspector] public string[] WorldsNames;
     [HideInInspector] public string WorldSavesLocation;
+    string ResourceGameLocation;
 
     private void Awake() {
+        ResourceGameLocation = Directory.GetCurrentDirectory() + "/GameResources/";
+        if (!Directory.Exists(Application.persistentDataPath + "/saves/")) {
+            Directory.CreateDirectory(Application.persistentDataPath + "/");
+        }
+        if (!Directory.Exists(Application.persistentDataPath + "/mods/")) {
+            Directory.CreateDirectory(Application.persistentDataPath + "/");
+        }
+        if (!Directory.Exists(ResourceGameLocation)) {
+            Directory.CreateDirectory(ResourceGameLocation);
+        }
         DontDestroyOnLoad(gameObject);
     }
 
@@ -42,7 +53,7 @@ public class GlobalVariableHandler : MonoBehaviour {
     }
 
     public void CheckWorldFolder() {
-        WorldSavesLocation = Application.persistentDataPath + "/";
+        WorldSavesLocation = Application.persistentDataPath + "/saves/";
         Array.Clear(WorldsLoc, 0, WorldsLoc.Length);
         Array.Clear(WorldsNames, 0, WorldsNames.Length);
         WorldsLoc = Directory.GetDirectories(WorldSavesLocation);

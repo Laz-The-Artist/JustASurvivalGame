@@ -43,3 +43,22 @@ public class JAWGSaveWorldRuntimeData {
     public float s_PlayerCoordX;
     public float s_PlayerCoordY;
 }
+
+[System.Serializable]
+public class SaveBiomes {
+    public WorldBiomes[] s_BiomesList;
+}
+
+
+[System.Serializable]
+public class GameVersion {
+    public string name;
+    public string[] version;
+    public string iconURL;
+    public string previewURL;
+    public string descriptionTitle;
+    public string description;
+    public string downloadURL;
+    public string color;
+}
+

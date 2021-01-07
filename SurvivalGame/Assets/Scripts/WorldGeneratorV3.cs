@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using System.IO;
 using System.Linq;
 using UnityEngine;
@@ -51,6 +52,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
         public float SettingPerlinScale;
         [Range(0, 1)] public float SettingPerlinMinDivisionValue = 0.55f;
         public WorldBiomes[] BiomesList;
+        public WorldBiomes[] BiomesListModdable;
 
     [Header("Day-Night Cycle Settings")]
         public bool SettingCycleDayNight = true; //this grants the power of ZA WARUDO
@@ -83,9 +85,14 @@ public class WorldGeneratorV3 : MonoBehaviour {
 
 
     //SaveClasses
-    [HideInInspector] public SaveObject SaveObj;
     [HideInInspector] public JAWGSaveWorldGenData SaveWorldGenData;
     [HideInInspector] public JAWGSaveWorldRuntimeData SaveWorldRuntimeData;
+    [HideInInspector] public SaveBiomes SaveBiomeData;
+
+    [HideInInspector] public string ResourceGameLocation;
+    [HideInInspector] public string[] ModsLoc;
+    [HideInInspector] public string[] ModsNames;
+    [HideInInspector] public string GameModsLocation;
 
 
     int WorldSizeX;
@@ -109,6 +116,25 @@ public class WorldGeneratorV3 : MonoBehaviour {
 
     //Where it all begins
     private void Awake() {
+        ResourceGameLocation = Directory.GetCurrentDirectory() + "/GameResources/";
+        if (!Directory.Exists(Application.persistentDataPath + "/saves/")) {
+            Directory.CreateDirectory(Application.persistentDataPath + "/");
+        }
+        if (!Directory.Exists(Application.persistentDataPath + "/mods/")) {
+            Directory.CreateDirectory(Application.persistentDataPath + "/");
+        }
+        if (!Directory.Exists(ResourceGameLocation)) {
+            Directory.CreateDirectory(ResourceGameLocation);
+        }
+
+
+        SaveBiomeData.s_BiomesList = BiomesList;
+
+        string jsonSaveBiomes = JsonUtility.ToJson(SaveBiomeData, true);
+        File.WriteAllText(ResourceGameLocation + "biomes_0.0.0.json", jsonSaveBiomes);
+        Debug.Log("World_Biomes Json Saved Succesfully");
+
+        LoadModdables();
     }
 
     void Start() {
@@ -124,17 +150,17 @@ public class WorldGeneratorV3 : MonoBehaviour {
         
         if (LoadExistingWorld) {
             if (ReadStartMenuSettingToGenerate) { SettingWorldName = GVH.LoadworldName; }
-            SettingWorldPath = Application.persistentDataPath + "/" + SettingWorldName + "/";
+            SettingWorldPath = Application.persistentDataPath + "/saves/" + SettingWorldName + "/";
             WorldMapPath = SettingWorldPath + "/map_" + SettingWorldName + "/";
             WorldDataPath = SettingWorldPath + "/data_" + SettingWorldName + "/";
             LoadWorld();
         } else {
             if (ReadStartMenuSettingToGenerate) { SettingWorldName = GVH.GenworldName; }
-            if (!Directory.Exists(Application.persistentDataPath + "/" + SettingWorldName + "/")) {
-                SettingWorldPath = Application.persistentDataPath + "/" + SettingWorldName + "/";
+            if (!Directory.Exists(Application.persistentDataPath + "/saves/" + SettingWorldName + "/")) {
+                SettingWorldPath = Application.persistentDataPath + "/saves/" + SettingWorldName + "/";
             } else {
                 string time = System.DateTime.Now.ToString("_yyyy.MM.dd_HH.mm.ss");
-                SettingWorldPath = Application.persistentDataPath + "/" + SettingWorldName + time + "/";
+                SettingWorldPath = Application.persistentDataPath + "/saves/" + SettingWorldName + time + "/";
                 SettingWorldName = SettingWorldName + time;
                 Debug.LogWarning("This world location already exists. To prevent overwriting, the current time was added to the world's name: " + SettingWorldName);
             }
@@ -255,7 +281,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
             //Generate the random seed, if its set to generate one
 
             if (GenRandomSeed) {
-                int RandomSeed = Random.Range(0, 100000);
+                int RandomSeed = UnityEngine.Random.Range(0, 100000);
                 WorldSeed = RandomSeed;
             }
 
@@ -512,9 +538,19 @@ public class WorldGeneratorV3 : MonoBehaviour {
         SaveWorldGenData.s_ChunkSize = SettingChunkSize;
         SaveWorldGenData.s_WorldSeed = WorldSeed;
 
-        string jsonSave = JsonUtility.ToJson(SaveObj, true);
-        File.WriteAllText(WorldDataPath + "gen_" + SettingWorldName + ".json", jsonSave);
-        Debug.Log("World_Data Json Saved Succesfully");
+        SaveWorldRuntimeData.s_CurrentMinutes = CurrentWorldTimeMinutes;
+        SaveWorldRuntimeData.s_CurrentHours = CurrentWorldTimeHours;
+        SaveWorldRuntimeData.s_CurrentDays = CurrentWorldTimeDays;
+        SaveWorldRuntimeData.s_GameRuleDoDayCycle = SettingCycleDayNight;
+
+        string jsonSaveGenData = JsonUtility.ToJson(SaveWorldGenData, true);
+        File.WriteAllText(WorldDataPath + "gen_" + SettingWorldName + ".json", jsonSaveGenData);
+        Debug.Log("World_GenData Json Saved Succesfully");
+
+        string jsonSaveRunData = JsonUtility.ToJson(SaveWorldRuntimeData, true);
+        File.WriteAllText(WorldDataPath + "run_" + SettingWorldName + ".json", jsonSaveRunData);
+        Debug.Log("World_RuntimeData Json Saved Succesfully");
+
 
         var bytes_Landmass = map_Landmass.EncodeToPNG();
         var bytes_Biomes = map_Biomes.EncodeToPNG();
@@ -529,13 +565,29 @@ public class WorldGeneratorV3 : MonoBehaviour {
     public void IntLoadWorldData() {
         if (File.Exists(WorldDataPath + "gen_" + SettingWorldName + ".json")) {
             string jsonLoad = File.ReadAllText(WorldDataPath + "gen_" + SettingWorldName + ".json");
-            SaveObj = JsonUtility.FromJson<SaveObject>(jsonLoad);
-            SettingWorldSize = SaveObj.s_WorldSize;
-            SettingWorldOffset = SaveObj.s_WorldOffset;
-            SettingChunkSize = SaveObj.s_ChunkSize;
-            WorldSeed = SaveObj.s_WorldSeed;
-            Player.transform.position = new Vector3(SaveObj.s_PlayerCoordX, SaveObj.s_PlayerCoordY, 0);
-            Debug.Log("World_Data Json Loaded Succesfully");
+            SaveWorldGenData = JsonUtility.FromJson<JAWGSaveWorldGenData>(jsonLoad);
+            SettingWorldSize = SaveWorldGenData.s_WorldSize;
+            SettingWorldOffset = SaveWorldGenData.s_WorldOffset;
+            SettingChunkSize = SaveWorldGenData.s_ChunkSize;
+            WorldSeed = SaveWorldGenData.s_WorldSeed;
+            Debug.Log("World_GenData Json Loaded Succesfully");
+        } else {
+            Debug.LogError("Missing WorldGenData File at: " + WorldDataPath + "gen_" + SettingWorldName + ".json" );
+            Debug.Break();
+        }
+
+        if (File.Exists(WorldDataPath + "run_" + SettingWorldName + ".json")) {
+            string jsonLoad = File.ReadAllText(WorldDataPath + "run_" + SettingWorldName + ".json");
+            SaveWorldRuntimeData = JsonUtility.FromJson<JAWGSaveWorldRuntimeData>(jsonLoad);
+            CurrentWorldTimeMinutes = SaveWorldRuntimeData.s_CurrentMinutes;
+            CurrentWorldTimeHours = SaveWorldRuntimeData.s_CurrentHours;
+            CurrentWorldTimeDays  = SaveWorldRuntimeData.s_CurrentDays;
+            SettingCycleDayNight = SaveWorldRuntimeData.s_GameRuleDoDayCycle;
+            Player.transform.position = new Vector3(SaveWorldRuntimeData.s_PlayerCoordX, SaveWorldRuntimeData.s_PlayerCoordY, 0);
+            Debug.Log("World_RunData Json Loaded Succesfully");
+        } else {
+            Debug.LogError("Missing WorldRuntimeData File at: " + WorldDataPath + "run_" + SettingWorldName + ".json");
+            Debug.Break();
         }
 
         if (File.Exists(WorldMapPath + "map_Landmass.png") && File.Exists(WorldMapPath + "map_Biomes.png") && File.Exists(WorldMapPath + "map_Resources.png")) {
@@ -560,13 +612,27 @@ public class WorldGeneratorV3 : MonoBehaviour {
             map_Resources.filterMode = FilterMode.Point;
 
             Debug.Log("World_Map png Loaded Succesfully");
+        } else {
+            Debug.LogError("Missing WorldGenMap Files at: " + WorldMapPath + "map_Landmass.png" + "\n" + WorldMapPath + "map_Biomes.png" + "\n" + WorldMapPath + "map_Resources.png");
+            Debug.Break();
         }
 
 
     }
 
+    public void LoadModdables() {
+        GameModsLocation = Application.persistentDataPath + "/mods/";
+        Array.Clear(ModsLoc, 0, ModsLoc.Length);
+        Array.Clear(ModsNames, 0, ModsNames.Length);
+        ModsLoc = Directory.GetDirectories(GameModsLocation);
+        ModsNames = Directory.GetDirectories(GameModsLocation);
 
-    //Post-init functions
+        for (int i = 0; i < ModsLoc.Length; i++) {
+            ModsNames[i] = ModsLoc[i].Replace(GameModsLocation, "");
+        }
+    }
+
+    //Post-init and and Runtime functions
     public void LocatePlayer(int CurrentChunkX, int CurrentChunkY) {
 
         PlayerWorldPosX = ((int)Player.transform.position.x);
@@ -645,7 +711,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
     }
 
     GameObject GetResource(int CurrentBiome) {
-        int obj = Random.Range(0, BiomesList[CurrentBiome].SurfaceObjects.Length);
+        int obj = UnityEngine.Random.Range(0, BiomesList[CurrentBiome].SurfaceObjects.Length);
         return BiomesList[CurrentBiome].SurfaceObjects[obj].ResourceObj;
         
     }
@@ -679,7 +745,6 @@ public class WorldGeneratorV3 : MonoBehaviour {
 
         ScaledCurrentWorldTimeMinutesCounter = scale(0F, 781F, 0F, 1F, CurrentWorldTimeMinutesCounter);
         WorldGlobalLight2D.intensity = ScaledCurrentWorldTimeMinutesCounter;
-        Debug.Log(ScaledCurrentWorldTimeMinutesCounter);
 
         if (CurrentWorldTimeHours > 0 && CurrentWorldTimeHours <= 11) {
             CurrentDaytime = ("Morning");
@@ -693,6 +758,30 @@ public class WorldGeneratorV3 : MonoBehaviour {
 
     }
 
+    public void RuntimeSaveWorld() {
+        SaveWorldRuntimeData.s_CurrentMinutes = CurrentWorldTimeMinutes;
+        SaveWorldRuntimeData.s_CurrentHours = CurrentWorldTimeHours;
+        SaveWorldRuntimeData.s_CurrentDays = CurrentWorldTimeDays;
+        SaveWorldRuntimeData.s_GameRuleDoDayCycle = SettingCycleDayNight;
+        SaveWorldRuntimeData.s_PlayerCoordX = PlayerWorldPosX;
+        SaveWorldRuntimeData.s_PlayerCoordY = PlayerWorldPosY;
+
+        string jsonSaveRunData = JsonUtility.ToJson(SaveWorldRuntimeData, true);
+        File.WriteAllText(WorldDataPath + "run_" + SettingWorldName + ".json", jsonSaveRunData);
+        Debug.Log("World_RuntimeData Json Saved Succesfully");
+
+
+        /*var bytes_Landmass = map_Landmass.EncodeToPNG();
+        var bytes_Biomes = map_Biomes.EncodeToPNG();
+        var bytes_Resources = map_Resources.EncodeToPNG();
+
+        File.WriteAllBytes(WorldMapPath + "map_Landmass.png", bytes_Landmass);
+        File.WriteAllBytes(WorldMapPath + "map_Biomes.png", bytes_Biomes);
+        File.WriteAllBytes(WorldMapPath + "map_Resources.png", bytes_Resources);
+        Debug.Log("World_Map png Saved Succesfully");*/
+    }
+
+    //Utility functions
     public float scale(float OldMin, float OldMax, float NewMin, float NewMax, float OldValue) {
 
         float OldRange = (OldMax - OldMin);

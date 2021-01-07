@@ -1,0 +1,91 @@
+{
+    "s_BiomesList": [
+        {
+            "BiomeName": "Alpha Valley",
+            "BiomeID": 0,
+            "Temperature": 22,
+            "BiomeColor32": {
+                "r": 126,
+                "g": 255,
+                "b": 0,
+                "a": 255
+            },
+            "SurfaceRuleTiles": [
+                {
+                    "instanceID": 19870
+                }
+            ],
+            "SurfaceObjects": [
+                {
+                    "ResourceObj": {
+                        "instanceID": 18708
+                    },
+                    "ResourceChance": 50
+                },
+                {
+                    "ResourceObj": {
+                        "instanceID": 18710
+                    },
+                    "ResourceChance": 50
+                },
+                {
+                    "ResourceObj": {
+                        "instanceID": 18706
+                    },
+                    "ResourceChance": 50
+                }
+            ]
+        },
+        {
+            "BiomeName": "Amethist Duskland",
+            "BiomeID": 1,
+            "Temperature": 18,
+            "BiomeColor32": {
+                "r": 169,
+                "g": 0,
+                "b": 255,
+                "a": 255
+            },
+            "SurfaceRuleTiles": [
+                {
+                    "instanceID": 19884
+                }
+            ],
+            "SurfaceObjects": []
+        },
+        {
+            "BiomeName": "Amethist Duskland",
+            "BiomeID": 2,
+            "Temperature": 48,
+            "BiomeColor32": {
+                "r": 255,
+                "g": 0,
+                "b": 23,
+                "a": 255
+            },
+            "SurfaceRuleTiles": [
+                {
+                    "instanceID": 19884
+                }
+            ],
+            "SurfaceObjects": []
+        },
+        {
+            "BiomeName": "Amethist Duskland",
+            "BiomeID": 3,
+            "Temperature": -17,
+            "BiomeColor32": {
+                "r": 0,
+                "g": 255,
+                "b": 255,
+                "a": 255
+            },
+            "SurfaceRuleTiles": [
+                {
+                    "instanceID": 19884
+                }
+            ],
+            "SurfaceObjects": []
+        }
+    ]
+}
