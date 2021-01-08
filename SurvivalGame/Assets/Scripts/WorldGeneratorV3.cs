@@ -282,7 +282,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
             RandomResourcePoints = new int[WorldSizeX, WorldSizeY];
             CellularWorldPoints = new int[WorldSizeX, WorldSizeY];
 
-            centroids = new Vector2Int[BiomesList.Length];
+            centroids = new Vector2Int[BiomesList.Length+BiomesListModdable.Length];
 
             //Generate the random seed, if its set to generate one
 
@@ -429,10 +429,15 @@ public class WorldGeneratorV3 : MonoBehaviour {
     //Voronoi Noise
     public Color32[] GenVoronoiV2() {
         System.Random randChoice = new System.Random(WorldSeed.GetHashCode());
-        Color32[] regions = new Color32[BiomesList.Length];
-        for (int BiomLength = 0; BiomLength < BiomesList.Length; BiomLength++) {
+        Color32[] regions = new Color32[BiomesList.Length + BiomesListModdable.Length + 20];
+        for (int BiomLength = 0; BiomLength < BiomesList.Length + BiomesListModdable.Length; BiomLength++) {
             centroids[BiomLength] = new Vector2Int(randChoice.Next(0, WorldSizeX), randChoice.Next(0, WorldSizeY));
-            regions[BiomLength] = BiomesList[BiomLength].BiomeColor32;
+            if (BiomLength >= BiomesList.Length) {
+                regions[BiomLength] = BiomesListModdable[BiomLength-BiomesList.Length].BiomeColor32;
+            } else {
+                regions[BiomLength] = BiomesList[BiomLength].BiomeColor32;
+            }
+            
         }
         Color32[] PixelColors = new Color32[WorldSizeX * WorldSizeY];
         for (int x = 0; x < WorldSizeX; x++) {
@@ -450,7 +455,9 @@ public class WorldGeneratorV3 : MonoBehaviour {
         int index = 0;
         for (int i = 0; i < centroids.Length; i++) {
             if (Vector2.Distance(PixelPos, centroids[i]) < smallestDst) {
-                smallestDst = Vector2.Distance(PixelPos, centroids[1]);
+                if (i <= centroids.Length) {
+                    smallestDst = Vector2.Distance(PixelPos, centroids[i]);
+                }
                 index = i;
             }
         }
