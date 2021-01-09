@@ -7370,50 +7370,16 @@ MonoBehaviour:
       ResourceChance: 50
     - ResourceObj: {fileID: 3665900552761490882, guid: 6d675521502cfe04e9751d118e59a5f5, type: 3}
       ResourceChance: 50
-  - BiomeName: asd
+  - BiomeName: Amethyst Duskland
     BiomeID: 0
     Temperature: 22
     BiomeColor32:
       serializedVersion: 2
-      rgba: 4278192895
+      rgba: 4294901979
     SurfaceRuleTiles:
-    - {fileID: 11400000, guid: ef0cf0e4939414c438a43b97fb32d481, type: 2}
+    - {fileID: 11400000, guid: 2ff46b7b50da3b84ca6e704761e48a0c, type: 2}
     SurfaceObjects:
     - ResourceObj: {fileID: 8755857540492956850, guid: 277c4e5530f61634aac801d951ea1932, type: 3}
-      ResourceChance: 50
-    - ResourceObj: {fileID: 5953897115521477537, guid: b366dfcd07fe1f744b826b4a1f2713a5, type: 3}
-      ResourceChance: 50
-    - ResourceObj: {fileID: 3665900552761490882, guid: 6d675521502cfe04e9751d118e59a5f5, type: 3}
-      ResourceChance: 50
-  - BiomeName: test
-    BiomeID: 0
-    Temperature: 22
-    BiomeColor32:
-      serializedVersion: 2
-      rgba: 4294924544
-    SurfaceRuleTiles:
-    - {fileID: 11400000, guid: ef0cf0e4939414c438a43b97fb32d481, type: 2}
-    SurfaceObjects:
-    - ResourceObj: {fileID: 8755857540492956850, guid: 277c4e5530f61634aac801d951ea1932, type: 3}
-      ResourceChance: 50
-    - ResourceObj: {fileID: 5953897115521477537, guid: b366dfcd07fe1f744b826b4a1f2713a5, type: 3}
-      ResourceChance: 50
-    - ResourceObj: {fileID: 3665900552761490882, guid: 6d675521502cfe04e9751d118e59a5f5, type: 3}
-      ResourceChance: 50
-  - BiomeName: some
-    BiomeID: 0
-    Temperature: 22
-    BiomeColor32:
-      serializedVersion: 2
-      rgba: 4294311680
-    SurfaceRuleTiles:
-    - {fileID: 11400000, guid: ef0cf0e4939414c438a43b97fb32d481, type: 2}
-    SurfaceObjects:
-    - ResourceObj: {fileID: 8755857540492956850, guid: 277c4e5530f61634aac801d951ea1932, type: 3}
-      ResourceChance: 50
-    - ResourceObj: {fileID: 5953897115521477537, guid: b366dfcd07fe1f744b826b4a1f2713a5, type: 3}
-      ResourceChance: 50
-    - ResourceObj: {fileID: 3665900552761490882, guid: 6d675521502cfe04e9751d118e59a5f5, type: 3}
       ResourceChance: 50
   SettingCycleDayNight: 1
   WorldGlobalLight: {fileID: 1625791557}
@@ -11740,7 +11706,7 @@ Tilemap:
       - {fileID: 3786995188241939477, guid: 625214c0758103f4e81d81694ea91c76, type: 3}
       - {fileID: 2473945965257259777, guid: 625214c0758103f4e81d81694ea91c76, type: 3}
       - {fileID: -5434306751725826435, guid: 625214c0758103f4e81d81694ea91c76, type: 3}
-      m_AnimationSpeed: 5
+      m_AnimationSpeed: 5.0000005
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: 0, y: -1, z: 0}
