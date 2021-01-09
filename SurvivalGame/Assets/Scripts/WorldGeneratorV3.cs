@@ -133,14 +133,17 @@ public class WorldGeneratorV3 : MonoBehaviour {
             Directory.CreateDirectory(ResourceGameLocation);
         }
 
+        /*GameModsLocation = Application.persistentDataPath + "/mods/";
+        TileConstructor test = new TileConstructor{};
+        test.TileContruct = new TileConstructArrayElements[1];
+        test.TileContruct[0] = new TileConstructArrayElements();
+        test.TileContruct[0].ModTileName = "testTileName";
+        test.TileContruct[0].ModTileTextureLocation = "tiles/testTile.png";
 
-        SaveBiomeData.s_BiomesList = BiomesListModdable;
-       
-        /*string jsonSaveBiomes = JsonUtility.ToJson(SaveBiomeData, true);
-        File.WriteAllText(ResourceGameLocation + "biomes_0.0.0.json", jsonSaveBiomes);
-        Debug.Log("World_Biomes Json Saved Succesfully");*/
+        string jsonSaveGenData = JsonUtility.ToJson(test, true);
+        File.WriteAllText(GameModsLocation + "/test.json", jsonSaveGenData);*/
 
-        LoadModdables();
+        //LoadModdables();
     }
 
     void Start() {
@@ -681,6 +684,8 @@ public class WorldGeneratorV3 : MonoBehaviour {
                     LoadedMods[i].ModDescription = tmp_LoadedMods_item.ModDescription;
                     LoadedMods[i].ModAuthor = tmp_LoadedMods_item.ModAuthor;
                     LoadedMods[i].loadBiomes = tmp_LoadedMods_item.loadBiomes;
+                    LoadedMods[i].ModVersion = tmp_LoadedMods_item.ModVersion;
+                    LoadedMods[i].ModGameVersion = tmp_LoadedMods_item.ModGameVersion;
                     Debug.Log("mod_" + ValidModsNames[i] + " Json Loaded Succesfully");
                 } else {
                     Debug.Log("mod_" + ValidModsNames[i] + " Is either corrupted or invalid.");
@@ -691,12 +696,28 @@ public class WorldGeneratorV3 : MonoBehaviour {
         }
 
         //Loading mod contetns
-        for (int i = 0; i < LoadedMods.Length; i++) {
+        for (int i = 0; i < ValidModsNames.Length; i++) {
             if (LoadedMods[i].loadBiomes == true) {
                 if (File.Exists(ValidModsLoc[i] + "/biomes_" + ValidModsNames[i] + ".json")) {
                     string BiomejsonLoad = File.ReadAllText(ValidModsLoc[i] + "/biomes_" + ValidModsNames[i] + ".json");
                     SaveBiomes tmpBiomesModded;
                     tmpBiomesModded = JsonUtility.FromJson<SaveBiomes>(BiomejsonLoad);
+
+                    //Constructing Tiles
+                    if (File.Exists(ValidModsLoc[i] + "/biomes_resources_" + ValidModsNames[i] + "/tile_constructor.json")) {
+                        string TileConstructLoadJson = File.ReadAllText(ValidModsLoc[i] + "/biomes_resources_" + ValidModsNames[i] + "/tile_constructor.json");
+                        TileConstructor TileConstruct;
+                        TileConstruct = JsonUtility.FromJson<TileConstructor>(TileConstructLoadJson);
+                        for (int t = 0; t < TileConstruct.TileContruct.Length; t++) {
+                            if (File.Exists(ValidModsLoc[i] + "/biomes_resources_" + ValidModsNames[i] + "/" + TileConstruct.TileContruct[t].ModTileTextureLocation)) {
+                                for (int biom = 0; biom < tmpBiomesModded.s_BiomesList.Length; biom++) {
+
+                                    //tmpBiomesModded.s_BiomesList[biom].SurfaceRuleTiles[0] = ;
+                                }
+                            }
+                        }
+                    }
+
                     int previousModdedBiomesArrayLength = BiomesListModdable.Length;
                     Array.Resize(ref BiomesListModdable, previousModdedBiomesArrayLength + tmpBiomesModded.s_BiomesList.Length);
                     Array.Copy(tmpBiomesModded.s_BiomesList, 0, BiomesListModdable, previousModdedBiomesArrayLength, tmpBiomesModded.s_BiomesList.Length);
@@ -707,6 +728,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
             }
         }
 
+        
     }
 
     //Post-init and and Runtime functions
@@ -758,7 +780,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
 
                 if (map_Landmass.GetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY) == Color.black) {
                     for (int b = 0; b < BiomesList.Length; b++) {
-                        if (map_Biomes.GetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY) == BiomesList[b].BiomeColor32) {
+                        if (map_Biomes.GetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY) == BiomesList[b].BiomeColor32) { //b <= BiomesList.Length && 
                             //Load Surface
                             GridLandmass.SetTile(new Vector3Int(CoordX, CoordY, 0), BiomesList[b].SurfaceRuleTiles[0]);
                             GridLandmass_.SetTile(new Vector3Int(CoordX, CoordY, 0), WaterTile);
@@ -773,6 +795,23 @@ public class WorldGeneratorV3 : MonoBehaviour {
                                 
                             }
                         }
+                        /*if (b > BiomesList.Length && map_Biomes.GetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY) == BiomesListModdable[b - BiomesList.Length].BiomeColor32) {
+                            //Load Surface modded
+                            if (BiomesListModdable[b - BiomesList.Length].SurfaceRuleTiles[0] != null) {
+                                GridLandmass.SetTile(new Vector3Int(CoordX, CoordY, 0), BiomesListModdable[b - BiomesList.Length].SurfaceRuleTiles[0]);
+                            }
+                            GridLandmass_.SetTile(new Vector3Int(CoordX, CoordY, 0), WaterTile);
+                            GridLandmass__.SetTile(new Vector3Int(CoordX, CoordY, 0), Seafloor);
+                            //Load resources modded
+                            if (map_Resources.GetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY) == Color.red && BiomesListModdable[b - BiomesList.Length].SurfaceObjects.Length != 0) {
+                                GameObject tmpObj = Instantiate(GetResource(b - BiomesList.Length));
+                                tmpObj.name = "" + BiomesListModdable[b - BiomesList.Length].BiomeName + "_" + BiomesListModdable[b - BiomesList.Length].SurfaceObjects[0].ResourceObj.name + "_X" + CoordX + "_Y" + CoordY;
+                                tmpObj.transform.position = new Vector3(CoordX - 0.5f, CoordY - 0.5f, 99);
+                                tmpObj.transform.SetParent(ResourcesLayer.transform);
+                                map_Resources.SetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY, Color.green);
+
+                            }
+                        }*/
                     }
 
                 } else {
