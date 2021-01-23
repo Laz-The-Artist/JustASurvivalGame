@@ -117,6 +117,10 @@ public class WorldGeneratorV3 : MonoBehaviour {
     int PlayerChunkX;
     int PlayerChunkY;
 
+    int chunkCounterX = 0;
+    int chunkCounterY = 0;
+    bool isChunkUnloading = false;
+
     [HideInInspector] public bool IsWorldComplete = false;
 
 
@@ -194,12 +198,14 @@ public class WorldGeneratorV3 : MonoBehaviour {
 
     }
 
-    void FixedUpdate() {
+    void Update() {
 
         LocatePlayer(PlayerWorldPosX, PlayerWorldPosY);
 
         //Chunkloading around the player
-        if (WorldChunks[((SettingWorldSize / SettingChunkSize) / 2) + PlayerChunkX, ((SettingWorldSize / SettingChunkSize) / 2) + PlayerChunkY] == 0) {
+        int tmpval = WorldChunks[((SettingWorldSize / SettingChunkSize) / 2) + PlayerChunkX, ((SettingWorldSize / SettingChunkSize) / 2) + PlayerChunkY];
+        switch (tmpval) {
+            case 0:
             LoadChunk(PlayerChunkX, PlayerChunkY);
             for (int RenderDistanceX = 0; RenderDistanceX < SettingChunkLoadingRadius; RenderDistanceX++) {
                 for (int RenderDistanceY = 0; RenderDistanceY < SettingChunkLoadingRadius; RenderDistanceY++) {
@@ -215,20 +221,33 @@ public class WorldGeneratorV3 : MonoBehaviour {
                     LoadChunk(PlayerChunkX + RenderDistanceX, PlayerChunkY - RenderDistanceY);
                 }
             }
+            break;
         }
 
-        //Unloading chunks
-        //i have no idea how to unload chunks
-        /*foreach (int i in WorldChunks) {
-            if (i == 1 && Vector2Int.Distance(new Vector2Int(PlayerChunkX,PlayerChunkY), i need the coords of i here and it should work) >= SettingChunkUnloadDistance) {
-                UnloadChunk(THE COORD.X of i, THE COORD.Y of i);
+        //Unloading Chunk
+        if (!isChunkUnloading) {
+            chunkCounterX++;
+            if (chunkCounterX >= (WorldSizeX / SettingChunkSize)) {
+                chunkCounterX = 0;
+                chunkCounterY++;
             }
-        }*/
+
+            if (chunkCounterY >= (WorldSizeY / SettingChunkSize)) {
+                chunkCounterY = 0;
+            }
+
+            if (Vector2.Distance(new Vector2(chunkCounterX, chunkCounterY), new Vector2(PlayerChunkX, PlayerChunkY)) >= SettingChunkUnloadDistance && WorldChunks[chunkCounterX, chunkCounterY] == 1) {
+                isChunkUnloading = true;
+                UnloadChunk(chunkCounterX, chunkCounterY);
+            }
+        }
+        
 
         //Day-Night Cycle
         if (SettingCycleDayNight) {
             CycleDayNight();
         }
+
     }
 
 
@@ -833,8 +852,22 @@ public class WorldGeneratorV3 : MonoBehaviour {
     }
 
     public void UnloadChunk(int chunkX, int chunkY) {
-        //Unloading somewhen
-        //Basically setting every tile to null at [chunkX,chunkY]; with the same method used in LoadChunk()
+        for (int iX = 0; iX < SettingChunkSize; iX++) {
+            for (int iY = 0; iY < SettingChunkSize; iY++) {
+
+                int CoordX = (chunkX * SettingChunkSize) + iX;
+                int CoordY = (chunkY * SettingChunkSize) + iY;
+
+                GridLandmass.SetTile(new Vector3Int(CoordX, CoordY, 0), null);
+                GridLandmass_.SetTile(new Vector3Int(CoordX, CoordY, 0), null);
+                GridLandmass__.SetTile(new Vector3Int(CoordX, CoordY, 0), null);
+
+            }
+        }
+        //Mark the chunk as unloaded
+        WorldChunks[chunkX, chunkY] = 0;
+        isChunkUnloading = false;
+        Debug.Log("WorldChunks[" + chunkX + ", " + chunkY + "]");
     }
 
     public void CycleDayNight() {

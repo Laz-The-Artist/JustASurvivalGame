@@ -7332,8 +7332,8 @@ MonoBehaviour:
   ResourcesLayer: {fileID: 1556720384}
   map_display: {fileID: 1926527583}
   ColliderTile: {fileID: 11400000, guid: 36cb73badca3d9844948570e128d56cd, type: 2}
-  SettingWorldName: yesnt
-  LoadExistingWorld: 0
+  SettingWorldName: yesnt_2021.01.15_10.38.10
+  LoadExistingWorld: 1
   ReadStartMenuSettingToGenerate: 0
   GenRandomSeed: 0
   WorldSeed: 35199
@@ -7389,7 +7389,7 @@ MonoBehaviour:
   CurrentWorldTimeMinutes: 0
   CurrentWorldTimeMinutesCounter: 0
   ScaledCurrentWorldTimeMinutesCounter: 0
-  CurrentWorldTimeHours: 6
+  CurrentWorldTimeHours: 8
   CurrentWorldTimeDays: 0
   CurrentDaytime: 
   LoadedMods: []
@@ -11662,7 +11662,7 @@ Tilemap:
       - {fileID: 3786995188241939477, guid: 625214c0758103f4e81d81694ea91c76, type: 3}
       - {fileID: 2473945965257259777, guid: 625214c0758103f4e81d81694ea91c76, type: 3}
       - {fileID: -5434306751725826435, guid: 625214c0758103f4e81d81694ea91c76, type: 3}
-      m_AnimationSpeed: 5
+      m_AnimationSpeed: 5.0000005
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: 4, y: -2, z: 0}
@@ -11706,7 +11706,7 @@ Tilemap:
       - {fileID: 3786995188241939477, guid: 625214c0758103f4e81d81694ea91c76, type: 3}
       - {fileID: 2473945965257259777, guid: 625214c0758103f4e81d81694ea91c76, type: 3}
       - {fileID: -5434306751725826435, guid: 625214c0758103f4e81d81694ea91c76, type: 3}
-      m_AnimationSpeed: 5.0000005
+      m_AnimationSpeed: 5
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: 0, y: -1, z: 0}
