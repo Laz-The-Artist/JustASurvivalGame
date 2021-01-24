@@ -34,7 +34,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
         public int SettingWorldOffset = 0;
         public int SettingChunkSize = 16; //always use a number that is a power of 2; otherwise things WILL go wrong
         [Range(1, 4)] public int SettingChunkLoadingRadius = 2;
-        [Range(4, 8)] public int SettingChunkUnloadDistance = 4;
+        [Range(0, 50)] public float SettingChunkUnloadDistance = 3;
 
     [Header("Cellular Automata Settings")]
         public bool GenCellularMap = true;
@@ -236,7 +236,8 @@ public class WorldGeneratorV3 : MonoBehaviour {
                 chunkCounterY = 0;
             }
 
-            if (Vector2.Distance(new Vector2(chunkCounterX, chunkCounterY), new Vector2(PlayerChunkX, PlayerChunkY)) >= SettingChunkUnloadDistance && WorldChunks[chunkCounterX, chunkCounterY] == 1) {
+            if (WorldChunks[chunkCounterX, chunkCounterY] == 1 && Vector2.Distance(new Vector2(PlayerChunkX + (SettingWorldOffset/SettingChunkSize), PlayerChunkY  + (SettingWorldOffset/SettingChunkSize)),new Vector2(chunkCounterX, chunkCounterY)) > SettingChunkUnloadDistance) {
+                //Debug.Log("disztancia: "+Vector2.Distance(new Vector2(PlayerChunkX + (SettingWorldOffset/SettingChunkSize), PlayerChunkY  + (SettingWorldOffset/SettingChunkSize)),new Vector2(chunkCounterX, chunkCounterY)) +" > " + SettingChunkUnloadDistance);
                 isChunkUnloading = true;
                 UnloadChunk(chunkCounterX, chunkCounterY);
             }
@@ -856,8 +857,8 @@ public class WorldGeneratorV3 : MonoBehaviour {
         for (int iX = 0; iX < SettingChunkSize; iX++) {
             for (int iY = 0; iY < SettingChunkSize; iY++) {
 
-                int CoordX = (chunkX * SettingChunkSize) + iX;
-                int CoordY = (chunkY * SettingChunkSize) + iY;
+                int CoordX = ((chunkX * SettingChunkSize) + iX) - SettingWorldOffset;
+                int CoordY = ((chunkY * SettingChunkSize) + iY) - SettingWorldOffset;
 
                 GridLandmass.SetTile(new Vector3Int(CoordX, CoordY, 0), null);
                 GridLandmass_.SetTile(new Vector3Int(CoordX, CoordY, 0), null);
@@ -869,7 +870,6 @@ public class WorldGeneratorV3 : MonoBehaviour {
         //Mark the chunk as unloaded
         WorldChunks[chunkX, chunkY] = 0;
         isChunkUnloading = false;
-        Debug.Log("unloaded WorldChunks[" + chunkX + ", " + chunkY + "]");
     }
 
     public void CycleDayNight() {

@@ -7346,7 +7346,7 @@ MonoBehaviour:
   SettingWorldOffset: 1024
   SettingChunkSize: 32
   SettingChunkLoadingRadius: 2
-  SettingChunkUnloadDistance: 4
+  SettingChunkUnloadDistance: 3
   GenCellularMap: 1
   CellularSmoothCycles: 3
   CellularFillPercent: 50
@@ -11789,7 +11789,7 @@ Tilemap:
       - {fileID: 3786995188241939477, guid: 625214c0758103f4e81d81694ea91c76, type: 3}
       - {fileID: 2473945965257259777, guid: 625214c0758103f4e81d81694ea91c76, type: 3}
       - {fileID: -5434306751725826435, guid: 625214c0758103f4e81d81694ea91c76, type: 3}
-      m_AnimationSpeed: 5.0000005
+      m_AnimationSpeed: 5
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: -1, y: 0, z: 0}
@@ -11943,7 +11943,7 @@ Tilemap:
       - {fileID: 3786995188241939477, guid: 625214c0758103f4e81d81694ea91c76, type: 3}
       - {fileID: 2473945965257259777, guid: 625214c0758103f4e81d81694ea91c76, type: 3}
       - {fileID: -5434306751725826435, guid: 625214c0758103f4e81d81694ea91c76, type: 3}
-      m_AnimationSpeed: 5
+      m_AnimationSpeed: 5.0000005
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: -3, y: 2, z: 0}
