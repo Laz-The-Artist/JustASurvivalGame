@@ -1,12 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 using TMPro;
+using Debug = UnityEngine.Debug;
 
 public class WorldGeneratorV3 : MonoBehaviour {
     
@@ -194,7 +197,8 @@ public class WorldGeneratorV3 : MonoBehaviour {
         } else {
             CurrentWorldTimeMinutesCounter = (CurrentWorldTimeHours * 60) + CurrentWorldTimeMinutes;
         }
-        
+
+        determineIntSpanwPoint();
 
     }
 
@@ -751,10 +755,29 @@ public class WorldGeneratorV3 : MonoBehaviour {
         
     }
 
+    public void determineIntSpanwPoint() {
+        float dst = (WorldSizeX*WorldSizeY)*10;
+        int smallestdstX = 0;
+        int smallestdstY = 0;
+        for (int spX = 0; spX < WorldSizeX; spX++){
+            for (int spY = 0; spY < WorldSizeY; spY++){
+                if (map_Landmass.GetPixel(spX, spY) == Color.black){
+                    if (Vector2.Distance(new Vector2(spX, spY), new Vector2(SettingWorldOffset, SettingWorldOffset)) < dst){
+                        dst = Vector2.Distance(new Vector2(spX, spY), new  Vector2(SettingWorldOffset, SettingWorldOffset));
+                        smallestdstX = spX;
+                        smallestdstY = spY;
+                    }
+                }
+            }
+        }
+
+        Player.gameObject.transform.position = new Vector3((smallestdstX-SettingWorldOffset)-0.5f, (smallestdstY-SettingWorldOffset)-0.5f);
+    }
+
     //Post-init and and Runtime functions
     public void LocatePlayer(int CurrentChunkX, int CurrentChunkY) {
 
-        PlayerWorldPosX = ((int)Player.transform.position.x);
+        PlayerWorldPosX = (int)Player.transform.position.x;
         PlayerWorldPosY = (int)Player.transform.position.y;
 
         //loacting player
