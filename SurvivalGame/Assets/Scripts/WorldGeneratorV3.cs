@@ -841,8 +841,9 @@ public class WorldGeneratorV3 : MonoBehaviour {
             }
         }
         //Mark the chunk as loaded
-        WorldChunks[((SettingWorldSize / SettingChunkSize) / 2) + PlayerChunkX, ((SettingWorldSize / SettingChunkSize) / 2) + PlayerChunkY] = 1;
-        
+        //WorldChunks[((SettingWorldSize / SettingChunkSize) / 2) + PlayerChunkX, ((SettingWorldSize / SettingChunkSize) / 2) + PlayerChunkY] = 1; //what is this line bruh; there are chunks that gets loaded but wont be marked as loaded WTF
+        WorldChunks[(SettingWorldOffset/SettingChunkSize) + chunkX, (SettingWorldOffset/SettingChunkSize) + chunkY] = 1;
+
     }
 
     GameObject GetResource(int CurrentBiome) {
@@ -860,6 +861,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
 
                 GridLandmass.SetTile(new Vector3Int(CoordX, CoordY, 0), null);
                 GridLandmass_.SetTile(new Vector3Int(CoordX, CoordY, 0), null);
+                GridLandmass_collider.SetTile(new Vector3Int(CoordX, CoordY, 0), null);
                 GridLandmass__.SetTile(new Vector3Int(CoordX, CoordY, 0), null);
 
             }
@@ -867,7 +869,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
         //Mark the chunk as unloaded
         WorldChunks[chunkX, chunkY] = 0;
         isChunkUnloading = false;
-        Debug.Log("WorldChunks[" + chunkX + ", " + chunkY + "]");
+        Debug.Log("unloaded WorldChunks[" + chunkX + ", " + chunkY + "]");
     }
 
     public void CycleDayNight() {
