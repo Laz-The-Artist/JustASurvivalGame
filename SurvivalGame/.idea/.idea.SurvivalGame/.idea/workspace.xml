@@ -67,6 +67,7 @@
       <workItem from="1611520578506" duration="335000" />
       <workItem from="1611520958356" duration="141000" />
       <workItem from="1611521213732" duration="3455000" />
+      <workItem from="1612258159493" duration="3319000" />
     </task>
     <servers />
   </component>
@@ -89,5 +90,24 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Assets/Scripts/WorldGeneratorV3.cs</url>
+          <line>786</line>
+          <properties documentPath="E:\MT\GAME\JASG\JustASurvivalGame\SurvivalGame\Assets\Scripts\WorldGeneratorV3.cs" initialLine="769" containingFunctionPresentation="method 'LocatePlayer'">
+            <startOffsets>
+              <option value="34379" />
+            </startOffsets>
+            <endOffsets>
+              <option value="34380" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

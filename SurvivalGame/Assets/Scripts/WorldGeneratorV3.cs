@@ -1,13 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System;
-using System.Diagnostics;
-using System.Globalization;
+﻿using System;
+using System.Collections;
 using System.IO;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using UnityEngine.UI;
 using TMPro;
 using Debug = UnityEngine.Debug;
 
@@ -63,7 +58,6 @@ public class WorldGeneratorV3 : MonoBehaviour {
         public TextMeshProUGUI worldTimeDisp;
 
     [Header("World Runtime")]
-        public string CurrentBiomeName;
         public int CurrentBiomeTemp;
         public float CurrentWorldTimeMinutes;
         [HideInInspector] public float CurrentWorldTimeMinutesCounter;
@@ -140,16 +134,6 @@ public class WorldGeneratorV3 : MonoBehaviour {
             Directory.CreateDirectory(ResourceGameLocation);
         }
 
-        /*GameModsLocation = Application.persistentDataPath + "/mods/";
-        TileConstructor test = new TileConstructor{};
-        test.TileContruct = new TileConstructArrayElements[1];
-        test.TileContruct[0] = new TileConstructArrayElements();
-        test.TileContruct[0].ModTileName = "testTileName";
-        test.TileContruct[0].ModTileTextureLocation = "tiles/testTile.png";
-
-        string jsonSaveGenData = JsonUtility.ToJson(test, true);
-        File.WriteAllText(GameModsLocation + "/test.json", jsonSaveGenData);*/
-
         //LoadModdables();
     }
 
@@ -207,46 +191,71 @@ public class WorldGeneratorV3 : MonoBehaviour {
         LocatePlayer(PlayerWorldPosX, PlayerWorldPosY);
 
         //Chunkloading around the player
-        int tmpval = WorldChunks[((SettingWorldSize / SettingChunkSize) / 2) + PlayerChunkX, ((SettingWorldSize / SettingChunkSize) / 2) + PlayerChunkY];
-        switch (tmpval) {
+        int tmpval = WorldChunks[((SettingWorldSize / SettingChunkSize) / 2) + PlayerChunkX, (((SettingWorldSize / SettingChunkSize) / 2) + PlayerChunkY)];
+        int tmpvalUP = WorldChunks[((SettingWorldSize / SettingChunkSize) / 2) + PlayerChunkX, (((SettingWorldSize / SettingChunkSize) / 2) + PlayerChunkY)+1];
+        int tmpvalDOWN = WorldChunks[((SettingWorldSize / SettingChunkSize) / 2) + PlayerChunkX, (((SettingWorldSize / SettingChunkSize) / 2) + PlayerChunkY)-1];
+        int tmpvalRIGHT = WorldChunks[(((SettingWorldSize / SettingChunkSize) / 2) + PlayerChunkX)+1, (((SettingWorldSize / SettingChunkSize) / 2) + PlayerChunkY)];
+        int tmpvalLEFT = WorldChunks[(((SettingWorldSize / SettingChunkSize) / 2) + PlayerChunkX)-1, (((SettingWorldSize / SettingChunkSize) / 2) + PlayerChunkY)];
+        
+       /* switch (tmpval) {
             case 0:
             LoadChunk(PlayerChunkX, PlayerChunkY);
             for (int RenderDistanceX = 0; RenderDistanceX < SettingChunkLoadingRadius; RenderDistanceX++) {
                 for (int RenderDistanceY = 0; RenderDistanceY < SettingChunkLoadingRadius; RenderDistanceY++) {
                     //Vertical and horizontal "expansion"
-                    LoadChunk(PlayerChunkX, PlayerChunkY + RenderDistanceY);
-                    LoadChunk(PlayerChunkX, PlayerChunkY - RenderDistanceY);
-                    LoadChunk(PlayerChunkX - RenderDistanceX, PlayerChunkY);
-                    LoadChunk(PlayerChunkX + RenderDistanceX, PlayerChunkY);
+                    StartCoroutine(LoadChunk(PlayerChunkX, PlayerChunkY + RenderDistanceY));
+                    StartCoroutine(LoadChunk(PlayerChunkX, PlayerChunkY - RenderDistanceY));
+                    StartCoroutine(LoadChunk(PlayerChunkX - RenderDistanceX, PlayerChunkY));
+                    StartCoroutine(LoadChunk(PlayerChunkX + RenderDistanceX, PlayerChunkY));
                     //Diagonal "expansion"
-                    LoadChunk(PlayerChunkX + RenderDistanceX, PlayerChunkY + RenderDistanceY);
-                    LoadChunk(PlayerChunkX - RenderDistanceX, PlayerChunkY - RenderDistanceY);
-                    LoadChunk(PlayerChunkX - RenderDistanceX, PlayerChunkY + RenderDistanceY);
-                    LoadChunk(PlayerChunkX + RenderDistanceX, PlayerChunkY - RenderDistanceY);
+                    StartCoroutine(LoadChunk(PlayerChunkX + RenderDistanceX, PlayerChunkY + RenderDistanceY));
+                    StartCoroutine(LoadChunk(PlayerChunkX - RenderDistanceX, PlayerChunkY - RenderDistanceY));
+                    StartCoroutine(LoadChunk(PlayerChunkX - RenderDistanceX, PlayerChunkY + RenderDistanceY));
+                    StartCoroutine(LoadChunk(PlayerChunkX + RenderDistanceX, PlayerChunkY - RenderDistanceY));
                 }
             }
             break;
-        }
+        }*/
+
+        if (tmpval == 0 || tmpvalUP == 0 || tmpvalDOWN == 0 || tmpvalRIGHT == 0 || tmpvalLEFT == 0) {
+            LoadChunk(PlayerChunkX, PlayerChunkY);
+            for (int RenderDistanceX = 0; RenderDistanceX < SettingChunkLoadingRadius; RenderDistanceX++) {
+                for (int RenderDistanceY = 0; RenderDistanceY < SettingChunkLoadingRadius; RenderDistanceY++) {
+                    //Vertical and horizontal "expansion"
+                    StartCoroutine(LoadChunk(PlayerChunkX, PlayerChunkY + RenderDistanceY));
+                    StartCoroutine(LoadChunk(PlayerChunkX, PlayerChunkY - RenderDistanceY));
+                    StartCoroutine(LoadChunk(PlayerChunkX - RenderDistanceX, PlayerChunkY));
+                    StartCoroutine(LoadChunk(PlayerChunkX + RenderDistanceX, PlayerChunkY));
+                    //Diagonal "expansion"
+                    StartCoroutine(LoadChunk(PlayerChunkX + RenderDistanceX, PlayerChunkY + RenderDistanceY));
+                    StartCoroutine(LoadChunk(PlayerChunkX - RenderDistanceX, PlayerChunkY - RenderDistanceY));
+                    StartCoroutine(LoadChunk(PlayerChunkX - RenderDistanceX, PlayerChunkY + RenderDistanceY));
+                    StartCoroutine(LoadChunk(PlayerChunkX + RenderDistanceX, PlayerChunkY - RenderDistanceY));
+                }
+            }
+        };
 
         //Unloading Chunk
-        if (!isChunkUnloading) {
-            chunkCounterX++;
-            if (chunkCounterX >= (WorldSizeX / SettingChunkSize)) {
-                chunkCounterX = 0;
-                chunkCounterY++;
-            }
+        switch (isChunkUnloading) {
+            case false:
+                chunkCounterX++;
+                if (chunkCounterX >= (WorldSizeX / SettingChunkSize)) {
+                    chunkCounterX = 0;
+                    chunkCounterY++;
+                }
 
-            if (chunkCounterY >= (WorldSizeY / SettingChunkSize)) {
-                chunkCounterY = 0;
-            }
+                if (chunkCounterY >= (WorldSizeY / SettingChunkSize)) {
+                    chunkCounterY = 0;
+                }
 
-            if (WorldChunks[chunkCounterX, chunkCounterY] == 1 && Vector2.Distance(new Vector2(PlayerChunkX + (SettingWorldOffset/SettingChunkSize), PlayerChunkY  + (SettingWorldOffset/SettingChunkSize)),new Vector2(chunkCounterX, chunkCounterY)) > SettingChunkUnloadDistance) {
-                //Debug.Log("disztancia: "+Vector2.Distance(new Vector2(PlayerChunkX + (SettingWorldOffset/SettingChunkSize), PlayerChunkY  + (SettingWorldOffset/SettingChunkSize)),new Vector2(chunkCounterX, chunkCounterY)) +" > " + SettingChunkUnloadDistance);
-                isChunkUnloading = true;
-                UnloadChunk(chunkCounterX, chunkCounterY);
-            }
+                if (WorldChunks[chunkCounterX, chunkCounterY] == 1 && Vector2.Distance(new Vector2(PlayerChunkX + (SettingWorldOffset/SettingChunkSize), PlayerChunkY  + (SettingWorldOffset/SettingChunkSize)),new Vector2(chunkCounterX, chunkCounterY)) > SettingChunkUnloadDistance) {
+                    //Debug.Log("disztancia: "+Vector2.Distance(new Vector2(PlayerChunkX + (SettingWorldOffset/SettingChunkSize), PlayerChunkY  + (SettingWorldOffset/SettingChunkSize)),new Vector2(chunkCounterX, chunkCounterY)) +" > " + SettingChunkUnloadDistance);
+                    isChunkUnloading = true;
+                    StartCoroutine(UnloadChunk(chunkCounterX, chunkCounterY));
+                }
+                break;
         }
-        
+
 
         //Day-Night Cycle
         if (SettingCycleDayNight) {
@@ -794,7 +803,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
         }
 
         //Locate player's current biome
-        for (int b = 0; b < BiomesList.Length; b++) {
+        /*for (int b = 0; b < BiomesList.Length; b++) {
             if (map_Landmass.GetPixel(PlayerWorldPosX + WorldOffsetX, PlayerWorldPosY + WorldOffsetY) == BiomesList[b].BiomeColor32) {
                 CurrentBiomeName = BiomesList[b].BiomeName;
                 CurrentBiomeTemp = BiomesList[b].Temperature;
@@ -802,7 +811,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
                 CurrentBiomeName = "Ocean";
                 CurrentBiomeTemp = 10;
             }
-        }
+        }*/
 
         //This below basically does the same thing the one above, but it dosent update idk why
         //Im gonna leave it here because i can learn from it.
@@ -814,60 +823,63 @@ public class WorldGeneratorV3 : MonoBehaviour {
          */
     }
 
-    public void LoadChunk(int chunkX, int chunkY) {
-        for (int iX = 0; iX < SettingChunkSize; iX++) {
-            for (int iY = 0; iY < SettingChunkSize; iY++) {
+    public IEnumerator LoadChunk(int chunkX, int chunkY) {
+        if (WorldChunks[(SettingWorldOffset/SettingChunkSize) + chunkX, (SettingWorldOffset/SettingChunkSize) + chunkY] == 0) {
+            for (int iX = 0; iX < SettingChunkSize; iX++) {
+                for (int iY = 0; iY < SettingChunkSize; iY++) {
 
-                int CoordX = (chunkX * SettingChunkSize) + iX;
-                int CoordY = (chunkY * SettingChunkSize) + iY;
+                    int CoordX = (chunkX * SettingChunkSize) + iX;
+                    int CoordY = (chunkY * SettingChunkSize) + iY;
 
-                if (map_Landmass.GetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY) == Color.black) {
-                    for (int b = 0; b < BiomesList.Length; b++) {
-                        if (map_Biomes.GetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY) == BiomesList[b].BiomeColor32) { //b <= BiomesList.Length && 
-                            //Load Surface
-                            GridLandmass.SetTile(new Vector3Int(CoordX, CoordY, 0), BiomesList[b].SurfaceRuleTiles[0]);
-                            GridLandmass_.SetTile(new Vector3Int(CoordX, CoordY, 0), WaterTile);
-                            GridLandmass__.SetTile(new Vector3Int(CoordX, CoordY, 0), Seafloor);
-                            //Load resources
-                            if (map_Resources.GetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY) == Color.red && BiomesList[b].SurfaceObjects.Length != 0) {
-                                GameObject tmpObj = Instantiate(GetResource(b));
-                                tmpObj.name = "" + BiomesList[b].BiomeName + "_" + BiomesList[b].SurfaceObjects[0].ResourceObj.name + "_X" + CoordX + "_Y" + CoordY;
-                                tmpObj.transform.position = new Vector3(CoordX - 0.5f, CoordY - 0.5f, 99);
-                                tmpObj.transform.SetParent(ResourcesLayer.transform);
-                                map_Resources.SetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY, Color.green);
-                                
+                    if (map_Landmass.GetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY) == Color.black) {
+                        for (int b = 0; b < BiomesList.Length; b++) {
+                            if (map_Biomes.GetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY) == BiomesList[b].BiomeColor32) { //b <= BiomesList.Length && 
+                                //Load Surface
+                                GridLandmass.SetTile(new Vector3Int(CoordX, CoordY, 0), BiomesList[b].SurfaceRuleTiles[0]);
+                                GridLandmass_.SetTile(new Vector3Int(CoordX, CoordY, 0), WaterTile);
+                                GridLandmass__.SetTile(new Vector3Int(CoordX, CoordY, 0), Seafloor);
+                                //Load resources
+                                if (map_Resources.GetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY) == Color.red && BiomesList[b].SurfaceObjects.Length != 0) {
+                                    GameObject tmpObj = Instantiate(GetResource(b));
+                                    tmpObj.name = "" + BiomesList[b].BiomeName + "_" + BiomesList[b].SurfaceObjects[0].ResourceObj.name + "_X" + CoordX + "_Y" + CoordY;
+                                    tmpObj.transform.position = new Vector3(CoordX - 0.5f, CoordY - 0.5f, 99);
+                                    tmpObj.transform.SetParent(ResourcesLayer.transform);
+                                    map_Resources.SetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY, Color.green);
+                                    
+                                    
+                                }
                             }
+                            /*if (b > BiomesList.Length && map_Biomes.GetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY) == BiomesListModdable[b - BiomesList.Length].BiomeColor32) {
+                                //Load Surface modded
+                                if (BiomesListModdable[b - BiomesList.Length].SurfaceRuleTiles[0] != null) {
+                                    GridLandmass.SetTile(new Vector3Int(CoordX, CoordY, 0), BiomesListModdable[b - BiomesList.Length].SurfaceRuleTiles[0]);
+                                }
+                                GridLandmass_.SetTile(new Vector3Int(CoordX, CoordY, 0), WaterTile);
+                                GridLandmass__.SetTile(new Vector3Int(CoordX, CoordY, 0), Seafloor);
+                                //Load resources modded
+                                if (map_Resources.GetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY) == Color.red && BiomesListModdable[b - BiomesList.Length].SurfaceObjects.Length != 0) {
+                                    GameObject tmpObj = Instantiate(GetResource(b - BiomesList.Length));
+                                    tmpObj.name = "" + BiomesListModdable[b - BiomesList.Length].BiomeName + "_" + BiomesListModdable[b - BiomesList.Length].SurfaceObjects[0].ResourceObj.name + "_X" + CoordX + "_Y" + CoordY;
+                                    tmpObj.transform.position = new Vector3(CoordX - 0.5f, CoordY - 0.5f, 99);
+                                    tmpObj.transform.SetParent(ResourcesLayer.transform);
+                                    map_Resources.SetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY, Color.green);
+
+                                }
+                            }*/
                         }
-                        /*if (b > BiomesList.Length && map_Biomes.GetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY) == BiomesListModdable[b - BiomesList.Length].BiomeColor32) {
-                            //Load Surface modded
-                            if (BiomesListModdable[b - BiomesList.Length].SurfaceRuleTiles[0] != null) {
-                                GridLandmass.SetTile(new Vector3Int(CoordX, CoordY, 0), BiomesListModdable[b - BiomesList.Length].SurfaceRuleTiles[0]);
-                            }
-                            GridLandmass_.SetTile(new Vector3Int(CoordX, CoordY, 0), WaterTile);
-                            GridLandmass__.SetTile(new Vector3Int(CoordX, CoordY, 0), Seafloor);
-                            //Load resources modded
-                            if (map_Resources.GetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY) == Color.red && BiomesListModdable[b - BiomesList.Length].SurfaceObjects.Length != 0) {
-                                GameObject tmpObj = Instantiate(GetResource(b - BiomesList.Length));
-                                tmpObj.name = "" + BiomesListModdable[b - BiomesList.Length].BiomeName + "_" + BiomesListModdable[b - BiomesList.Length].SurfaceObjects[0].ResourceObj.name + "_X" + CoordX + "_Y" + CoordY;
-                                tmpObj.transform.position = new Vector3(CoordX - 0.5f, CoordY - 0.5f, 99);
-                                tmpObj.transform.SetParent(ResourcesLayer.transform);
-                                map_Resources.SetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY, Color.green);
 
-                            }
-                        }*/
+                    } else {
+                        GridLandmass_collider.SetTile(new Vector3Int(CoordX, CoordY, 0), ColliderTile);
+                        GridLandmass_.SetTile(new Vector3Int(CoordX, CoordY, 0), WaterTile);
+                        GridLandmass__.SetTile(new Vector3Int(CoordX, CoordY, 0), Seafloor);
                     }
-
-                } else {
-                    GridLandmass_collider.SetTile(new Vector3Int(CoordX, CoordY, 0), ColliderTile);
-                    GridLandmass_.SetTile(new Vector3Int(CoordX, CoordY, 0), WaterTile);
-                    GridLandmass__.SetTile(new Vector3Int(CoordX, CoordY, 0), Seafloor);
                 }
+                yield return new WaitForEndOfFrame();
             }
-        }
-        //Mark the chunk as loaded
-        //WorldChunks[((SettingWorldSize / SettingChunkSize) / 2) + PlayerChunkX, ((SettingWorldSize / SettingChunkSize) / 2) + PlayerChunkY] = 1; //what is this line bruh; there are chunks that gets loaded but wont be marked as loaded WTF
-        WorldChunks[(SettingWorldOffset/SettingChunkSize) + chunkX, (SettingWorldOffset/SettingChunkSize) + chunkY] = 1;
+            //Mark the chunk as loaded
+            WorldChunks[(SettingWorldOffset/SettingChunkSize) + chunkX, (SettingWorldOffset/SettingChunkSize) + chunkY] = 1;
 
+        }
     }
 
     GameObject GetResource(int CurrentBiome) {
@@ -876,7 +888,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
         
     }
 
-    public void UnloadChunk(int chunkX, int chunkY) {
+    public IEnumerator UnloadChunk(int chunkX, int chunkY) {
         for (int iX = 0; iX < SettingChunkSize; iX++) {
             for (int iY = 0; iY < SettingChunkSize; iY++) {
 
@@ -889,6 +901,8 @@ public class WorldGeneratorV3 : MonoBehaviour {
                 GridLandmass__.SetTile(new Vector3Int(CoordX, CoordY, 0), null);
 
             }
+            
+            yield return new WaitForEndOfFrame();
         }
         //Mark the chunk as unloaded
         WorldChunks[chunkX, chunkY] = 0;

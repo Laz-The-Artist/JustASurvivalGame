@@ -7337,14 +7337,14 @@ MonoBehaviour:
   ResourcesLayer: {fileID: 1556720384}
   map_display: {fileID: 1926527583}
   ColliderTile: {fileID: 11400000, guid: 36cb73badca3d9844948570e128d56cd, type: 2}
-  SettingWorldName: test
-  LoadExistingWorld: 0
+  SettingWorldName: test_2021.02.03_09.26.54
+  LoadExistingWorld: 1
   ReadStartMenuSettingToGenerate: 0
   GenRandomSeed: 1
   WorldSeed: 35199
   SettingWorldSize: 2048
   SettingWorldOffset: 1024
-  SettingChunkSize: 32
+  SettingChunkSize: 16
   SettingChunkLoadingRadius: 2
   SettingChunkUnloadDistance: 3
   GenCellularMap: 1
@@ -7389,7 +7389,6 @@ MonoBehaviour:
   SettingCycleDayNight: 1
   WorldGlobalLight: {fileID: 1625791557}
   worldTimeDisp: {fileID: 651341066}
-  CurrentBiomeName: 
   CurrentBiomeTemp: 0
   CurrentWorldTimeMinutes: 0
   CurrentWorldTimeMinutesCounter: 0
