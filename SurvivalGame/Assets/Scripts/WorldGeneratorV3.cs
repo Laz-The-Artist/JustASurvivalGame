@@ -105,6 +105,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
     int WorldOffsetY;
     int NumberOfWorldChunks;
     private int[,] WorldChunks;
+    int ChunkOffset;
     private int[,] CellularWorldPoints;
     [HideInInspector] public int[,] RandomResourcePoints;
     Vector2Int[] centroids;
@@ -229,8 +230,8 @@ public class WorldGeneratorV3 : MonoBehaviour {
                     chunkCounterY = 0;
                 }
 
-                if (WorldChunks[chunkCounterX, chunkCounterY] == 1 && Vector2.Distance(new Vector2(PlayerChunkX + (SettingWorldOffset/SettingChunkSize), PlayerChunkY  + (SettingWorldOffset/SettingChunkSize)),new Vector2(chunkCounterX, chunkCounterY)) > SettingChunkUnloadDistance) {
-                    //Debug.Log("disztancia: "+Vector2.Distance(new Vector2(PlayerChunkX + (SettingWorldOffset/SettingChunkSize), PlayerChunkY  + (SettingWorldOffset/SettingChunkSize)),new Vector2(chunkCounterX, chunkCounterY)) +" > " + SettingChunkUnloadDistance);
+                if (WorldChunks[chunkCounterX, chunkCounterY] == 1 && Vector2.Distance(new Vector2(PlayerChunkX + ChunkOffset, PlayerChunkY  + ChunkOffset),new Vector2(chunkCounterX, chunkCounterY)) > SettingChunkUnloadDistance) {
+                    //Debug.Log("disztancia: "+Vector2.Distance(new Vector2(PlayerChunkX + ChunkOffset, PlayerChunkY  + ChunkOffset),new Vector2(chunkCounterX, chunkCounterY)) +" > " + SettingChunkUnloadDistance);
                     isChunkUnloading = true;
                     StartCoroutine(UnloadChunk(chunkCounterX, chunkCounterY));
                 }
@@ -529,7 +530,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
                 WorldChunks[chunkX, chunkY] = 0;
 
                 //This down here, it stays. what if i'd need it in the future?
-                /**for (int iX = 0; iX < SettingChunkSize; iX++) {
+                /*for (int iX = 0; iX < SettingChunkSize; iX++) {
                     for (int iY = 0; iY < SettingChunkSize; iY++) {
 
                         //This here generates the whole world
@@ -540,11 +541,13 @@ public class WorldGeneratorV3 : MonoBehaviour {
                             //map_Landmass.SetPixel((chunkX * SettingChunkSize) + iX, (chunkY * SettingChunkSize) + iY, Color.black);
                         }
                     }
-                }**/
+                }*/
 
             }
         }
         Debug.Log("Mapped Chunks");
+
+        ChunkOffset = SettingWorldOffset / SettingChunkSize;
     }
 
     public void GenResources() {
@@ -805,7 +808,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
     }
 
     public IEnumerator LoadChunk(int chunkX, int chunkY) {
-        if (WorldChunks[(SettingWorldOffset/SettingChunkSize) + chunkX, (SettingWorldOffset/SettingChunkSize) + chunkY] == 0) {
+        if (WorldChunks[ChunkOffset + chunkX, ChunkOffset + chunkY] == 0) {
             GameObject biomeContainer = new GameObject("chunkObj_"+ chunkX + "_" +chunkY);
             biomeContainer.transform.position = new Vector3(chunkX, chunkY, 98);
             biomeContainer.transform.SetParent(ResourcesLayer.transform);
@@ -825,12 +828,10 @@ public class WorldGeneratorV3 : MonoBehaviour {
                                 //Load resources
                                 if (map_Resources.GetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY) == Color.red && BiomesList[b].SurfaceObjects.Length != 0) {
                                     GameObject tmpObj = Instantiate(GetResource(b));
-                                    tmpObj.name = "" + BiomesList[b].BiomeName + "_" + BiomesList[b].SurfaceObjects[0].ResourceObj.name + "_X" + CoordX + "_Y" + CoordY;
+                                    tmpObj.name = "" + BiomesList[b].BiomeName + "_" + BiomesList[b].SurfaceObjects[0].ResourceObj.name + "_X" + (CoordX+WorldOffsetX) + "_Y" + (CoordY+WorldOffsetY);
                                     tmpObj.transform.position = new Vector3(CoordX - 0.5f, CoordY - 0.5f, 99);
                                     tmpObj.transform.SetParent(biomeContainer.transform);
                                     map_Resources.SetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY, Color.green);
-                                    
-                                    
                                 }
                             }
                             /*if (b > BiomesList.Length && map_Biomes.GetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY) == BiomesListModdable[b - BiomesList.Length].BiomeColor32) {
@@ -866,15 +867,15 @@ public class WorldGeneratorV3 : MonoBehaviour {
             }
 
             //Mark the chunk as loaded
-            WorldChunks[(SettingWorldOffset/SettingChunkSize) + chunkX, (SettingWorldOffset/SettingChunkSize) + chunkY] = 1;
+            WorldChunks[ChunkOffset + chunkX, ChunkOffset + chunkY] = 1;
 
         }
     }
 
     GameObject GetResource(int CurrentBiome) {
+        
         int obj = UnityEngine.Random.Range(0, BiomesList[CurrentBiome].SurfaceObjects.Length);
         return BiomesList[CurrentBiome].SurfaceObjects[obj].ResourceObj;
-        
     }
 
     public IEnumerator UnloadChunk(int chunkX, int chunkY) {
@@ -888,15 +889,19 @@ public class WorldGeneratorV3 : MonoBehaviour {
                 GridLandmass_.SetTile(new Vector3Int(CoordX, CoordY, 0), null);
                 GridLandmass_collider.SetTile(new Vector3Int(CoordX, CoordY, 0), null);
                 GridLandmass__.SetTile(new Vector3Int(CoordX, CoordY, 0), null);
-
                 
+                Debug.Log(map_Resources.GetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY));
+                if (map_Resources.GetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY) == Color.green) {
+                    map_Resources.SetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY, Color.red);
+                }
+
             }
             
             yield return new WaitForEndOfFrame();
         }
-        Destroy(GameObject.Find("chunkObj_"+ (chunkX-SettingWorldOffset) + "_" + (chunkY-SettingWorldOffset)));
-        Debug.Log("chunkObj_"+ (chunkX-SettingWorldOffset) + "_" + (chunkY-SettingWorldOffset));
-        //Mark the chunk as unloaded
+
+        Destroy(GameObject.Find("chunkObj_" + (chunkX-ChunkOffset) + "_" + (chunkY-ChunkOffset)));
+        
         WorldChunks[chunkX, chunkY] = 0;
         isChunkUnloading = false;
     }
