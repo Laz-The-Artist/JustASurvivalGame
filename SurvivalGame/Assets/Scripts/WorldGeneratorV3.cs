@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.IO;
+using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using TMPro;
@@ -196,26 +197,6 @@ public class WorldGeneratorV3 : MonoBehaviour {
         int tmpvalDOWN = WorldChunks[((SettingWorldSize / SettingChunkSize) / 2) + PlayerChunkX, (((SettingWorldSize / SettingChunkSize) / 2) + PlayerChunkY)-1];
         int tmpvalRIGHT = WorldChunks[(((SettingWorldSize / SettingChunkSize) / 2) + PlayerChunkX)+1, (((SettingWorldSize / SettingChunkSize) / 2) + PlayerChunkY)];
         int tmpvalLEFT = WorldChunks[(((SettingWorldSize / SettingChunkSize) / 2) + PlayerChunkX)-1, (((SettingWorldSize / SettingChunkSize) / 2) + PlayerChunkY)];
-        
-       /* switch (tmpval) {
-            case 0:
-            LoadChunk(PlayerChunkX, PlayerChunkY);
-            for (int RenderDistanceX = 0; RenderDistanceX < SettingChunkLoadingRadius; RenderDistanceX++) {
-                for (int RenderDistanceY = 0; RenderDistanceY < SettingChunkLoadingRadius; RenderDistanceY++) {
-                    //Vertical and horizontal "expansion"
-                    StartCoroutine(LoadChunk(PlayerChunkX, PlayerChunkY + RenderDistanceY));
-                    StartCoroutine(LoadChunk(PlayerChunkX, PlayerChunkY - RenderDistanceY));
-                    StartCoroutine(LoadChunk(PlayerChunkX - RenderDistanceX, PlayerChunkY));
-                    StartCoroutine(LoadChunk(PlayerChunkX + RenderDistanceX, PlayerChunkY));
-                    //Diagonal "expansion"
-                    StartCoroutine(LoadChunk(PlayerChunkX + RenderDistanceX, PlayerChunkY + RenderDistanceY));
-                    StartCoroutine(LoadChunk(PlayerChunkX - RenderDistanceX, PlayerChunkY - RenderDistanceY));
-                    StartCoroutine(LoadChunk(PlayerChunkX - RenderDistanceX, PlayerChunkY + RenderDistanceY));
-                    StartCoroutine(LoadChunk(PlayerChunkX + RenderDistanceX, PlayerChunkY - RenderDistanceY));
-                }
-            }
-            break;
-        }*/
 
         if (tmpval == 0 || tmpvalUP == 0 || tmpvalDOWN == 0 || tmpvalRIGHT == 0 || tmpvalLEFT == 0) {
             LoadChunk(PlayerChunkX, PlayerChunkY);
@@ -825,6 +806,9 @@ public class WorldGeneratorV3 : MonoBehaviour {
 
     public IEnumerator LoadChunk(int chunkX, int chunkY) {
         if (WorldChunks[(SettingWorldOffset/SettingChunkSize) + chunkX, (SettingWorldOffset/SettingChunkSize) + chunkY] == 0) {
+            GameObject biomeContainer = new GameObject("chunkObj_"+ chunkX + "_" +chunkY);
+            biomeContainer.transform.position = new Vector3(chunkX, chunkY, 98);
+            biomeContainer.transform.SetParent(ResourcesLayer.transform);
             for (int iX = 0; iX < SettingChunkSize; iX++) {
                 for (int iY = 0; iY < SettingChunkSize; iY++) {
 
@@ -843,7 +827,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
                                     GameObject tmpObj = Instantiate(GetResource(b));
                                     tmpObj.name = "" + BiomesList[b].BiomeName + "_" + BiomesList[b].SurfaceObjects[0].ResourceObj.name + "_X" + CoordX + "_Y" + CoordY;
                                     tmpObj.transform.position = new Vector3(CoordX - 0.5f, CoordY - 0.5f, 99);
-                                    tmpObj.transform.SetParent(ResourcesLayer.transform);
+                                    tmpObj.transform.SetParent(biomeContainer.transform);
                                     map_Resources.SetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY, Color.green);
                                     
                                     
@@ -876,6 +860,11 @@ public class WorldGeneratorV3 : MonoBehaviour {
                 }
                 yield return new WaitForEndOfFrame();
             }
+
+            if (biomeContainer.transform.childCount <= 0) {
+                Destroy(biomeContainer);
+            }
+
             //Mark the chunk as loaded
             WorldChunks[(SettingWorldOffset/SettingChunkSize) + chunkX, (SettingWorldOffset/SettingChunkSize) + chunkY] = 1;
 
@@ -900,10 +889,13 @@ public class WorldGeneratorV3 : MonoBehaviour {
                 GridLandmass_collider.SetTile(new Vector3Int(CoordX, CoordY, 0), null);
                 GridLandmass__.SetTile(new Vector3Int(CoordX, CoordY, 0), null);
 
+                
             }
             
             yield return new WaitForEndOfFrame();
         }
+        Destroy(GameObject.Find("chunkObj_"+ (chunkX-SettingWorldOffset) + "_" + (chunkY-SettingWorldOffset)));
+        Debug.Log("chunkObj_"+ (chunkX-SettingWorldOffset) + "_" + (chunkY-SettingWorldOffset));
         //Mark the chunk as unloaded
         WorldChunks[chunkX, chunkY] = 0;
         isChunkUnloading = false;
