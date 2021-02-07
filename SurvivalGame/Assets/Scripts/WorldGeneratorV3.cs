@@ -890,7 +890,6 @@ public class WorldGeneratorV3 : MonoBehaviour {
                 GridLandmass_collider.SetTile(new Vector3Int(CoordX, CoordY, 0), null);
                 GridLandmass__.SetTile(new Vector3Int(CoordX, CoordY, 0), null);
                 
-                Debug.Log(map_Resources.GetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY));
                 if (map_Resources.GetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY) == Color.green) {
                     map_Resources.SetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY, Color.red);
                 }
