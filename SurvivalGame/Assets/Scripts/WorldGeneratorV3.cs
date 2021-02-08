@@ -926,9 +926,8 @@ public class WorldGeneratorV3 : MonoBehaviour {
         }
 
         worldTimeDisp.text = "Time: " + Mathf.Round(CurrentWorldTimeMinutes) + "m " + CurrentWorldTimeHours + "h " + CurrentWorldTimeDays + "d";
-
-        ScaledCurrentWorldTimeMinutesCounter = scale(0F, 781F, 0F, 1F, CurrentWorldTimeMinutesCounter);
-        WorldGlobalLight2D.intensity = ScaledCurrentWorldTimeMinutesCounter;
+        
+        WorldGlobalLight2D.intensity = scale(0F, 781F, 0F, 1F, CurrentWorldTimeMinutesCounter);
 
         if (CurrentWorldTimeHours > 0 && CurrentWorldTimeHours <= 11) {
             CurrentDaytime = ("Morning");
