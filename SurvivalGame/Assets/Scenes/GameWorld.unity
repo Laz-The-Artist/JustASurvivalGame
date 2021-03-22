@@ -826,7 +826,7 @@ MonoBehaviour:
   WaterTile: {fileID: 11400000, guid: f0a847b7454a960489989504f4d6f8c8, type: 2}
   SeaFloorTile: {fileID: 11400000, guid: 1c496373609671747a2aceeff62ba340, type: 2}
   WorldName: JsonTestaaaaaa
-  LoadExisting: 0
+  LoadExisting: 1
   GenRandomSeed: 1
   WorldSeed: 39637
   WorldSize: 2048

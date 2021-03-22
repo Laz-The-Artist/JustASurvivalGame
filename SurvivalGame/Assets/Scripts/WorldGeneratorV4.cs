@@ -94,6 +94,9 @@ public class WorldGeneratorV4 : MonoBehaviour {
     int ChunkDOWNright;
     int ChunkDOWNleft;
     
+    bool isChunkUnloading;
+    int chunkCounterX = 0;
+    int chunkCounterY = 0;
     
     
     void Awake() {
@@ -138,9 +141,27 @@ public class WorldGeneratorV4 : MonoBehaviour {
                     LoadChunk(run_PlayerChunkX - 1, run_PlayerChunkY + 1);
                     LoadChunk(run_PlayerChunkX + 1, run_PlayerChunkY - 1);
                 }
-                
+
+                if (!isChunkUnloading) {
+                    chunkCounterX++;
+                    if (chunkCounterX >= ChunkStateGrid.GetUpperBound(0)) {
+                        chunkCounterX = 0;
+                        chunkCounterY++;
+                    }
+
+                    if (chunkCounterY >= ChunkStateGrid.GetUpperBound(1)) {
+                        chunkCounterY = 0;
+                    }
+
+                    if (ChunkStateGrid[chunkCounterX, chunkCounterY] == 2) {
+                        if (Vector2.Distance(new Vector2(run_PlayerChunkX, run_PlayerChunkY), new Vector2(chunkCounterX, chunkCounterY)) > 3) {
+                            isChunkUnloading = true;
+                            UnloadChunk(chunkCounterX, chunkCounterY);
+                        }
+                    }
+                }
+
                 break;
-            
         }
 
     }
@@ -833,6 +854,10 @@ public class WorldGeneratorV4 : MonoBehaviour {
     public void LoadChunk(int ChunkX, int ChunkY) {
         if (ChunkStateGrid[ChunkX, ChunkY] == 0) {
             ChunkStateGrid[ChunkX, ChunkY] = 1;
+            GameObject ChunkObject = new GameObject();
+            ChunkObject.name = "Chunk_" + ChunkX + "_" + ChunkY;
+            ChunkObject.transform.position = new Vector3(ChunkX * ChunkSize, ChunkY * ChunkSize);
+            ChunkObject.transform.SetParent(ChunkResourceHolder.transform);
             
             for (int cX = 0; cX < ChunkSize; cX++) {
                 for (int cY = 0; cY < ChunkSize; cY++) {
@@ -857,7 +882,7 @@ public class WorldGeneratorV4 : MonoBehaviour {
                                 GameObject ResObj = Instantiate(ResourceAssignEntries[a].GameObjResource);
                                 ResObj.name = "" + ResourceAssignEntries[a].GameObjResource.name + "_X" + GridCoordX + "_Y" + GridCoordY;
                                 ResObj.transform.position = new Vector3(TileCoordX-0.5f, TileCoordY-0.5f, 99);
-                                ResObj.transform.SetParent(ChunkResourceHolder.transform);
+                                ResObj.transform.SetParent(ChunkObject.transform);
                             }
                         }
                         
@@ -871,7 +896,38 @@ public class WorldGeneratorV4 : MonoBehaviour {
         }
     }
 
-    
+    public void UnloadChunk(int ChunkX, int ChunkY) {
+        if (ChunkStateGrid[ChunkX, ChunkY] == 2) {
+            ChunkStateGrid[ChunkX, ChunkY] = 1;
+
+            for (int x = 0; x < ChunkSize; x++) {
+                for (int y = 0; y < ChunkSize; y++) {
+                    int GridCoordX = ChunkX * ChunkSize + x;
+                    int GridCoordY = ChunkY * ChunkSize + y;
+                    int TileCoordX = GridCoordX - WorldOffset;
+                    int TileCoordY = GridCoordY - WorldOffset;
+                    
+                    GridLand.SetTile(new Vector3Int(TileCoordX, TileCoordY, 0), null);
+                    GridWater.SetTile(new Vector3Int(TileCoordX, TileCoordY, 0), null);
+                    GridSeafloor.SetTile(new Vector3Int(TileCoordX, TileCoordY, 0), null);
+                    GridWaterCollision.SetTile(new Vector3Int(TileCoordX, TileCoordY, 0), null);
+                    
+                    Destroy(GameObject.Find("Chunk_" + ChunkX + "_" + ChunkY));
+                    
+                }
+            }
+            
+            ChunkStateGrid[ChunkX, ChunkY] = 0;
+        }
+
+        isChunkUnloading = false;
+
+    }
+
+    public void TickWorld() {
+        
+    }
+
     //UTILITY
     public float scale(float MITmin, float MITmax, float MIREmin, float MIREmax, float MIT) {
 
