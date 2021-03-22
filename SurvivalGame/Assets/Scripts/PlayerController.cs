@@ -15,18 +15,14 @@ public class PlayerController : MonoBehaviour {
     Vector2 Movement;
 
     void Start() {
-        WorldGenScript = World.GetComponent<WorldGeneratorV3>();
     }
 
     void Update() {
 
-        //Get Input
-        if (WorldGenScript.IsWorldComplete) {
-            Movement.x = Input.GetAxisRaw("Horizontal");
-            Movement.y = Input.GetAxisRaw("Vertical");
-            if (Input.GetKeyDown("escape")) {
-                EscapeMenu.SetActive(!EscapeMenu.activeSelf);
-            }
+        Movement.x = Input.GetAxisRaw("Horizontal");
+        Movement.y = Input.GetAxisRaw("Vertical");
+        if (Input.GetKeyDown("escape")) {
+            EscapeMenu.SetActive(!EscapeMenu.activeSelf);
         }
 
         //Calc player temp and effects related

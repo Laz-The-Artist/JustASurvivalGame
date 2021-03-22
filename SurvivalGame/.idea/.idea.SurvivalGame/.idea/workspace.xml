@@ -11,12 +11,17 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/System.Serializable/WorldGenSysSerializables.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/WorldGeneratorV3.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
     <changedPaths>
-      <option value="$PROJECT_DIR$/Assets/Scripts/WorldGeneratorV3.cs" />
       <option value="$PROJECT_DIR$/Assets/Scripts/GUIscripts/UIButton.cs" />
+      <option value="$PROJECT_DIR$/Assets/Scripts/System.Serializable/SaveObject.cs" />
+      <option value="$PROJECT_DIR$/Assets/Scripts/PlayerController.cs" />
+      <option value="$PROJECT_DIR$/Assets/Scripts/WorldGeneratorV3.cs" />
+      <option value="$PROJECT_DIR$/Assets/Scripts/System.Serializable/WorldGenSysSerializables.cs" />
+      <option value="$PROJECT_DIR$/Assets/Scripts/WorldGeneratorV4.cs" />
     </changedPaths>
   </component>
   <component name="ProjectId" id="1nWDx5J10XyJGkmpkHjE7POGtHe" />
@@ -34,6 +39,14 @@
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
+    <configuration name="Standalone Player" type="RunUnityExe" factoryName="Unity Executable">
+      <option name="EXE_PATH" value="$PROJECT_DIR$/../../testbuild_windows\JustASurvivalGame.exe" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="E:\MT\GAME\JASG\testbuild_windows" />
+      <option name="PASS_PARENT_ENVS" value="1" />
+      <option name="USE_EXTERNAL_CONSOLE" value="0" />
+      <method v="2" />
+    </configuration>
     <configuration name="Attach to Unity Editor &amp; Play" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="UNITY_ATTACH_AND_PLAY" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost">
       <option name="allowRunningInParallel" value="false" />
       <option name="listenPortForConnections" value="false" />
@@ -73,6 +86,16 @@
       <workItem from="1612513759434" duration="28000" />
       <workItem from="1612529703557" duration="151000" />
       <workItem from="1612693912406" duration="5480000" />
+      <workItem from="1615389805879" duration="586000" />
+      <workItem from="1615578011582" duration="675000" />
+      <workItem from="1615642302375" duration="12556000" />
+      <workItem from="1615716023726" duration="16014000" />
+      <workItem from="1616013361279" duration="1644000" />
+      <workItem from="1616176358142" duration="25190000" />
+      <workItem from="1616236958406" duration="34327000" />
+      <workItem from="1616326545765" duration="923000" />
+      <workItem from="1616407981555" duration="9902000" />
+      <workItem from="1616421643818" duration="5707000" />
     </task>
     <servers />
   </component>
@@ -95,76 +118,5 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Scripts/WorldGeneratorV3.cs</url>
-          <line>657</line>
-          <properties documentPath="E:\MT\GAME\JASG\JustASurvivalGame\SurvivalGame\Assets\Scripts\WorldGeneratorV3.cs" initialLine="673" containingFunctionPresentation="method 'LoadModdables'">
-            <startOffsets>
-              <option value="27228" />
-            </startOffsets>
-            <endOffsets>
-              <option value="27229" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="3" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Scripts/WorldGeneratorV3.cs</url>
-          <line>525</line>
-          <properties documentPath="E:\MT\GAME\JASG\JustASurvivalGame\SurvivalGame\Assets\Scripts\WorldGeneratorV3.cs" initialLine="525" containingFunctionPresentation="method 'MapChunksToWorld'">
-            <startOffsets>
-              <option value="20785" />
-            </startOffsets>
-            <endOffsets>
-              <option value="20786" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="4" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Scripts/WorldGeneratorV3.cs</url>
-          <line>281</line>
-          <properties documentPath="E:\MT\GAME\JASG\JustASurvivalGame\SurvivalGame\Assets\Scripts\WorldGeneratorV3.cs" initialLine="281" containingFunctionPresentation="method 'InitializeWorld'">
-            <startOffsets>
-              <option value="11441" />
-            </startOffsets>
-            <endOffsets>
-              <option value="11442" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Scripts/WorldGeneratorV3.cs</url>
-          <line>190</line>
-          <properties documentPath="E:\MT\GAME\JASG\JustASurvivalGame\SurvivalGame\Assets\Scripts\WorldGeneratorV3.cs" initialLine="190" containingFunctionPresentation="method 'Update'">
-            <startOffsets>
-              <option value="7439" />
-            </startOffsets>
-            <endOffsets>
-              <option value="7440" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="6" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Scripts/WorldGeneratorV3.cs</url>
-          <line>391</line>
-          <properties documentPath="E:\MT\GAME\JASG\JustASurvivalGame\SurvivalGame\Assets\Scripts\WorldGeneratorV3.cs" initialLine="391" containingFunctionPresentation="method 'GettingNeighbors'">
-            <startOffsets>
-              <option value="15999" />
-            </startOffsets>
-            <endOffsets>
-              <option value="16000" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="7" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

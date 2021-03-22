@@ -53,3 +53,10 @@ public class ModsList {
     public bool loadBiomes;
 }
 
+[System.Serializable]
+public class ResourceObject {
+    public int coordX;
+    public int coordY;
+    public int BiomeID;
+    public int SurfaceObjectID;
+}

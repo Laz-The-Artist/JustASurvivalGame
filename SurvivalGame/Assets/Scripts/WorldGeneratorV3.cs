@@ -13,7 +13,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
         GlobalVariableHandler GVH;
     [Header("Worldgen References")]
     [Space]
-    [Header("JAWG - Just A World Engine")]
+    [Header("JAWG - Just A World Engine V3")]
         public GameObject Player;
         public Tilemap GridLandmass;
         public Tilemap GridLandmass_collider;
@@ -89,6 +89,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
     //SaveClasses
     [HideInInspector] public JAWGSaveWorldGenData SaveWorldGenData;
     [HideInInspector] public JAWGSaveWorldRuntimeData SaveWorldRuntimeData;
+    [HideInInspector] public ResourceObject[] SaveResourceObjectsData;
     [HideInInspector] public SaveBiomes SaveBiomeData;
 
     [HideInInspector] public string ResourceGameLocation;
@@ -98,6 +99,9 @@ public class WorldGeneratorV3 : MonoBehaviour {
     [HideInInspector] public string[] ValidModsLoc;
     [HideInInspector] public string GameModsLocation;
 
+    private int[,] WorldResIDK;
+    
+    private GameObject[,] WorldResourcesReadable;
 
     int WorldSizeX;
     int WorldSizeY;
@@ -107,7 +111,6 @@ public class WorldGeneratorV3 : MonoBehaviour {
     private int[,] WorldChunks;
     int ChunkOffset;
     private int[,] CellularWorldPoints;
-    [HideInInspector] public int[,] RandomResourcePoints;
     Vector2Int[] centroids;
     Color Transparent = new Color(0f, 0f, 0f, 0f);
 
@@ -127,10 +130,10 @@ public class WorldGeneratorV3 : MonoBehaviour {
     private void Awake() {
         ResourceGameLocation = Directory.GetCurrentDirectory() + "/GameResources/";
         if (!Directory.Exists(Application.persistentDataPath + "/saves/")) {
-            Directory.CreateDirectory(Application.persistentDataPath + "/");
+            Directory.CreateDirectory(Application.persistentDataPath + "/saves/");
         }
         if (!Directory.Exists(Application.persistentDataPath + "/mods/")) {
-            Directory.CreateDirectory(Application.persistentDataPath + "/");
+            Directory.CreateDirectory(Application.persistentDataPath + "/mods/");
         }
         if (!Directory.Exists(ResourceGameLocation)) {
             Directory.CreateDirectory(ResourceGameLocation);
@@ -189,7 +192,6 @@ public class WorldGeneratorV3 : MonoBehaviour {
     }
 
     void Update() {
-
         LocatePlayer(PlayerWorldPosX, PlayerWorldPosY);
 
         //Chunkloading around the player
@@ -215,7 +217,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
                     StartCoroutine(LoadChunk(PlayerChunkX + RenderDistanceX, PlayerChunkY - RenderDistanceY));
                 }
             }
-        };
+        }
 
         //Unloading Chunk
         switch (isChunkUnloading) {
@@ -243,13 +245,13 @@ public class WorldGeneratorV3 : MonoBehaviour {
         if (SettingCycleDayNight) {
             CycleDayNight();
         }
-
     }
 
 
     public void GenerateNewWorld() {
 
         InitializeWorld(false);
+        
 
         if (GenCellularMap) {
             GenLandmassCellular();
@@ -297,7 +299,6 @@ public class WorldGeneratorV3 : MonoBehaviour {
             Debug.Log(NumberOfWorldChunks + " Chunks will be generated");
             WorldChunks = new int[SettingWorldSize / SettingChunkSize, SettingWorldSize / SettingChunkSize];
 
-            RandomResourcePoints = new int[WorldSizeX, WorldSizeY];
             CellularWorldPoints = new int[WorldSizeX, WorldSizeY];
 
             centroids = new Vector2Int[BiomesList.Length+BiomesListModdable.Length];
@@ -328,7 +329,7 @@ public class WorldGeneratorV3 : MonoBehaviour {
             //Input map_ in the Sprite Renderer; Displaying in-world.
             Sprite maprendersprite = Sprite.Create(map_Biomes, new Rect(0.0f, 0.0f, WorldSizeX, WorldSizeY), new Vector2(0.5f, 0.5f), 100.0f);
             map_display.GetComponent<SpriteRenderer>().sprite = maprendersprite;
-
+            
             Debug.Log("World Initialised succesfully!");
 
         } else if(isLoadingExisting) {
@@ -551,17 +552,51 @@ public class WorldGeneratorV3 : MonoBehaviour {
     }
 
     public void GenResources() {
+        //generate saveable format cuz unity cant make json out of 2d arrays.... bruh
+        int resObjNum = 1;
+        ResourceObject[] ResourceObjectsArray = new ResourceObject[WorldSizeX * WorldSizeY];
         System.Random randChoice = new System.Random(WorldSeed.GetHashCode());
-        for (int x = 0; x < WorldSizeX; x++) {
-            for (int y = 0; y < WorldSizeY; y++) {
-                if (randChoice.Next(0, 1000) < ResourceFillPercent) {
-                    map_Resources.SetPixel(x,y,Color.red);
-                } else {
-                    map_Resources.SetPixel(x, y, Color.white);
+        
+        for (int Sx = 0; Sx < WorldSizeX; Sx++) {
+            for (int Sy = 0; Sy < WorldSizeY; Sy++) {
+                
+                if (randChoice.Next(0, 100) < ResourceFillPercent) {
+                    for (int b = 0; b < BiomesList.Length; b++) {
+                        
+                        if (map_Biomes.GetPixel(Sx, Sy) == BiomesList[b].BiomeColor32) {
+                            int obj = randChoice.Next(0, BiomesList[b].SurfaceObjects.Length);
+                            ResourceObjectsArray[resObjNum] = new ResourceObject();
+                            ResourceObjectsArray[resObjNum].coordX = Sx;
+                            ResourceObjectsArray[resObjNum].coordY = Sx;
+                            ResourceObjectsArray[resObjNum].BiomeID = b;
+                            ResourceObjectsArray[resObjNum].SurfaceObjectID = obj;
+                            resObjNum++;
+                        }
+                        
+                    }
                 }
-
+                
             }
         }
+
+
+        string jsonSaveResourceData = JsonUtility.ToJson(ResourceObjectsArray, true);
+        File.WriteAllText(WorldDataPath + "res_" + SettingWorldName + ".json", jsonSaveResourceData);
+        Debug.Log("World_ResData Json Saved Succesfully");
+
+        //converting saveable format to usable format
+        WorldResourcesReadable = new GameObject[WorldSizeX, WorldSizeY];
+        
+        for (int res = 0; res < ResourceObjectsArray.Length; res++) {
+            GameObject OBJ = BiomesList[ResourceObjectsArray[res].BiomeID].SurfaceObjects[ResourceObjectsArray[res].SurfaceObjectID].ResourceObj;
+            if (OBJ != null) {
+                WorldResourcesReadable[ResourceObjectsArray[res].coordX, ResourceObjectsArray[res].coordY] = OBJ;
+            }
+
+            
+        }
+        
+
     }
 
     public void IntSaveWorldData() {
@@ -589,18 +624,16 @@ public class WorldGeneratorV3 : MonoBehaviour {
 
         var bytes_Landmass = map_Landmass.EncodeToPNG();
         var bytes_Biomes = map_Biomes.EncodeToPNG();
-        var bytes_Resources = map_Resources.EncodeToPNG();
 
         File.WriteAllBytes(WorldMapPath + "map_Landmass.png", bytes_Landmass);
         File.WriteAllBytes(WorldMapPath + "map_Biomes.png", bytes_Biomes);
-        File.WriteAllBytes(WorldMapPath + "map_Resources.png", bytes_Resources);
         Debug.Log("World_Map png Saved Succesfully");
     }
 
     public void IntLoadWorldData() {
         if (File.Exists(WorldDataPath + "gen_" + SettingWorldName + ".json")) {
-            string jsonLoad = File.ReadAllText(WorldDataPath + "gen_" + SettingWorldName + ".json");
-            SaveWorldGenData = JsonUtility.FromJson<JAWGSaveWorldGenData>(jsonLoad);
+            string jsonLoadGen = File.ReadAllText(WorldDataPath + "gen_" + SettingWorldName + ".json");
+            SaveWorldGenData = JsonUtility.FromJson<JAWGSaveWorldGenData>(jsonLoadGen);
             SettingWorldSize = SaveWorldGenData.s_WorldSize;
             SettingWorldOffset = SaveWorldGenData.s_WorldOffset;
             SettingChunkSize = SaveWorldGenData.s_ChunkSize;
@@ -612,8 +645,8 @@ public class WorldGeneratorV3 : MonoBehaviour {
         }
 
         if (File.Exists(WorldDataPath + "run_" + SettingWorldName + ".json")) {
-            string jsonLoad = File.ReadAllText(WorldDataPath + "run_" + SettingWorldName + ".json");
-            SaveWorldRuntimeData = JsonUtility.FromJson<JAWGSaveWorldRuntimeData>(jsonLoad);
+            string jsonLoadRun = File.ReadAllText(WorldDataPath + "run_" + SettingWorldName + ".json");
+            SaveWorldRuntimeData = JsonUtility.FromJson<JAWGSaveWorldRuntimeData>(jsonLoadRun);
             CurrentWorldTimeMinutes = SaveWorldRuntimeData.s_CurrentMinutes;
             CurrentWorldTimeHours = SaveWorldRuntimeData.s_CurrentHours;
             CurrentWorldTimeDays  = SaveWorldRuntimeData.s_CurrentDays;
@@ -624,31 +657,51 @@ public class WorldGeneratorV3 : MonoBehaviour {
             Debug.LogError("Missing WorldRuntimeData File at: " + WorldDataPath + "run_" + SettingWorldName + ".json");
             Debug.Break();
         }
+        
+        if (File.Exists(WorldDataPath + "res_" + SettingWorldName + ".json")) {
+            string jsonLoadRes = File.ReadAllText(WorldDataPath + "res_" + SettingWorldName + ".json");
+            SaveResourceObjectsData = JsonUtility.FromJson<ResourceObject[]>(jsonLoadRes);
+            //Load Saved Data using the Saveable Format
+            ResourceObject[] ResourceObjectsArray = new ResourceObject[SaveResourceObjectsData.Length];
+            for (int res = 0; res < SaveResourceObjectsData.Length; res++) {
+                ResourceObjectsArray[res].coordX = SaveResourceObjectsData[res].coordX;
+                ResourceObjectsArray[res].coordY = SaveResourceObjectsData[res].coordY;
+                ResourceObjectsArray[res].BiomeID = SaveResourceObjectsData[res].BiomeID;
+                ResourceObjectsArray[res].SurfaceObjectID = SaveResourceObjectsData[res].SurfaceObjectID;
+            }
+            
+            //Convert Saveable format to the useable format
+            WorldResourcesReadable = new GameObject[WorldSizeX, WorldSizeY];
+        
+            for (int res = 0; res < ResourceObjectsArray.Length; res++) {
+                WorldResourcesReadable[ResourceObjectsArray[res].coordX, ResourceObjectsArray[res].coordY] = BiomesList[ResourceObjectsArray[res].BiomeID].SurfaceObjects[ResourceObjectsArray[res].SurfaceObjectID].ResourceObj;
+            }
+            
+            Debug.Log("World_ResData Json Loaded Succesfully");
+        } else {
+            Debug.LogError("Missing WorldResourcesData File at: " + WorldDataPath + "res_" + SettingWorldName + ".json");
+            Debug.Break();
+        }
 
-        if (File.Exists(WorldMapPath + "map_Landmass.png") && File.Exists(WorldMapPath + "map_Biomes.png") && File.Exists(WorldMapPath + "map_Resources.png")) {
+        if (File.Exists(WorldMapPath + "map_Landmass.png") && File.Exists(WorldMapPath + "map_Biomes.png")) {
             byte[] bytes_Landmass;
             byte[] bytes_Biomes;
-            byte[] bytes_Resources;
 
             bytes_Landmass = File.ReadAllBytes(WorldMapPath + "map_Landmass.png");
             bytes_Biomes = File.ReadAllBytes(WorldMapPath + "map_Biomes.png");
-            bytes_Resources = File.ReadAllBytes(WorldMapPath + "map_Resources.png");
 
             map_Landmass = new Texture2D(2, 2);
             map_Biomes = new Texture2D(2, 2);
-            map_Resources = new Texture2D(2, 2);
 
             map_Landmass.LoadImage(bytes_Landmass);
             map_Biomes.LoadImage(bytes_Biomes);
-            map_Resources.LoadImage(bytes_Resources);
 
             map_Landmass.filterMode = FilterMode.Point;
             map_Biomes.filterMode = FilterMode.Point;
-            map_Resources.filterMode = FilterMode.Point;
 
             Debug.Log("World_Map png Loaded Succesfully");
         } else {
-            Debug.LogError("Missing WorldGenMap Files at: " + WorldMapPath + "map_Landmass.png" + "\n" + WorldMapPath + "map_Biomes.png" + "\n" + WorldMapPath + "map_Resources.png");
+            Debug.LogError("Missing WorldGenMap Files at: " + WorldMapPath + "map_Landmass.png" + "\n" + WorldMapPath + "map_Biomes.png");
             Debug.Break();
         }
 
@@ -809,9 +862,13 @@ public class WorldGeneratorV3 : MonoBehaviour {
 
     public IEnumerator LoadChunk(int chunkX, int chunkY) {
         if (WorldChunks[ChunkOffset + chunkX, ChunkOffset + chunkY] == 0) {
+            
+            WorldChunks[ChunkOffset + chunkX, ChunkOffset + chunkY] = 3;
+            
             GameObject biomeContainer = new GameObject("chunkObj_"+ chunkX + "_" +chunkY);
             biomeContainer.transform.position = new Vector3(chunkX, chunkY, 98);
             biomeContainer.transform.SetParent(ResourcesLayer.transform);
+            
             for (int iX = 0; iX < SettingChunkSize; iX++) {
                 for (int iY = 0; iY < SettingChunkSize; iY++) {
 
@@ -819,39 +876,25 @@ public class WorldGeneratorV3 : MonoBehaviour {
                     int CoordY = (chunkY * SettingChunkSize) + iY;
 
                     if (map_Landmass.GetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY) == Color.black) {
+                        //Load Surface
                         for (int b = 0; b < BiomesList.Length; b++) {
                             if (map_Biomes.GetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY) == BiomesList[b].BiomeColor32) { //b <= BiomesList.Length && 
-                                //Load Surface
                                 GridLandmass.SetTile(new Vector3Int(CoordX, CoordY, 0), BiomesList[b].SurfaceRuleTiles[0]);
-                                GridLandmass_.SetTile(new Vector3Int(CoordX, CoordY, 0), WaterTile);
-                                GridLandmass__.SetTile(new Vector3Int(CoordX, CoordY, 0), Seafloor);
-                                //Load resources
-                                if (map_Resources.GetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY) == Color.red && BiomesList[b].SurfaceObjects.Length != 0) {
-                                    GameObject tmpObj = Instantiate(GetResource(b));
-                                    tmpObj.name = "" + BiomesList[b].BiomeName + "_" + BiomesList[b].SurfaceObjects[0].ResourceObj.name + "_X" + (CoordX+WorldOffsetX) + "_Y" + (CoordY+WorldOffsetY);
+                                /*int surfobj = WorldResIDK[CoordX + WorldOffsetX, CoordY + WorldOffsetY];
+                                if (BiomesList[b].SurfaceObjects[surfobj] != null ) {
+                                    GameObject tmpObj = Instantiate(WorldResourcesReadable[CoordX + WorldOffsetX, CoordY + WorldOffsetY]);
+                                    tmpObj.name = "" + WorldResourcesReadable[CoordX + WorldOffsetX, CoordY + WorldOffsetY].name + "_X" + (CoordX+WorldOffsetX) + "_Y" + (CoordY+WorldOffsetY);
                                     tmpObj.transform.position = new Vector3(CoordX - 0.5f, CoordY - 0.5f, 99);
                                     tmpObj.transform.SetParent(biomeContainer.transform);
-                                    map_Resources.SetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY, Color.green);
-                                }
+                                }*/
                             }
-                            /*if (b > BiomesList.Length && map_Biomes.GetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY) == BiomesListModdable[b - BiomesList.Length].BiomeColor32) {
-                                //Load Surface modded
-                                if (BiomesListModdable[b - BiomesList.Length].SurfaceRuleTiles[0] != null) {
-                                    GridLandmass.SetTile(new Vector3Int(CoordX, CoordY, 0), BiomesListModdable[b - BiomesList.Length].SurfaceRuleTiles[0]);
-                                }
-                                GridLandmass_.SetTile(new Vector3Int(CoordX, CoordY, 0), WaterTile);
-                                GridLandmass__.SetTile(new Vector3Int(CoordX, CoordY, 0), Seafloor);
-                                //Load resources modded
-                                if (map_Resources.GetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY) == Color.red && BiomesListModdable[b - BiomesList.Length].SurfaceObjects.Length != 0) {
-                                    GameObject tmpObj = Instantiate(GetResource(b - BiomesList.Length));
-                                    tmpObj.name = "" + BiomesListModdable[b - BiomesList.Length].BiomeName + "_" + BiomesListModdable[b - BiomesList.Length].SurfaceObjects[0].ResourceObj.name + "_X" + CoordX + "_Y" + CoordY;
-                                    tmpObj.transform.position = new Vector3(CoordX - 0.5f, CoordY - 0.5f, 99);
-                                    tmpObj.transform.SetParent(ResourcesLayer.transform);
-                                    map_Resources.SetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY, Color.green);
-
-                                }
-                            }*/
                         }
+                        
+                        GridLandmass_.SetTile(new Vector3Int(CoordX, CoordY, 0), WaterTile);
+                        GridLandmass__.SetTile(new Vector3Int(CoordX, CoordY, 0), Seafloor);
+                        
+                        //Load Resources
+                        
 
                     } else {
                         GridLandmass_collider.SetTile(new Vector3Int(CoordX, CoordY, 0), ColliderTile);
@@ -872,12 +915,6 @@ public class WorldGeneratorV3 : MonoBehaviour {
         }
     }
 
-    GameObject GetResource(int CurrentBiome) {
-        
-        int obj = UnityEngine.Random.Range(0, BiomesList[CurrentBiome].SurfaceObjects.Length);
-        return BiomesList[CurrentBiome].SurfaceObjects[obj].ResourceObj;
-    }
-
     public IEnumerator UnloadChunk(int chunkX, int chunkY) {
         for (int iX = 0; iX < SettingChunkSize; iX++) {
             for (int iY = 0; iY < SettingChunkSize; iY++) {
@@ -889,11 +926,6 @@ public class WorldGeneratorV3 : MonoBehaviour {
                 GridLandmass_.SetTile(new Vector3Int(CoordX, CoordY, 0), null);
                 GridLandmass_collider.SetTile(new Vector3Int(CoordX, CoordY, 0), null);
                 GridLandmass__.SetTile(new Vector3Int(CoordX, CoordY, 0), null);
-                
-                if (map_Resources.GetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY) == Color.green) {
-                    map_Resources.SetPixel(CoordX + WorldOffsetX, CoordY + WorldOffsetY, Color.red);
-                }
-
             }
             
             yield return new WaitForEndOfFrame();

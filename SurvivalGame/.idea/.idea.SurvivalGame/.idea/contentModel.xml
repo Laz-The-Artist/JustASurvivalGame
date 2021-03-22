@@ -30,11 +30,13 @@
           <e p="System.Serializable" t="Include">
             <e p="SaveObject.cs" t="Include" />
             <e p="WorldBiomes.cs" t="Include" />
+            <e p="WorldGenSysSerializables.cs" t="Include" />
           </e>
           <e p="TileToColorMapper.cs" t="Include" />
           <e p="UITriggerEvent.cs" t="Include" />
           <e p="WorldGenerator.cs" t="Include" />
           <e p="WorldGeneratorV3.cs" t="Include" />
+          <e p="WorldGeneratorV4.cs" t="Include" />
         </e>
         <e p="TextMesh Pro" t="Include">
           <e p="Examples &amp; Extras" t="Include">
