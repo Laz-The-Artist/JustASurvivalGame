@@ -80,10 +80,10 @@ public class WorldGeneratorV4 : MonoBehaviour {
 
     [HideInInspector] public bool IsWorldComplete = false;
 
-    public int run_PlayerWorldPosX;
-    public int run_PlayerWorldPosY;
-    public int run_PlayerChunkX;
-    public int run_PlayerChunkY;
+    [HideInInspector] public int run_PlayerWorldPosX;
+    [HideInInspector] public int run_PlayerWorldPosY;
+    [HideInInspector] public int run_PlayerChunkX;
+    [HideInInspector] public int run_PlayerChunkY;
 
     int ChunkUP;
     int ChunkDOWN;
@@ -94,9 +94,9 @@ public class WorldGeneratorV4 : MonoBehaviour {
     int ChunkDOWNright;
     int ChunkDOWNleft;
     
-    bool isChunkUnloading;
-    int chunkCounterX = 0;
-    int chunkCounterY = 0;
+    public bool isChunkUnloading;
+    public int chunkCounterX = 0;
+    public int chunkCounterY = 0;
     
     
     void Awake() {
@@ -325,6 +325,10 @@ public class WorldGeneratorV4 : MonoBehaviour {
         MapChunksToWorld();
         
         DetermineIntialPlayerSpanwPoint();
+        
+        GenHeatMap();
+        
+        GenMinimap();
 
         InitSaveWorld();
 
@@ -778,7 +782,36 @@ public class WorldGeneratorV4 : MonoBehaviour {
         
         Player.gameObject.transform.position = new Vector3((ProperSpawnX-WorldOffset)-0.5f, (ProperSpawnY-WorldOffset)-0.5f);
     }
-    
+
+    public void GenHeatMap() {
+        Texture2D BiomeLandmassConbinedMap = new Texture2D(WorldSize,WorldSize);
+
+        for (int x = 0; x < WorldSize; x++) {
+            for (int y = 0; y < WorldSize; y++) {
+                if (LandmassGrid[x, y] == 1) {
+                    Color col = new Color(0f, 0f, 0f);
+                    for (int b = 0; b < WorldBiomes.Length; b++) {
+                        if (BiomesMap.GetPixel(x, y) == WorldBiomes[b].BiomeColor32) {
+                            float val = WorldBiomes[b].Temperature;
+                            col = new Color(val, val, val);
+                        }
+                    }
+                    
+                    BiomeLandmassConbinedMap.SetPixel(x,y,col);
+                }else {
+                    Color col = new Color(17f,17f,17f);
+                    BiomeLandmassConbinedMap.SetPixel(x,y,col);
+                }
+            }
+        }
+        
+        
+    }
+
+    public void GenMinimap() {
+        
+    }
+
     //Saveing and Loading
     public void InitSaveWorld() {
         //WorldInfoData

@@ -825,9 +825,9 @@ MonoBehaviour:
   ColliderTile: {fileID: 11400000, guid: 36cb73badca3d9844948570e128d56cd, type: 2}
   WaterTile: {fileID: 11400000, guid: f0a847b7454a960489989504f4d6f8c8, type: 2}
   SeaFloorTile: {fileID: 11400000, guid: 1c496373609671747a2aceeff62ba340, type: 2}
-  WorldName: JsonTestaaaaaa
-  LoadExisting: 1
-  GenRandomSeed: 1
+  WorldName: NE BIOMES!!!!
+  LoadExisting: 0
+  GenRandomSeed: 0
   WorldSeed: 39637
   WorldSize: 2048
   ChunkSize: 16
@@ -839,7 +839,7 @@ MonoBehaviour:
   CellThreshold: 4
   LandmassPerlinScale: -80
   LandmassPerlinAreaDivision: 0.482
-  DistortionMapMethod: 0
+  DistortionMapMethod: 1
   BiomesPerlinScale: 20
   BiomesPerlinAreaDivision: 0.603
   BiomeDistortionCellThreshold: 4
@@ -852,38 +852,94 @@ MonoBehaviour:
   - EnumResource: 3
     GameObjResource: {fileID: 5953897115521477537, guid: b366dfcd07fe1f744b826b4a1f2713a5, type: 3}
   WorldBiomes:
-  - BiomeName: 
+  - BiomeName: Alpha Valley
     BiomeID: 0
     Temperature: 0
     BiomeColor32:
       serializedVersion: 2
-      rgba: 4278190335
-    BiomeSurfaceRuleTile: {fileID: 11400000, guid: ef0cf0e4939414c438a43b97fb32d481, type: 2}
-    BiomeResourceEntries: 01000000
-  - BiomeName: AlphaValley
-    BiomeID: 0
-    Temperature: 0
-    BiomeColor32:
-      serializedVersion: 2
-      rgba: 4278255360
+      rgba: 4278255409
     BiomeSurfaceRuleTile: {fileID: 11400000, guid: ef0cf0e4939414c438a43b97fb32d481, type: 2}
     BiomeResourceEntries: 010000000200000003000000
-  - BiomeName: AmethystDuskland
+  - BiomeName: Mosaic Oasis
     BiomeID: 0
     Temperature: 0
     BiomeColor32:
       serializedVersion: 2
-      rgba: 4294901916
-    BiomeSurfaceRuleTile: {fileID: 11400000, guid: 2ff46b7b50da3b84ca6e704761e48a0c, type: 2}
+      rgba: 4294508465
+    BiomeSurfaceRuleTile: {fileID: 11400000, guid: eb729895eb0db634d9b967d7d60c89fb, type: 2}
+    BiomeResourceEntries: 
+  - BiomeName: The Canopy
+    BiomeID: 0
+    Temperature: 0
+    BiomeColor32:
+      serializedVersion: 2
+      rgba: 4285147676
+    BiomeSurfaceRuleTile: {fileID: 11400000, guid: 56a97f970f7e9454faa87ea3a70f79d1, type: 2}
+    BiomeResourceEntries: 
+  - BiomeName: Grazenlands
+    BiomeID: 0
+    Temperature: 0
+    BiomeColor32:
+      serializedVersion: 2
+      rgba: 4279479687
+    BiomeSurfaceRuleTile: {fileID: 11400000, guid: ea8ab88d2e4365a4f99251263f19e844, type: 2}
+    BiomeResourceEntries: 
+  - BiomeName: Slough
+    BiomeID: 0
+    Temperature: 0
+    BiomeColor32:
+      serializedVersion: 2
+      rgba: 4281681468
+    BiomeSurfaceRuleTile: {fileID: 11400000, guid: 745e91b1f148d3442899e98d8d586231, type: 2}
+    BiomeResourceEntries: 
+  - BiomeName: Sakura Woods
+    BiomeID: 0
+    Temperature: 0
+    BiomeColor32:
+      serializedVersion: 2
+      rgba: 4291341567
+    BiomeSurfaceRuleTile: {fileID: 11400000, guid: 4a6d04d6d2992c94285722a2424f6312, type: 2}
+    BiomeResourceEntries: 
+  - BiomeName: Fallen Jungle
+    BiomeID: 0
+    Temperature: 0
+    BiomeColor32:
+      serializedVersion: 2
+      rgba: 4282932837
+    BiomeSurfaceRuleTile: {fileID: 11400000, guid: 0f67c3d814e51b94eb29ec7626d68d03, type: 2}
+    BiomeResourceEntries: 
+  - BiomeName: Fir Clearing
+    BiomeID: 0
+    Temperature: 0
+    BiomeColor32:
+      serializedVersion: 2
+      rgba: 4278218496
+    BiomeSurfaceRuleTile: {fileID: 11400000, guid: d75cfb54e48bec34e89381fd6207cac8, type: 2}
+    BiomeResourceEntries: 
+  - BiomeName: LavaLand
+    BiomeID: 0
+    Temperature: 0
+    BiomeColor32:
+      serializedVersion: 2
+      rgba: 4286086793
+    BiomeSurfaceRuleTile: {fileID: 11400000, guid: 152c2448752a0d34eae2ffbbc489f2c3, type: 2}
     BiomeResourceEntries: 02000000
-  - BiomeName: 
+  - BiomeName: Amethyst Duskland
     BiomeID: 0
     Temperature: 0
     BiomeColor32:
       serializedVersion: 2
-      rgba: 4278255615
+      rgba: 4291298199
     BiomeSurfaceRuleTile: {fileID: 11400000, guid: 2ff46b7b50da3b84ca6e704761e48a0c, type: 2}
-    BiomeResourceEntries: 03000000
+    BiomeResourceEntries: 
+  - BiomeName: Hot Springs
+    BiomeID: 0
+    Temperature: 0
+    BiomeColor32:
+      serializedVersion: 2
+      rgba: 4286029776
+    BiomeSurfaceRuleTile: {fileID: 11400000, guid: 6c0ec40b173c7a0478f083cbad79f883, type: 2}
+    BiomeResourceEntries: 
   LandmassCustomMap: {fileID: 0}
   LandmassMap: {fileID: 0}
   BiomesVoronoiMap: {fileID: 0}
@@ -925,6 +981,9 @@ MonoBehaviour:
   run_PlayerWorldPosY: 0
   run_PlayerChunkX: 0
   run_PlayerChunkY: 0
+  isChunkUnloading: 0
+  chunkCounterX: 0
+  chunkCounterY: 0
 --- !u!4 &119601399
 Transform:
   m_ObjectHideFlags: 0
