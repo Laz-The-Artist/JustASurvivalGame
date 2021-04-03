@@ -825,13 +825,13 @@ MonoBehaviour:
   ColliderTile: {fileID: 11400000, guid: 36cb73badca3d9844948570e128d56cd, type: 2}
   WaterTile: {fileID: 11400000, guid: f0a847b7454a960489989504f4d6f8c8, type: 2}
   SeaFloorTile: {fileID: 11400000, guid: 1c496373609671747a2aceeff62ba340, type: 2}
-  WorldName: mapName
+  WorldName: MINIMAPTEST
   LoadExisting: 0
   GenRandomSeed: 0
-  WorldSeed: 492543
+  WorldSeed: 283329
   WorldSize: 2048
   ChunkSize: 16
-  LandmassGenType: 0
+  LandmassGenType: 1
   BiomeGenType: 0
   ResourceFillPercent: 10
   CellSmoothCycles: 40
@@ -962,6 +962,7 @@ MonoBehaviour:
   BiomesPerlinMap: {fileID: 0}
   BiomesMap: {fileID: 0}
   DisplayMap: {fileID: 0}
+  MinimapBackground: {fileID: 0}
   WorldOffset: 0
   GameResourcesFolder: 
   GameModsFolder: 

@@ -65,6 +65,8 @@ public class WorldGeneratorV4 : MonoBehaviour {
     [HideInInspector] public Texture2D BiomesPerlinMap;
     [HideInInspector] public Texture2D BiomesMap;
     [HideInInspector] public Texture2D DisplayMap;
+    
+    [HideInInspector] public Texture2D MinimapBackground;
 
     [HideInInspector] public int WorldOffset;
 
@@ -330,6 +332,8 @@ public class WorldGeneratorV4 : MonoBehaviour {
         
         GenHeatMap();
         
+        
+        //Minimap gen must be the last thing
         GenMinimap();
 
         InitSaveWorld();
@@ -406,20 +410,25 @@ public class WorldGeneratorV4 : MonoBehaviour {
             WorldBiomes[b].BiomeID = b;
         }
 
-        if (File.Exists(WorldMapFolder + "map_landmass.png") && File.Exists(WorldMapFolder + "map_biomes.png")) {
+        if (File.Exists(WorldMapFolder + "map_landmass.png") && File.Exists(WorldMapFolder + "map_biomes.png") && File.Exists(WorldMapFolder + "map_minimap_bg.png")) {
             byte[] bytes_Landmass;
             byte[] bytes_Biomes;
+            byte[] bytes_MinimapBG;
             bytes_Landmass = File.ReadAllBytes(WorldMapFolder + "map_landmass.png");
             bytes_Biomes = File.ReadAllBytes(WorldMapFolder + "map_biomes.png");
+            bytes_MinimapBG = File.ReadAllBytes(WorldMapFolder + "map_minimap_bg.png");
 
             LandmassMap = new Texture2D(2, 2);
             BiomesMap = new Texture2D(2, 2);
+            MinimapBackground = new Texture2D(2, 2);
 
             LandmassMap.LoadImage(bytes_Landmass);
             BiomesMap.LoadImage(bytes_Biomes);
+            MinimapBackground.LoadImage(bytes_MinimapBG);
             
             LandmassMap.filterMode = FilterMode.Point;
             BiomesMap.filterMode = FilterMode.Point;
+            MinimapBackground.filterMode = FilterMode.Point;
 
             for (int x = 0; x < WorldSize; x++) {
                 for (int y = 0; y <WorldSize; y++) {
@@ -431,7 +440,7 @@ public class WorldGeneratorV4 : MonoBehaviour {
                 }
             }
             
-            UIMapDisplay.GetComponent<SpriteRenderer>().sprite = Sprite.Create(BiomesMap, new Rect(0.0f, 0.0f, WorldSize, WorldSize), new Vector2(0.5f, 0.5f), 100.0f);
+            UIMapDisplay.GetComponent<SpriteRenderer>().sprite = Sprite.Create(DisplayMap, new Rect(0.0f, 0.0f, WorldSize, WorldSize), new Vector2(0.5f, 0.5f), 100.0f);
 
             Debug.Log("World Run Json Loaded Successfully!");
         }else {
@@ -832,6 +841,72 @@ public class WorldGeneratorV4 : MonoBehaviour {
 
     public void GenMinimap() {
         
+        MinimapBackground = new Texture2D(WorldSize, WorldSize);
+        Color MAP_background = new Color(243f / 255f, 212f / 255f, 144f / 255f);
+        Color MAP_landmass = new Color(204f / 255f, 173f / 255f, 106f / 255f);
+        Color MAP_landmass_side = new Color(102f / 255f, 81f / 255f, 61f / 255f);
+        Color MAP_landmass_aa = new Color(156f / 255f, 129f / 255f, 89f / 255f);
+
+        for (int x = 0; x < WorldSize; x++) {
+            for (int y = 0; y < WorldSize; y++) {
+                MinimapBackground.SetPixel(x,y, MAP_background);
+            }
+        }
+        
+        for (int x = 0; x < WorldSize; x++) {
+            for (int y = 0; y < WorldSize; y++) {
+                if (LandmassGrid[x, y] == 1) {
+                    MinimapBackground.SetPixel(x,y, MAP_landmass);
+                    if (x > 0 && y > 0 && x < WorldSize-1 && y < WorldSize-1) {
+                        //Sides
+                        if (LandmassGrid[x, y-1] == 0) {
+                            MinimapBackground.SetPixel(x,y-1, MAP_landmass_side);
+                        }
+                        if (y > 1) {
+                            if (LandmassGrid[x, y-2] == 0) {
+                                MinimapBackground.SetPixel(x,y-2, MAP_landmass_side);
+                            }
+                        }
+                        if (LandmassGrid[x, y+1] == 0) {
+                            MinimapBackground.SetPixel(x,y+1, MAP_landmass_side);
+                        }
+                        if (LandmassGrid[x-1, y] == 0) {
+                            MinimapBackground.SetPixel(x-1,y, MAP_landmass_side);
+                        }
+                        if (LandmassGrid[x+1, y] == 0) {
+                            MinimapBackground.SetPixel(x+1,y, MAP_landmass_side);
+                        }
+                        
+                        //AntiAliasing
+                        if (LandmassGrid[x-1,y] == 0 && LandmassGrid[x+1,y] == 1) {
+                            if (LandmassGrid[x,y-1] == 0 && LandmassGrid[x,y+1] == 1) {
+                                MinimapBackground.SetPixel(x,y, MAP_landmass_aa);
+                            }
+                            if (LandmassGrid[x,y+1] == 0 && LandmassGrid[x,y-1] == 1) {
+                                MinimapBackground.SetPixel(x,y, MAP_landmass_aa);
+                            }
+                        }
+                        if (LandmassGrid[x+1,y] == 0 && LandmassGrid[x-1,y] == 1) {
+                            if (LandmassGrid[x,y-1] == 0 && LandmassGrid[x,y+1] == 1) {
+                                MinimapBackground.SetPixel(x,y, MAP_landmass_aa);
+                            }
+                            if (LandmassGrid[x,y+1] == 0 && LandmassGrid[x,y-1] == 1) {
+                                MinimapBackground.SetPixel(x,y, MAP_landmass_aa);
+                            }
+                        }
+                        
+                        
+                    }
+                }
+            }
+        }
+        
+        MinimapBackground.Apply();
+        
+        //Putting it to display
+        DisplayMap.SetPixels(MinimapBackground.GetPixels());
+        DisplayMap.Apply();
+        
     }
 
     //Saveing and Loading
@@ -885,9 +960,11 @@ public class WorldGeneratorV4 : MonoBehaviour {
 
         var bytes_Landmass = LandmassMap.EncodeToPNG();
         var bytes_Biomes = BiomesMap.EncodeToPNG();
+        var bytes_MinimapBG = MinimapBackground.EncodeToPNG();
         
         File.WriteAllBytes(WorldMapFolder + "map_landmass.png", bytes_Landmass);
         File.WriteAllBytes(WorldMapFolder + "map_biomes.png", bytes_Biomes);
+        File.WriteAllBytes(WorldMapFolder + "map_minimap_bg.png", bytes_MinimapBG);
         Debug.Log("World Maps Saved!");
     }
 
