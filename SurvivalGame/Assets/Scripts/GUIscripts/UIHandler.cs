@@ -44,7 +44,6 @@ public class UIHandler : MonoBehaviour
         //UI_icon_dayphase_day.fillAmount = WorldGenScript.ScaledCurrentWorldTimeMinutesCounter;
         //Disp_Time.text = "" + WorldGenScript.WorldTime;
         //Disp_Phase.text = "" + WorldGenScript.CurrentDaytime;
-        Debug.Log("" + WorldGenScript.HeatMapGrid[WorldGenScript.run_PlayerWorldPosX, WorldGenScript.run_PlayerWorldPosY]);
         Disp_LocalTemp.text = "" + (int)WorldGenScript.HeatMapGrid[WorldGenScript.run_PlayerWorldPosX, WorldGenScript.run_PlayerWorldPosY];
 
     }
