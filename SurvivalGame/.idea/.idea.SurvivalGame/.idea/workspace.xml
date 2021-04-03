@@ -22,6 +22,7 @@
       <option value="$PROJECT_DIR$/Assets/Scripts/PlayerController.cs" />
       <option value="$PROJECT_DIR$/Assets/Scripts/WorldGeneratorV3.cs" />
       <option value="$PROJECT_DIR$/Assets/Scripts/System.Serializable/WorldGenSysSerializables.cs" />
+      <option value="$PROJECT_DIR$/Assets/Scripts/GUIscripts/UIHandler.cs" />
       <option value="$PROJECT_DIR$/Assets/Scripts/WorldGeneratorV4.cs" />
     </changedPaths>
   </component>
@@ -98,6 +99,7 @@
       <workItem from="1616407981555" duration="9902000" />
       <workItem from="1616421643818" duration="9219000" />
       <workItem from="1616708074210" duration="1930000" />
+      <workItem from="1617451732086" duration="8388000" />
     </task>
     <servers />
   </component>

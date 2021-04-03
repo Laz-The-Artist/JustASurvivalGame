@@ -72,6 +72,7 @@ public class SaveWorldDataGen {
     public int WorldSize;
     public int ChunkSize;
     public BiomeResourceEntry[] WorldResourcesSerialised;
+    public float[] WorldHeatMap;
 }
 
 [System.Serializable]

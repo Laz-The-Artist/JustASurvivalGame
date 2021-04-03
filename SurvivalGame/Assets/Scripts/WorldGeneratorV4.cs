@@ -55,6 +55,7 @@ public class WorldGeneratorV4 : MonoBehaviour {
 
     [HideInInspector] public int[,] LandmassGrid;
     [HideInInspector] public int[,] ChunkStateGrid;
+    [HideInInspector] public float[,] HeatMapGrid;
     [HideInInspector] public RuleTile[,] WorldTileGrid;
     [HideInInspector] public BiomeResourceEntry[,] WorldResourceGrid;
 
@@ -181,6 +182,7 @@ public class WorldGeneratorV4 : MonoBehaviour {
         
         LandmassGrid = new int[WorldSize, WorldSize];
         ChunkStateGrid = new int[WorldSize / ChunkSize, WorldSize / ChunkSize];
+        HeatMapGrid = new float[WorldSize, WorldSize];
         WorldTileGrid = new RuleTile[WorldSize, WorldSize];
         WorldResourceGrid = new BiomeResourceEntry[WorldSize, WorldSize];
 
@@ -200,7 +202,7 @@ public class WorldGeneratorV4 : MonoBehaviour {
         BiomesMap.filterMode = FilterMode.Point;
         DisplayMap.filterMode = FilterMode.Point;
         
-        UIMapDisplay.GetComponent<SpriteRenderer>().sprite = Sprite.Create(BiomesMap, new Rect(0.0f, 0.0f, WorldSize, WorldSize), new Vector2(0.5f, 0.5f), 100.0f);
+        UIMapDisplay.GetComponent<SpriteRenderer>().sprite = Sprite.Create(DisplayMap, new Rect(0.0f, 0.0f, WorldSize, WorldSize), new Vector2(0.5f, 0.5f), 100.0f);
         
         //Making sure that the biome list has correct ids:
         for (int b = 0; b < WorldBiomes.Length; b++) {
@@ -359,6 +361,12 @@ public class WorldGeneratorV4 : MonoBehaviour {
             for (int x = 0; x < WorldSize; x++) {
                 for (int y = 0; y < WorldSize; y++) {
                     WorldResourceGrid[x, y] = WorldDataGenSaveObject.WorldResourcesSerialised[x+(y*WorldSize)];
+                }
+            }
+            HeatMapGrid = new float[WorldSize, WorldSize];
+            for (int x = 0; x < WorldSize; x++) {
+                for (int y = 0; y < WorldSize; y++) {
+                    HeatMapGrid[x, y] = WorldDataGenSaveObject.WorldHeatMap[x+(y*WorldSize)];
                 }
             }
             Debug.Log("World Gen Json Loaded Successfully!");
@@ -784,28 +792,42 @@ public class WorldGeneratorV4 : MonoBehaviour {
     }
 
     public void GenHeatMap() {
-        Texture2D BiomeLandmassConbinedMap = new Texture2D(WorldSize,WorldSize);
-
+        
+        //Fill the grid with initial values
         for (int x = 0; x < WorldSize; x++) {
             for (int y = 0; y < WorldSize; y++) {
-                if (LandmassGrid[x, y] == 1) {
-                    Color col = new Color(0f, 0f, 0f);
-                    for (int b = 0; b < WorldBiomes.Length; b++) {
-                        if (BiomesMap.GetPixel(x, y) == WorldBiomes[b].BiomeColor32) {
-                            float val = WorldBiomes[b].Temperature;
-                            col = new Color(val, val, val);
-                        }
+                for (int b = 0; b < WorldBiomes.Length; b++) {
+                    if (BiomesMap.GetPixel(x, y) == WorldBiomes[b].BiomeColor32) {
+                        HeatMapGrid[x, y] = WorldBiomes[b].Temperature;
                     }
-                    
-                    BiomeLandmassConbinedMap.SetPixel(x,y,col);
-                }else {
-                    Color col = new Color(17f,17f,17f);
-                    BiomeLandmassConbinedMap.SetPixel(x,y,col);
                 }
             }
         }
         
-        
+        //Blend the grid values for seamless transitions
+        float[,] tempGrid = new float[WorldSize, WorldSize];
+        for (int x = 0; x < WorldSize; x++) {
+            for (int y = 0; y < WorldSize; y++) {
+                float num = 0;
+                int numsGiven = 0;
+                for (int bx = -1; bx < 1; bx++) {
+                    for (int by = -1; by < 1; by++) {
+                        if (x > 0 && x < WorldSize && y > 0 && y < WorldSize) {
+                            num =+ HeatMapGrid[x + bx, y + by];
+                            numsGiven++;
+                        }
+                    }
+                }
+                tempGrid[x, y] = num/numsGiven;
+            }
+        }
+
+        for (int x = 0; x < WorldSize; x++) {
+            for (int y = 0; y < WorldSize; y++) {
+                HeatMapGrid[x, y] = tempGrid[x, y];
+            }
+        }
+
     }
 
     public void GenMinimap() {
@@ -833,6 +855,12 @@ public class WorldGeneratorV4 : MonoBehaviour {
         for (int x = 0; x < WorldSize; x++) {
             for (int y = 0; y < WorldSize; y++) {
                 WorldDataGenSaveObject.WorldResourcesSerialised[x+(y*WorldSize)] = WorldResourceGrid[x, y];
+            }
+        }
+        WorldDataGenSaveObject.WorldHeatMap = new float[WorldSize*WorldSize];
+        for (int x = 0; x < WorldSize; x++) {
+            for (int y = 0; y < WorldSize; y++) {
+                WorldDataGenSaveObject.WorldHeatMap[x+(y*WorldSize)] = HeatMapGrid[x, y];
             }
         }
         //WorldRunData

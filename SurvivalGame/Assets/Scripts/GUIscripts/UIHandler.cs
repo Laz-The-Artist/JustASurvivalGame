@@ -10,7 +10,7 @@ public class UIHandler : MonoBehaviour
         public GameObject World;
         public GameObject Player;
         PlayerController PlayerScript;
-        WorldGeneratorV3 WorldGenScript;
+        WorldGeneratorV4 WorldGenScript;
 
     [Header("UI References")]
         public Camera MainCam;
@@ -26,8 +26,8 @@ public class UIHandler : MonoBehaviour
 
     void Start() {
 
-        WorldGenScript = World.GetComponent<WorldGeneratorV3>();
-        PlayerScript = World.GetComponent<PlayerController>();
+        WorldGenScript = World.GetComponent<WorldGeneratorV4>();
+        PlayerScript = Player.GetComponent<PlayerController>();
     }
 
     void Update()
@@ -41,11 +41,11 @@ public class UIHandler : MonoBehaviour
         MainCam.orthographicSize = FieldOfView;
 
         //Celestial Watch
-        UI_icon_dayphase_day.fillAmount = WorldGenScript.ScaledCurrentWorldTimeMinutesCounter;
+        //UI_icon_dayphase_day.fillAmount = WorldGenScript.ScaledCurrentWorldTimeMinutesCounter;
         //Disp_Time.text = "" + WorldGenScript.WorldTime;
-        Disp_Phase.text = "" + WorldGenScript.CurrentDaytime;
-        int Degrees = (int)WorldGenScript.CurrentBiomeTemp + (int)(WorldGenScript.ScaledCurrentWorldTimeMinutesCounter * 4);
-        Disp_LocalTemp.text = "" + Degrees;
+        //Disp_Phase.text = "" + WorldGenScript.CurrentDaytime;
+        Debug.Log("" + WorldGenScript.HeatMapGrid[WorldGenScript.run_PlayerWorldPosX, WorldGenScript.run_PlayerWorldPosY]);
+        Disp_LocalTemp.text = "" + (int)WorldGenScript.HeatMapGrid[WorldGenScript.run_PlayerWorldPosX, WorldGenScript.run_PlayerWorldPosY];
 
     }
 }
