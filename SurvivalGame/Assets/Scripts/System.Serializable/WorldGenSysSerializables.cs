@@ -52,6 +52,17 @@ public class BiomeResourceAssignEntry {
     public GameObject GameObjResource;
 }
 
+public class WorldChunk {
+    public int posX;
+    public int posY;
+
+    public WorldChunk(int newPosX, int newPosY) {
+        posX = newPosX;
+        posY = newPosY;
+    }
+    
+}
+
 
 //SaveObjects
 [System.Serializable]

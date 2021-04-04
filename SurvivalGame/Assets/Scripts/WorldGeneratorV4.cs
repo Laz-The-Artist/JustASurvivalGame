@@ -55,6 +55,7 @@ public class WorldGeneratorV4 : MonoBehaviour {
 
     [HideInInspector] public int[,] LandmassGrid;
     [HideInInspector] public int[,] ChunkStateGrid;
+    [HideInInspector] public List<WorldChunk> LoadedChunks;
     [HideInInspector] public float[,] HeatMapGrid;
     [HideInInspector] public RuleTile[,] WorldTileGrid;
     [HideInInspector] public BiomeResourceEntry[,] WorldResourceGrid;
@@ -97,11 +98,12 @@ public class WorldGeneratorV4 : MonoBehaviour {
     int ChunkDOWNright;
     int ChunkDOWNleft;
     
-    public bool isChunkUnloading;
-    public int chunkCounterX = 0;
-    public int chunkCounterY = 0;
-    
-    
+    [HideInInspector] public bool isChunkUnloading;
+    [HideInInspector] public int chunkCounterX = 0;
+    [HideInInspector] public int chunkCounterY = 0;
+    [HideInInspector] public int LoadedListCounter = 0;
+
+
     void Awake() {
         switch (LoadExisting) {
             case true:
@@ -146,20 +148,15 @@ public class WorldGeneratorV4 : MonoBehaviour {
                 }
 
                 if (!isChunkUnloading) {
-                    chunkCounterX++;
-                    if (chunkCounterX >= ChunkStateGrid.GetUpperBound(0)) {
-                        chunkCounterX = 0;
-                        chunkCounterY++;
-                    }
-
-                    if (chunkCounterY >= ChunkStateGrid.GetUpperBound(1)) {
-                        chunkCounterY = 0;
-                    }
-
-                    if (ChunkStateGrid[chunkCounterX, chunkCounterY] == 2) {
-                        if (Vector2.Distance(new Vector2(run_PlayerChunkX, run_PlayerChunkY), new Vector2(chunkCounterX, chunkCounterY)) > 3) {
-                            isChunkUnloading = true;
-                            UnloadChunk(chunkCounterX, chunkCounterY);
+                    if (Vector2.Distance(new Vector2(run_PlayerChunkX, run_PlayerChunkY), new Vector2(LoadedChunks[LoadedListCounter].posX, LoadedChunks[LoadedListCounter].posY)) > 3) {
+                        isChunkUnloading = true;
+                        UnloadChunk(LoadedChunks[LoadedListCounter].posX, LoadedChunks[LoadedListCounter].posY, LoadedListCounter);
+                        LoadedListCounter = 0;
+                    }else {
+                        if (LoadedListCounter >= LoadedChunks.Count) {
+                            LoadedListCounter = 0;
+                        }else {
+                            LoadedListCounter++;
                         }
                     }
                 }
@@ -778,6 +775,8 @@ public class WorldGeneratorV4 : MonoBehaviour {
             }
         }
         
+        //Creating the loaded chunk list, for later chunk unloading
+        LoadedChunks = new List<WorldChunk>();
     }
 
     public void DetermineIntialPlayerSpanwPoint() {
@@ -1030,11 +1029,12 @@ public class WorldGeneratorV4 : MonoBehaviour {
             }
 
             ChunkStateGrid[ChunkX, ChunkY] = 2;
+            LoadedChunks.Add(new WorldChunk(ChunkX, ChunkY));
 
         }
     }
 
-    public void UnloadChunk(int ChunkX, int ChunkY) {
+    public void UnloadChunk(int ChunkX, int ChunkY, int LoadedChunkToRemove) {
         if (ChunkStateGrid[ChunkX, ChunkY] == 2) {
             ChunkStateGrid[ChunkX, ChunkY] = 1;
 
@@ -1056,6 +1056,7 @@ public class WorldGeneratorV4 : MonoBehaviour {
             }
             
             ChunkStateGrid[ChunkX, ChunkY] = 0;
+            LoadedChunks.Remove(LoadedChunks[LoadedChunkToRemove]);
         }
 
         isChunkUnloading = false;

@@ -825,7 +825,7 @@ MonoBehaviour:
   ColliderTile: {fileID: 11400000, guid: 36cb73badca3d9844948570e128d56cd, type: 2}
   WaterTile: {fileID: 11400000, guid: f0a847b7454a960489989504f4d6f8c8, type: 2}
   SeaFloorTile: {fileID: 11400000, guid: 1c496373609671747a2aceeff62ba340, type: 2}
-  WorldName: MINIMAPTEST
+  WorldName: ChunkUnloadTest
   LoadExisting: 0
   GenRandomSeed: 0
   WorldSeed: 283329
@@ -1002,6 +1002,7 @@ MonoBehaviour:
   isChunkUnloading: 0
   chunkCounterX: 0
   chunkCounterY: 0
+  LoadedListCounter: 0
 --- !u!4 &119601399
 Transform:
   m_ObjectHideFlags: 0
