@@ -59,6 +59,7 @@ public class WorldGeneratorV4 : MonoBehaviour {
     [HideInInspector] public float[,] HeatMapGrid;
     [HideInInspector] public RuleTile[,] WorldTileGrid;
     [HideInInspector] public BiomeResourceEntry[,] WorldResourceGrid;
+    [HideInInspector] public int[,] WorldResourcesAssigned;
 
     [HideInInspector] public Texture2D LandmassCustomMap;
     [HideInInspector] public Texture2D LandmassMap;
@@ -147,7 +148,7 @@ public class WorldGeneratorV4 : MonoBehaviour {
                     LoadChunk(run_PlayerChunkX + 1, run_PlayerChunkY - 1);
                 }
 
-                if (!isChunkUnloading) {
+                if (!isChunkUnloading && LoadedChunks.Count != 0 && LoadedListCounter >= 0) {
                     if (Vector2.Distance(new Vector2(run_PlayerChunkX, run_PlayerChunkY), new Vector2(LoadedChunks[LoadedListCounter].posX, LoadedChunks[LoadedListCounter].posY)) > 3) {
                         isChunkUnloading = true;
                         UnloadChunk(LoadedChunks[LoadedListCounter].posX, LoadedChunks[LoadedListCounter].posY, LoadedListCounter);
@@ -748,6 +749,26 @@ public class WorldGeneratorV4 : MonoBehaviour {
 
             }
         }
+
+        
+        //Pre-generating the assignments, so we wont have to do that on a chunk load 
+        for (int i = 0; i < ResourceAssignEntries.Length; i++) {
+            ResourceAssignEntries[i].ID = i;
+        }
+        
+        WorldResourcesAssigned = new int[WorldSize, WorldSize];
+        
+        for (int x = 0; x < WorldSize; x++) {
+            for (int y = 0; y < WorldSize; y++) {
+                for (int i = 0; i < ResourceAssignEntries.Length; i++) {
+                    if (ResourceAssignEntries[i].EnumResource == WorldResourceGrid[x, y]) {
+                        WorldResourcesAssigned[x, y] = ResourceAssignEntries[i].ID;
+                    }
+                }
+                
+            }
+        }
+        
     }
 
 
@@ -1014,18 +1035,13 @@ public class WorldGeneratorV4 : MonoBehaviour {
                     }
 
                     if (WorldResourceGrid[GridCoordX, GridCoordY] != BiomeResourceEntry.None) {
-                        for (int a = 0; a < ResourceAssignEntries.Length; a++) {
-                            if (ResourceAssignEntries[a].EnumResource == WorldResourceGrid[GridCoordX, GridCoordY]) {
-                                GameObject ResObj = Instantiate(ResourceAssignEntries[a].GameObjResource);
-                                ResObj.name = "" + ResourceAssignEntries[a].GameObjResource.name + "_X" + GridCoordX + "_Y" + GridCoordY;
-                                ResObj.transform.position = new Vector3(TileCoordX-0.5f, TileCoordY-0.5f, 99);
-                                ResObj.transform.SetParent(ChunkObject.transform);
-                            }
-                        }
-                        
+                        GameObject ResObj = Instantiate(ResourceAssignEntries[WorldResourcesAssigned[GridCoordX,GridCoordY]].GameObjResource);
+                        ResObj.name = "" + ResourceAssignEntries[WorldResourcesAssigned[GridCoordX,GridCoordY]].GameObjResource.name + "_X" + GridCoordX + "_Y" + GridCoordY;
+                        ResObj.transform.position = new Vector3(TileCoordX-0.5f, TileCoordY-0.5f, 99);
+                        ResObj.transform.SetParent(ChunkObject.transform);
                     }
 
-                }    
+                }
             }
 
             ChunkStateGrid[ChunkX, ChunkY] = 2;

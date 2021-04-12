@@ -48,6 +48,7 @@ public enum BiomeDistortionMethod {
 
 [System.Serializable]
 public class BiomeResourceAssignEntry {
+    public int ID;
     public BiomeResourceEntry EnumResource;
     public GameObject GameObjResource;
 }
