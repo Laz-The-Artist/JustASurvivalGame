@@ -100,3 +100,27 @@ public class SaveWorldDataRun {
 }
 
 
+[System.Serializable]
+public class SaveGenConfig {
+    public string WorldName;
+    public bool LoadExisting;
+    public bool GenRandomSeed;
+    public int WorldSeed;
+    public int WorldSize;
+    public int ChunkSize;
+    public LandmassGenMethod LandmassGenType;
+    public BiomeGenMethod BiomeGenType;
+    public int ResourceFillPercent;
+    public int CellSmoothCycles;
+    public int CellFillPercent;
+    public int CellThreshold;
+    public int LandmassPerlinScale;
+    public float LandmassPerlinAreaDivision;
+    public BiomeDistortionMethod BiomeDistortionMethod;
+    public int BiomePerlinScale;
+    public float BiomePerlinAreaDivision;
+    public int BiomeDistortionCellThreshold;
+    public int BiomeSmoothCycles;
+
+}
+

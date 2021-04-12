@@ -102,7 +102,7 @@
       <workItem from="1617451732086" duration="15177000" />
       <workItem from="1617566971964" duration="2249000" />
       <workItem from="1618248775294" duration="1635000" />
-      <workItem from="1618253616181" duration="1904000" />
+      <workItem from="1618253616181" duration="3820000" />
     </task>
     <servers />
   </component>
@@ -125,5 +125,24 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Assets/Scripts/WorldGeneratorV4.cs</url>
+          <line>387</line>
+          <properties documentPath="E:\MT\GAME\JASG\JustASurvivalGame\SurvivalGame\Assets\Scripts\WorldGeneratorV4.cs" initialLine="361" containingFunctionPresentation="method 'LoadWorld'">
+            <startOffsets>
+              <option value="15199" />
+            </startOffsets>
+            <endOffsets>
+              <option value="15200" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

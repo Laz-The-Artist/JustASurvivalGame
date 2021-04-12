@@ -825,7 +825,7 @@ MonoBehaviour:
   ColliderTile: {fileID: 11400000, guid: 36cb73badca3d9844948570e128d56cd, type: 2}
   WaterTile: {fileID: 11400000, guid: f0a847b7454a960489989504f4d6f8c8, type: 2}
   SeaFloorTile: {fileID: 11400000, guid: 1c496373609671747a2aceeff62ba340, type: 2}
-  WorldName: ChunkUnloadTest
+  WorldName: yesnt
   LoadExisting: 0
   GenRandomSeed: 0
   WorldSeed: 283329
@@ -845,11 +845,14 @@ MonoBehaviour:
   BiomeDistortionCellThreshold: 4
   BiomeSmoothCycles: 10
   ResourceAssignEntries:
-  - EnumResource: 1
+  - ID: 0
+    EnumResource: 1
     GameObjResource: {fileID: 3665900552761490882, guid: 6d675521502cfe04e9751d118e59a5f5, type: 3}
-  - EnumResource: 2
+  - ID: 0
+    EnumResource: 2
     GameObjResource: {fileID: 8755857540492956850, guid: 277c4e5530f61634aac801d951ea1932, type: 3}
-  - EnumResource: 3
+  - ID: 0
+    EnumResource: 3
     GameObjResource: {fileID: 5953897115521477537, guid: b366dfcd07fe1f744b826b4a1f2713a5, type: 3}
   WorldBiomes:
   - BiomeName: Alpha Valley
@@ -938,22 +941,6 @@ MonoBehaviour:
     BiomeColor32:
       serializedVersion: 2
       rgba: 4286029776
-    BiomeSurfaceRuleTile: {fileID: 11400000, guid: 6c0ec40b173c7a0478f083cbad79f883, type: 2}
-    BiomeResourceEntries: 
-  - BiomeName: very cold example
-    BiomeID: 0
-    Temperature: -99
-    BiomeColor32:
-      serializedVersion: 2
-      rgba: 4294901760
-    BiomeSurfaceRuleTile: {fileID: 11400000, guid: 6c0ec40b173c7a0478f083cbad79f883, type: 2}
-    BiomeResourceEntries: 
-  - BiomeName: very hot example
-    BiomeID: 0
-    Temperature: 99
-    BiomeColor32:
-      serializedVersion: 2
-      rgba: 4278190335
     BiomeSurfaceRuleTile: {fileID: 11400000, guid: 6c0ec40b173c7a0478f083cbad79f883, type: 2}
     BiomeResourceEntries: 
   LandmassCustomMap: {fileID: 0}

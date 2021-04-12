@@ -82,6 +82,7 @@ public class WorldGeneratorV4 : MonoBehaviour {
     [HideInInspector] public SaveWorldDataInfo WorldDataInfoSaveObject;
     [HideInInspector] public SaveWorldDataGen WorldDataGenSaveObject;
     [HideInInspector] public SaveWorldDataRun WorldDataRunSaveObject;
+    [HideInInspector] public SaveGenConfig GenConfigClass;
 
     [HideInInspector] public bool IsWorldComplete = false;
 
@@ -106,6 +107,7 @@ public class WorldGeneratorV4 : MonoBehaviour {
 
 
     void Awake() {
+        ReadGenConfig();
         switch (LoadExisting) {
             case true:
                 SetupToLoad();
@@ -167,7 +169,50 @@ public class WorldGeneratorV4 : MonoBehaviour {
 
     }
 
-    
+    //Reading generator data from uh, places.
+    public void ReadGenConfig() {
+        GameResourcesFolder = Application.persistentDataPath;
+        GameModsFolder = GameResourcesFolder + "/mods/";
+        GameSavesFolder = GameResourcesFolder + "/saves/";
+
+        if (Directory.Exists(GameSavesFolder)) {
+            if (File.Exists(GameSavesFolder + "gen_config.json")) {
+                string GenConfigJson = File.ReadAllText(GameSavesFolder + "gen_config.json");
+                GenConfigClass = JsonUtility.FromJson<SaveGenConfig>(GenConfigJson);
+                if (GenConfigClass.LoadExisting) {
+                    WorldName = GenConfigClass.WorldName;
+                    LoadExisting = true;
+                }else {
+                    WorldName = GenConfigClass.WorldName;
+                    LoadExisting = false;
+                    GenRandomSeed = GenConfigClass.GenRandomSeed;
+                    WorldSeed = GenConfigClass.WorldSeed;
+                    WorldSize = GenConfigClass.WorldSize;
+                    ChunkSize = GenConfigClass.ChunkSize;
+                    LandmassGenType = GenConfigClass.LandmassGenType;
+                    BiomeGenType = GenConfigClass.BiomeGenType;
+                    ResourceFillPercent = GenConfigClass.ResourceFillPercent;
+                    CellSmoothCycles = GenConfigClass.CellSmoothCycles;
+                    CellFillPercent = GenConfigClass.CellFillPercent;
+                    CellThreshold = GenConfigClass.CellThreshold;
+                    LandmassPerlinScale = GenConfigClass.LandmassPerlinScale;
+                    LandmassPerlinAreaDivision = GenConfigClass.LandmassPerlinAreaDivision;
+                    DistortionMapMethod = GenConfigClass.BiomeDistortionMethod;
+                    BiomesPerlinScale = GenConfigClass.BiomePerlinScale;
+                    BiomesPerlinAreaDivision = GenConfigClass.BiomePerlinAreaDivision;
+                    BiomeDistortionCellThreshold = GenConfigClass.BiomeDistortionCellThreshold;
+                    BiomeSmoothCycles = GenConfigClass.BiomeSmoothCycles;
+                }
+            }else {
+                Debug.Log("Did not find gen config; Rolling with editor values.");
+            }
+        }else {
+            Debug.Log("Did not find Game Saves Folder.");
+        }
+
+    }
+
+
     //SETUP
     public void SetupWorld() {
         
