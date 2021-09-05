@@ -66,10 +66,7 @@ public class GlobalVariableHandler : MonoBehaviour {
             TMP_Text tmpWorldName = tmpObj.transform.Find("WorldName").GetComponent<TMP_Text>();
             TMP_Text tmpWorldDate = tmpObj.transform.Find("DateOfCreation").GetComponent<TMP_Text>();
             UIButton tmpButton = tmpObj.transform.Find("WorldIcon").GetComponent<UIButton>();
-            tmpButton.WorldName = WorldsNames[i];
-            tmpButton.UseProgressBar = true;
-            tmpButton.LoadScreen = LoadingScreen;
-            tmpButton.LoadingProgressBar = LoadingBarFill;
+            
             tmpWorldName.text = WorldsNames[i];
             tmpWorldDate.text = "" + File.GetCreationTime(WorldsLoc[i]);
         }

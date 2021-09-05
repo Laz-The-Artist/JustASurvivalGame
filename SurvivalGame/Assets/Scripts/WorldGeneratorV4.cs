@@ -150,7 +150,7 @@ public class WorldGeneratorV4 : MonoBehaviour {
                     LoadChunk(run_PlayerChunkX + 1, run_PlayerChunkY - 1);
                 }
 
-                if (!isChunkUnloading && LoadedChunks.Count != 0 && LoadedListCounter >= 0) {
+                if (!isChunkUnloading && LoadedChunks.Count > 0 && LoadedListCounter >= 0) {
                     if (Vector2.Distance(new Vector2(run_PlayerChunkX, run_PlayerChunkY), new Vector2(LoadedChunks[LoadedListCounter].posX, LoadedChunks[LoadedListCounter].posY)) > 3) {
                         isChunkUnloading = true;
                         UnloadChunk(LoadedChunks[LoadedListCounter].posX, LoadedChunks[LoadedListCounter].posY, LoadedListCounter);
@@ -203,6 +203,7 @@ public class WorldGeneratorV4 : MonoBehaviour {
                     BiomeDistortionCellThreshold = GenConfigClass.BiomeDistortionCellThreshold;
                     BiomeSmoothCycles = GenConfigClass.BiomeSmoothCycles;
                 }
+                File.Delete(GameSavesFolder + "gen_config.json");
             }else {
                 Debug.Log("Did not find gen config; Rolling with editor values.");
             }
@@ -219,10 +220,8 @@ public class WorldGeneratorV4 : MonoBehaviour {
         if (WorldSize % 16 == 0) {
             WorldOffset = WorldSize / 2;
         }else {
-            //im just lazy now so, there you go:
-            WorldSize = 1024;
-            WorldOffset = 512;
-            //TODO: fill this in later with proper math
+            WorldSize = closestNumber(WorldSize, 16);
+            WorldOffset = WorldSize / 2;
         }
         
         LandmassGrid = new int[WorldSize, WorldSize];
@@ -1138,4 +1137,17 @@ public class WorldGeneratorV4 : MonoBehaviour {
         return (NewValue);
     }
     
+    public int closestNumber(int input, int dividableBy) {
+        int q = input / dividableBy;
+      
+        int n1 = dividableBy * q;
+      
+        int n2 = (input * dividableBy) > 0 ? (dividableBy * (q + 1)) : (dividableBy * (q - 1));
+
+        if (Mathf.Abs(input - n1) < Mathf.Abs(input - n2)) {
+            return n1;
+        }
+        
+        return n2;     
+    }
 }

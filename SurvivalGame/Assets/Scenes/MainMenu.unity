@@ -244,7 +244,7 @@ RectTransform:
   - {fileID: 452113081}
   - {fileID: 1671968933}
   m_Father: {fileID: 1268782424}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -321,12 +321,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isAnimatable: 1
-  LoadSceneName: GameWorld
-  WorldName: 
-  LoadProgress: 0
-  UseProgressBar: 1
-  LoadScreen: {fileID: 871113027}
-  LoadingProgressBar: {fileID: 1677666912}
 --- !u!61 &66655326
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -625,7 +619,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.011184583, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 4.76001, y: -9.118143}
+  m_AnchoredPosition: {x: 4.76001, y: NaN}
   m_SizeDelta: {x: 10.935486, y: 0}
   m_Pivot: {x: 0.5, y: 0.981}
 --- !u!114 &150352411
@@ -706,7 +700,7 @@ RectTransform:
   - {fileID: 1162548781}
   - {fileID: 1973120509}
   m_Father: {fileID: 1268782424}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -726,12 +720,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isAnimatable: 1
-  LoadSceneName: 
-  WorldName: 
-  LoadProgress: 0
-  UseProgressBar: 0
-  LoadScreen: {fileID: 0}
-  LoadingProgressBar: {fileID: 0}
 --- !u!61 &168974162
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1682,12 +1670,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isAnimatable: 1
-  LoadSceneName: GameWorld
-  WorldName: 
-  LoadProgress: 0
-  UseProgressBar: 1
-  LoadScreen: {fileID: 871113027}
-  LoadingProgressBar: {fileID: 1677666912}
 --- !u!61 &239267247
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3455,12 +3437,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isAnimatable: 1
-  LoadSceneName: 
-  WorldName: 
-  LoadProgress: 0
-  UseProgressBar: 0
-  LoadScreen: {fileID: 871113027}
-  LoadingProgressBar: {fileID: 1677666912}
 --- !u!61 &865822292
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3576,7 +3552,7 @@ RectTransform:
   - {fileID: 225918310}
   - {fileID: 67000795}
   m_Father: {fileID: 1268782424}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -4361,7 +4337,7 @@ RectTransform:
   - {fileID: 1551366858}
   - {fileID: 177863462}
   m_Father: {fileID: 1268782424}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -4381,12 +4357,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isAnimatable: 1
-  LoadSceneName: 
-  WorldName: 
-  LoadProgress: 0
-  UseProgressBar: 0
-  LoadScreen: {fileID: 0}
-  LoadingProgressBar: {fileID: 0}
 --- !u!61 &1166844941
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -5047,7 +5017,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1268782424
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5059,6 +5029,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
+  - {fileID: 1413325798}
   - {fileID: 2003184335}
   - {fileID: 1166844939}
   - {fileID: 168974160}
@@ -5319,6 +5290,108 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding: {x: -8, y: -5, z: -8, w: -5}
   m_Softness: {x: 0, y: 0}
+--- !u!1001 &1413325797
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1268782424}
+    m_Modifications:
+    - target: {fileID: 3620441565543356439, guid: 82cc1014c37063c41830510f8616ea48, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3620441565543356439, guid: 82cc1014c37063c41830510f8616ea48, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3620441565543356439, guid: 82cc1014c37063c41830510f8616ea48, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3620441565543356439, guid: 82cc1014c37063c41830510f8616ea48, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3620441565543356439, guid: 82cc1014c37063c41830510f8616ea48, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3620441565543356439, guid: 82cc1014c37063c41830510f8616ea48, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3620441565543356439, guid: 82cc1014c37063c41830510f8616ea48, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3620441565543356439, guid: 82cc1014c37063c41830510f8616ea48, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3620441565543356439, guid: 82cc1014c37063c41830510f8616ea48, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 81.58052
+      objectReference: {fileID: 0}
+    - target: {fileID: 3620441565543356439, guid: 82cc1014c37063c41830510f8616ea48, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3620441565543356439, guid: 82cc1014c37063c41830510f8616ea48, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3620441565543356439, guid: 82cc1014c37063c41830510f8616ea48, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3620441565543356439, guid: 82cc1014c37063c41830510f8616ea48, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3620441565543356439, guid: 82cc1014c37063c41830510f8616ea48, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3620441565543356439, guid: 82cc1014c37063c41830510f8616ea48, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3620441565543356439, guid: 82cc1014c37063c41830510f8616ea48, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3620441565543356439, guid: 82cc1014c37063c41830510f8616ea48, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -129.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3620441565543356439, guid: 82cc1014c37063c41830510f8616ea48, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -103.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3620441565543356439, guid: 82cc1014c37063c41830510f8616ea48, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3620441565543356439, guid: 82cc1014c37063c41830510f8616ea48, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3620441565543356439, guid: 82cc1014c37063c41830510f8616ea48, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6054984561583994407, guid: 82cc1014c37063c41830510f8616ea48, type: 3}
+      propertyPath: m_Name
+      value: WorldListEntry
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 82cc1014c37063c41830510f8616ea48, type: 3}
+--- !u!224 &1413325798 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 3620441565543356439, guid: 82cc1014c37063c41830510f8616ea48, type: 3}
+  m_PrefabInstance: {fileID: 1413325797}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1415175572
 GameObject:
   m_ObjectHideFlags: 0
@@ -5406,13 +5479,14 @@ GameObject:
   - component: {fileID: 1438432699}
   - component: {fileID: 1438432698}
   - component: {fileID: 1438432700}
+  - component: {fileID: 1438432701}
   m_Layer: 0
-  m_Name: GlobalObject
+  m_Name: MainMenuHandler
   m_TagString: GlobalReference
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!82 &1438432698
 AudioSource:
   m_ObjectHideFlags: 0
@@ -5551,6 +5625,89 @@ MonoBehaviour:
   WorldsLoc: []
   WorldsNames: []
   WorldSavesLocation: 
+--- !u!114 &1438432701
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1438432697}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d4bb70b3f405224d9cca20b55a73b08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LoadingScreen: {fileID: 0}
+  LoadingBarFill: {fileID: 0}
+  LoadingProgress: 0
+  ScrollViewContentBox: {fileID: 0}
+  WorldEntry: {fileID: 0}
+  InputWorldName: {fileID: 0}
+  InputRandSeedBool: {fileID: 0}
+  InputSeed: {fileID: 0}
+  InputWorldSize: {fileID: 0}
+  InputLandmassGenType: {fileID: 0}
+  InputBiomeGenType: {fileID: 0}
+  InputResourceFillPercent: {fileID: 0}
+  InputCellSmoothCycles: {fileID: 0}
+  InputLandmassPerlinScale: {fileID: 0}
+  InputLandmassPerlinAreaDivision: {fileID: 0}
+  InputBiomeDistortionMethod: {fileID: 0}
+  InputBiomePerlinScale: {fileID: 0}
+  InputBiomePerlinAreaDivision: {fileID: 0}
+  InputBiomeSmoothCycles: {fileID: 0}
+  GameResourcesFolder: 
+  GameModsFolder: 
+  GameSavesFolder: 
+  GenConfigData:
+    WorldName: 
+    LoadExisting: 0
+    GenRandomSeed: 0
+    WorldSeed: 0
+    WorldSize: 0
+    ChunkSize: 0
+    LandmassGenType: 0
+    BiomeGenType: 0
+    ResourceFillPercent: 0
+    CellSmoothCycles: 0
+    CellFillPercent: 0
+    CellThreshold: 0
+    LandmassPerlinScale: 0
+    LandmassPerlinAreaDivision: 0
+    BiomeDistortionMethod: 0
+    BiomePerlinScale: 0
+    BiomePerlinAreaDivision: 0
+    BiomeDistortionCellThreshold: 0
+    BiomeSmoothCycles: 0
+  WorldName: 
+  LoadExisting: 0
+  GenRandomSeed: 0
+  WorldSeed: 0
+  WorldSize: 0
+  ChunkSize: 0
+  LandmassGenType: 0
+  BiomeGenType: 0
+  ResourceFillPercent: 0
+  CellSmoothCycles: 0
+  CellFillPercent: 0
+  CellThreshold: 0
+  LandmassPerlinScale: 0
+  LandmassPerlinAreaDivision: 0
+  BiomeDistortionMethod: 0
+  BiomePerlinScale: 0
+  BiomePerlinAreaDivision: 0
+  BiomeDistortionCellThreshold: 0
+  BiomeSmoothCycles: 0
+  WorldItemObjects: []
+  WorldDataInfoSaveObject:
+    WorldVersion: 
+    CreationDate: 
+    LastOpenedDate: 
+    LandmassGenMethod: 0
+    BiomeGenMethod: 0
+    BiomeDistortionMethod: 0
+    GeneratedByRandomSeed: 0
+    NumberOfDifferentBiomes: 0
 --- !u!1 &1454104226
 GameObject:
   m_ObjectHideFlags: 0
@@ -6127,9 +6284,9 @@ RectTransform:
   m_Father: {fileID: 401159717}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 0.9995653}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: NaN}
+  m_AnchorMax: {x: 1, y: NaN}
+  m_AnchoredPosition: {x: 0, y: NaN}
   m_SizeDelta: {x: 31.25, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1608616972
@@ -6572,12 +6729,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isAnimatable: 1
-  LoadSceneName: GameWorld
-  WorldName: 
-  LoadProgress: 0
-  UseProgressBar: 1
-  LoadScreen: {fileID: 871113027}
-  LoadingProgressBar: {fileID: 1677666912}
 --- !u!61 &1799832357
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -6795,8 +6946,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1608616972}
   m_HandleRect: {fileID: 1608616971}
   m_Direction: 2
-  m_Value: 0
-  m_Size: 0.9995653
+  m_Value: NaN
+  m_Size: 0
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -7430,7 +7581,7 @@ Transform:
   - {fileID: 1540401354}
   - {fileID: 196780445}
   m_Father: {fileID: 1268782424}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2045674859
 GameObject:
@@ -7521,7 +7672,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2085275745
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7541,7 +7692,7 @@ RectTransform:
   - {fileID: 2045674860}
   - {fileID: 239267244}
   m_Father: {fileID: 1268782424}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
