@@ -855,95 +855,59 @@ MonoBehaviour:
   - ID: 0
     EnumResource: 3
     GameObjResource: {fileID: 5953897115521477537, guid: b366dfcd07fe1f744b826b4a1f2713a5, type: 3}
-  WorldBiomes:
-  - BiomeName: Alpha Valley
-    BiomeID: 0
-    Temperature: 20
-    BiomeColor32:
-      serializedVersion: 2
-      rgba: 4278255409
-    BiomeSurfaceRuleTile: {fileID: 11400000, guid: ef0cf0e4939414c438a43b97fb32d481, type: 2}
-    BiomeResourceEntries: 010000000200000003000000
-  - BiomeName: Mosaic Oasis
-    BiomeID: 0
-    Temperature: 35
-    BiomeColor32:
-      serializedVersion: 2
-      rgba: 4294508465
-    BiomeSurfaceRuleTile: {fileID: 11400000, guid: eb729895eb0db634d9b967d7d60c89fb, type: 2}
-    BiomeResourceEntries: 
-  - BiomeName: The Canopy
-    BiomeID: 0
-    Temperature: 25
-    BiomeColor32:
-      serializedVersion: 2
-      rgba: 4285147676
-    BiomeSurfaceRuleTile: {fileID: 11400000, guid: 56a97f970f7e9454faa87ea3a70f79d1, type: 2}
-    BiomeResourceEntries: 
-  - BiomeName: Grazenlands
-    BiomeID: 0
-    Temperature: 25
-    BiomeColor32:
-      serializedVersion: 2
-      rgba: 4279479687
-    BiomeSurfaceRuleTile: {fileID: 11400000, guid: ea8ab88d2e4365a4f99251263f19e844, type: 2}
-    BiomeResourceEntries: 
-  - BiomeName: Slough
-    BiomeID: 0
-    Temperature: 15
-    BiomeColor32:
-      serializedVersion: 2
-      rgba: 4281681468
-    BiomeSurfaceRuleTile: {fileID: 11400000, guid: 745e91b1f148d3442899e98d8d586231, type: 2}
-    BiomeResourceEntries: 
-  - BiomeName: Sakura Woods
-    BiomeID: 0
-    Temperature: 20
-    BiomeColor32:
-      serializedVersion: 2
-      rgba: 4291341567
-    BiomeSurfaceRuleTile: {fileID: 11400000, guid: 4a6d04d6d2992c94285722a2424f6312, type: 2}
-    BiomeResourceEntries: 
-  - BiomeName: Fallen Jungle
-    BiomeID: 0
-    Temperature: 20
-    BiomeColor32:
-      serializedVersion: 2
-      rgba: 4282932837
-    BiomeSurfaceRuleTile: {fileID: 11400000, guid: 0f67c3d814e51b94eb29ec7626d68d03, type: 2}
-    BiomeResourceEntries: 
-  - BiomeName: Fir Clearing
-    BiomeID: 0
-    Temperature: 20
-    BiomeColor32:
-      serializedVersion: 2
-      rgba: 4278218496
-    BiomeSurfaceRuleTile: {fileID: 11400000, guid: d75cfb54e48bec34e89381fd6207cac8, type: 2}
-    BiomeResourceEntries: 
-  - BiomeName: LavaLand
-    BiomeID: 0
-    Temperature: 40
-    BiomeColor32:
-      serializedVersion: 2
-      rgba: 4286086793
-    BiomeSurfaceRuleTile: {fileID: 11400000, guid: 152c2448752a0d34eae2ffbbc489f2c3, type: 2}
-    BiomeResourceEntries: 02000000
-  - BiomeName: Amethyst Duskland
-    BiomeID: 0
-    Temperature: 10
-    BiomeColor32:
-      serializedVersion: 2
-      rgba: 4291298199
-    BiomeSurfaceRuleTile: {fileID: 11400000, guid: 2ff46b7b50da3b84ca6e704761e48a0c, type: 2}
-    BiomeResourceEntries: 
-  - BiomeName: Hot Springs
-    BiomeID: 0
+  worldBiomes:
+  - biomeName: Alpha
+    biomeID: 0
     Temperature: 30
-    BiomeColor32:
+    biomeColor32:
       serializedVersion: 2
-      rgba: 4286029776
-    BiomeSurfaceRuleTile: {fileID: 11400000, guid: 6c0ec40b173c7a0478f083cbad79f883, type: 2}
-    BiomeResourceEntries: 
+      rgba: 65310
+    biomeSurfaceRuleTile: {fileID: 11400000, guid: ef0cf0e4939414c438a43b97fb32d481, type: 2}
+    biomeResourceEntries: 01000000
+    cantGenerateNextTo:
+    - 
+    isSubBiome: 0
+    subBiomeOf: 
+    origin: {x: 0, y: 0}
+  - biomeName: AlphaSub1
+    biomeID: 0
+    Temperature: 30
+    biomeColor32:
+      serializedVersion: 2
+      rgba: 65310
+    biomeSurfaceRuleTile: {fileID: 11400000, guid: ef0cf0e4939414c438a43b97fb32d481, type: 2}
+    biomeResourceEntries: 01000000
+    cantGenerateNextTo:
+    - AlphaSub2
+    isSubBiome: 1
+    subBiomeOf: Alpha
+    origin: {x: 0, y: 0}
+  - biomeName: AlphaSub2
+    biomeID: 0
+    Temperature: 30
+    biomeColor32:
+      serializedVersion: 2
+      rgba: 65310
+    biomeSurfaceRuleTile: {fileID: 11400000, guid: ef0cf0e4939414c438a43b97fb32d481, type: 2}
+    biomeResourceEntries: 01000000
+    cantGenerateNextTo:
+    - 
+    isSubBiome: 1
+    subBiomeOf: Alpha
+    origin: {x: 0, y: 0}
+  - biomeName: Alpha
+    biomeID: 0
+    Temperature: 30
+    biomeColor32:
+      serializedVersion: 2
+      rgba: 65310
+    biomeSurfaceRuleTile: {fileID: 11400000, guid: ef0cf0e4939414c438a43b97fb32d481, type: 2}
+    biomeResourceEntries: 01000000
+    cantGenerateNextTo:
+    - 
+    isSubBiome: 0
+    subBiomeOf: 
+    origin: {x: 0, y: 0}
   LandmassCustomMap: {fileID: 0}
   LandmassMap: {fileID: 0}
   BiomesVoronoiMap: {fileID: 0}

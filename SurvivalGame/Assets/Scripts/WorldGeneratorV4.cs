@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -51,7 +52,10 @@ public class WorldGeneratorV4 : MonoBehaviour {
     [Range(0, 8)] public int BiomeDistortionCellThreshold;
     public int BiomeSmoothCycles;
     public BiomeResourceAssignEntry[] ResourceAssignEntries;
-    public BiomeEntry[] WorldBiomes;
+    //public BiomeEntry[] WorldBiomes;
+    public List<Biome> worldBiomes;
+
+    public List<worldInfo> worldInfos;
 
     [HideInInspector] public int[,] LandmassGrid;
     [HideInInspector] public int[,] ChunkStateGrid;
@@ -104,6 +108,31 @@ public class WorldGeneratorV4 : MonoBehaviour {
     [HideInInspector] public int chunkCounterX = 0;
     [HideInInspector] public int chunkCounterY = 0;
     [HideInInspector] public int LoadedListCounter = 0;
+
+    public class worldInfo {
+        public int x;
+        public int y;
+        public Biome Biome;
+        public int temperature;
+    }
+    
+    [System.Serializable]
+    public class Biome {
+    
+        [Header("General Settings")]
+        public string biomeName = "Name";
+        public int biomeID;
+        [Range(-99, 99)] public int Temperature = 1;
+        public Color32 biomeColor32;
+        
+        [Header("Generator Info")]
+        public RuleTile biomeSurfaceRuleTile;
+        public List<BiomeResourceEntry> biomeResourceEntries;
+        public List<String> cantGenerateNextTo;
+        public bool isSubBiome;
+        public String subBiomeOf;
+        public Vector2Int origin;
+    }
 
 
     void Awake() {
@@ -229,6 +258,7 @@ public class WorldGeneratorV4 : MonoBehaviour {
         HeatMapGrid = new float[WorldSize, WorldSize];
         WorldTileGrid = new RuleTile[WorldSize, WorldSize];
         WorldResourceGrid = new BiomeResourceEntry[WorldSize, WorldSize];
+        //worldInfos = new List<worldInfo>(WorldSize * WorldSize);
 
         if (GenRandomSeed) {
             WorldSeed = UnityEngine.Random.Range(0, 999999);
@@ -249,8 +279,8 @@ public class WorldGeneratorV4 : MonoBehaviour {
         UIMapDisplay.GetComponent<SpriteRenderer>().sprite = Sprite.Create(DisplayMap, new Rect(0.0f, 0.0f, WorldSize, WorldSize), new Vector2(0.5f, 0.5f), 100.0f);
         
         //Making sure that the biome list has correct ids:
-        for (int b = 0; b < WorldBiomes.Length; b++) {
-            WorldBiomes[b].BiomeID = b;
+        for (int b = 0; b < worldBiomes.Count; b++) {
+            worldBiomes[b].biomeID = b;
         }
 
         GameResourcesFolder = Application.persistentDataPath;
@@ -448,8 +478,8 @@ public class WorldGeneratorV4 : MonoBehaviour {
         DisplayMap = new Texture2D(WorldSize, WorldSize);
 
         //Making sure that the biome list has correct ids:
-        for (int b = 0; b < WorldBiomes.Length; b++) {
-            WorldBiomes[b].BiomeID = b;
+        for (int b = 0; b < worldBiomes.Count; b++) {
+            worldBiomes[b].biomeID = b;
         }
 
         if (File.Exists(WorldMapFolder + "map_landmass.png") && File.Exists(WorldMapFolder + "map_biomes.png") && File.Exists(WorldMapFolder + "map_minimap_bg.png")) {
@@ -601,14 +631,14 @@ public class WorldGeneratorV4 : MonoBehaviour {
     
     //BiomeMap Generators
     public void GenBiomesVoronoi() {
-        Vector2Int[] centroids = new Vector2Int[WorldBiomes.Length];
+        List<Vector2Int> biomeCenters = new List<Vector2Int>(worldBiomes.Count);
+        //Vector2Int[] centroids = new Vector2Int[worldBiomes.Count];
         System.Random randChoice = new System.Random(WorldSeed.GetHashCode());
-        
-        for (int c = 0; c < centroids.Length; c++) {
-            centroids[c]  = new Vector2Int(randChoice.Next(0, WorldSize), randChoice.Next(0, WorldSize));
+
+        for (int c = 0; c < biomeCenters.Count; c++) {
+            biomeCenters[c]  = new Vector2Int(randChoice.Next(0, WorldSize), randChoice.Next(0, WorldSize));
         }
-        
-        
+
         Texture2D biomes_VoronoiMap = new Texture2D(WorldSize, WorldSize);
         
         for (int x = 0; x < WorldSize; x++) {
@@ -616,13 +646,19 @@ public class WorldGeneratorV4 : MonoBehaviour {
                 float dist = WorldSize;
                 int index = 0;
                 Vector2Int point = new Vector2Int(x, y);
-                for (int c = 0; c < centroids.Length; c++) {
-                    if (Vector2.Distance(centroids[c], point) < dist) {
-                        dist = Vector2.Distance(centroids[c], point);
+                
+                for (int c = 0; c < biomeCenters.Count; c++) {
+                    if (Vector2.Distance(biomeCenters[c], point) < dist) {
+                        dist = Vector2.Distance(biomeCenters[c], point);
                         index = c;
                     }
                 }
-                Color32 color = CalculateVoronoiColor(point, centroids[index], index);
+                
+                if (x == biomeCenters[index].x && y == biomeCenters[index].y) {
+                    worldBiomes[index].origin = new Vector2Int(x, y);
+                }
+
+                Color32 color = CalculateVoronoiColor(point, biomeCenters[index], index);
             
                 biomes_VoronoiMap.SetPixel(x, y, color);
             }
@@ -642,7 +678,7 @@ public class WorldGeneratorV4 : MonoBehaviour {
                 }
 
                 biomes_PerlinMap.Apply();
-                for (int b = 0; b < WorldBiomes.Length; b++) {
+                for (int b = 0; b < worldBiomes.Count; b++) {
                     for (int x = 0; x < WorldSize; x++) {
                         for (int y = 0; y < WorldSize; y++) {
                             Vector2Int pos = new Vector2Int(x, y);
@@ -650,8 +686,8 @@ public class WorldGeneratorV4 : MonoBehaviour {
                             for (int xB = -1; xB < 2; xB++) {
                                 for (int yB = -1; yB < 2; yB++) {
                                     if (x + xB >= 0 && y + yB >= 0 && x + xB <= WorldSize - 1 && y + yB <= WorldSize - 1) {
-                                        if (biomes_PerlinMap.GetPixel(x + xB, y + yB) == Color.black && biomes_VoronoiMap.GetPixel(x, y) == WorldBiomes[b].BiomeColor32) {
-                                            biomes_VoronoiMap.SetPixel(x + xB, y + yB, WorldBiomes[b].BiomeColor32);
+                                        if (biomes_PerlinMap.GetPixel(x + xB, y + yB) == Color.black && biomes_VoronoiMap.GetPixel(x, y) == worldBiomes[b].biomeColor32) {
+                                            biomes_VoronoiMap.SetPixel(x + xB, y + yB, worldBiomes[b].biomeColor32);
                                         }
                                     }
 
@@ -686,9 +722,9 @@ public class WorldGeneratorV4 : MonoBehaviour {
 
         float distScaled = scale(0f, (float) WorldSize, 0f, 1f, dist);
 
-        Color32 color = WorldBiomes[0].BiomeColor32;
+        Color32 color = worldBiomes[0].biomeColor32;
         if (distScaled <= 1f) {
-                color = WorldBiomes[index].BiomeColor32;
+                color = worldBiomes[index].biomeColor32;
         }
         
         return color;
@@ -764,6 +800,7 @@ public class WorldGeneratorV4 : MonoBehaviour {
     }
 
     public void GenBiomesCustom() {
+        //Temporary. will make something fancy in here i guess
         GenBiomesVoronoi();
     }
 
@@ -773,14 +810,14 @@ public class WorldGeneratorV4 : MonoBehaviour {
         for (int x = 0; x < WorldSize; x++) {
             for (int y = 0; y < WorldSize; y++) {
                 if (LandmassGrid[x, y] == 1) {
-                    for (int b = 0; b < WorldBiomes.Length; b++) {
-                        if (BiomesMap.GetPixel(x, y) == WorldBiomes[b].BiomeColor32) {
+                    for (int b = 0; b < worldBiomes.Count; b++) {
+                        if (BiomesMap.GetPixel(x, y) == worldBiomes[b].biomeColor32) {
                             if (randChoice.Next(0, 100) < ResourceFillPercent) {
-                                if (WorldBiomes[b].BiomeResourceEntries.Length == 1) {
-                                    WorldResourceGrid[x, y] = WorldBiomes[b].BiomeResourceEntries[0];
-                                }else if (WorldBiomes[b].BiomeResourceEntries.Length > 1) {
-                                    int choice = randChoice.Next(0, WorldBiomes[b].BiomeResourceEntries.Length);
-                                    if (choice < WorldBiomes[b].BiomeResourceEntries.Length) {
+                                if (worldBiomes[b].biomeResourceEntries.Count == 1) {
+                                    WorldResourceGrid[x, y] = worldBiomes[b].biomeResourceEntries[0];
+                                }else if (worldBiomes[b].biomeResourceEntries.Count > 1) {
+                                    int choice = randChoice.Next(0, worldBiomes[b].biomeResourceEntries.Count);
+                                    if (choice < worldBiomes[b].biomeResourceEntries.Count) {
                                         WorldResourceGrid[x, y] = (BiomeResourceEntry)choice+1;
                                     }
                                 }
@@ -829,9 +866,9 @@ public class WorldGeneratorV4 : MonoBehaviour {
         for (int x = 0; x < WorldSize; x++) {
             for (int y = 0; y < WorldSize; y++) {
                 if (LandmassGrid[x, y] == 1) {
-                    for (int b = 0; b < WorldBiomes.Length; b++) {
-                        if (BiomesMap.GetPixel(x, y) == WorldBiomes[b].BiomeColor32) {
-                            WorldTileGrid[x, y] = WorldBiomes[b].BiomeSurfaceRuleTile;
+                    for (int b = 0; b < worldBiomes.Count; b++) {
+                        if (BiomesMap.GetPixel(x, y) == worldBiomes[b].biomeColor32) {
+                            WorldTileGrid[x, y] = worldBiomes[b].biomeSurfaceRuleTile;
                         }
 
                     }
@@ -869,9 +906,9 @@ public class WorldGeneratorV4 : MonoBehaviour {
         //Fill the grid with initial values
         for (int x = 0; x < WorldSize; x++) {
             for (int y = 0; y < WorldSize; y++) {
-                for (int b = 0; b < WorldBiomes.Length; b++) {
-                    if (BiomesMap.GetPixel(x, y) == WorldBiomes[b].BiomeColor32) {
-                        HeatMapGrid[x, y] = WorldBiomes[b].Temperature;
+                for (int b = 0; b < worldBiomes.Count; b++) {
+                    if (BiomesMap.GetPixel(x, y) == worldBiomes[b].biomeColor32) {
+                        HeatMapGrid[x, y] = worldBiomes[b].Temperature;
                     }
                 }
             }
@@ -984,7 +1021,7 @@ public class WorldGeneratorV4 : MonoBehaviour {
         WorldDataInfoSaveObject.BiomeGenMethod = BiomeGenType;
         WorldDataInfoSaveObject.BiomeDistortionMethod = DistortionMapMethod;
         WorldDataInfoSaveObject.GeneratedByRandomSeed = GenRandomSeed;
-        WorldDataInfoSaveObject.NumberOfDifferentBiomes = WorldBiomes.Length;
+        WorldDataInfoSaveObject.NumberOfDifferentBiomes = worldBiomes.Count;
         
         //WorldGenData
         WorldDataGenSaveObject.WorldSize = WorldSize;

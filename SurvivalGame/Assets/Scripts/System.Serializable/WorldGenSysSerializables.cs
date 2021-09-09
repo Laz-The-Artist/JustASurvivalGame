@@ -14,7 +14,6 @@ public class BiomeEntry {
     [Header("Generator Info")]
     public RuleTile BiomeSurfaceRuleTile;
     public BiomeResourceEntry[] BiomeResourceEntries;
-
 }
 
 [System.Serializable]
