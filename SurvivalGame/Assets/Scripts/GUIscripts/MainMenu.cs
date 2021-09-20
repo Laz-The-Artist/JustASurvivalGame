@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using MultiCoreLibCSE;
+using UnityEditorInternal;
 
 public class MainMenu : MonoBehaviour {
 
@@ -34,35 +35,54 @@ public class MainMenu : MonoBehaviour {
     void switchMenuPages() {
         switch (menuPage) {
             case MenuScreen.MAIN:
-                    menuMain.transform.gameObject.SetActive(true);
-                    menuPlay.transform.gameObject.SetActive(false);
-                    menuSettings.transform.gameObject.SetActive(false);
+                loadMainMenu();
                 break;
             case MenuScreen.PLAY:
-                    menuMain.transform.gameObject.SetActive(false);
-                    menuPlay.transform.gameObject.SetActive(true);
-                    menuSettings.transform.gameObject.SetActive(false);
+                loadPlayMenu();
                 break;
             case MenuScreen.SETTINGS:
-                    menuMain.transform.gameObject.SetActive(false);
-                    menuPlay.transform.gameObject.SetActive(false);
-                    menuSettings.transform.gameObject.SetActive(true);
+                loadSettingsMenu();
                 break;
 
         }
 
         switch (subMenuPlayPage) {
             case SubMenuScreenOfPlay.LOAD:
-                    subMenuPlayGen.transform.gameObject.SetActive(false);
-                    subMenuPlayLoad.transform.gameObject.SetActive(true);
+                loadPlaySubLoadMenu();
                 break;
             case SubMenuScreenOfPlay.GEN:
-                    subMenuPlayGen.transform.gameObject.SetActive(true);
-                    subMenuPlayLoad.transform.gameObject.SetActive(false);
+                loadPlaySubGenMenu();
                 break;
         }
     }
 
+    void loadMainMenu() {
+        menuMain.transform.gameObject.SetActive(true);
+        menuPlay.transform.gameObject.SetActive(false);
+        menuSettings.transform.gameObject.SetActive(false);
+    }
+    void loadPlayMenu() {
+        menuMain.transform.gameObject.SetActive(false);
+        menuPlay.transform.gameObject.SetActive(true);
+        menuSettings.transform.gameObject.SetActive(false);
+    }
+    void loadSettingsMenu() {
+        menuMain.transform.gameObject.SetActive(false);
+        menuPlay.transform.gameObject.SetActive(false);
+        menuSettings.transform.gameObject.SetActive(true);
+    }
+    
+    
+    void loadPlaySubLoadMenu() {
+        subMenuPlayGen.transform.gameObject.SetActive(false);
+        subMenuPlayLoad.transform.gameObject.SetActive(true);
+    }
+    void loadPlaySubGenMenu() {
+        subMenuPlayGen.transform.gameObject.SetActive(true);
+        subMenuPlayLoad.transform.gameObject.SetActive(false);
+    }
+    
+    
     public void setMenuState(String inputState) {
         MenuScreen.TryParse(inputState, out menuPage);
     }

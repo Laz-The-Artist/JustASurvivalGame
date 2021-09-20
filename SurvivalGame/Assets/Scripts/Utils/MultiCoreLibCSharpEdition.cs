@@ -26,4 +26,8 @@ namespace MultiCoreLibCSE {
         }
         
     }
+    
+    public static class FileHelperUtil {
+
+    }
 }
