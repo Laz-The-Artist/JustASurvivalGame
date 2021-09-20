@@ -875,7 +875,7 @@ MonoBehaviour:
     biomeColor32:
       serializedVersion: 2
       rgba: 65310
-    biomeSurfaceRuleTile: {fileID: 11400000, guid: ef0cf0e4939414c438a43b97fb32d481, type: 2}
+    biomeSurfaceRuleTile: {fileID: 11400000, guid: ea8ab88d2e4365a4f99251263f19e844, type: 2}
     biomeResourceEntries: 01000000
     cantGenerateNextTo:
     - AlphaSub2
@@ -888,25 +888,49 @@ MonoBehaviour:
     biomeColor32:
       serializedVersion: 2
       rgba: 65310
-    biomeSurfaceRuleTile: {fileID: 11400000, guid: ef0cf0e4939414c438a43b97fb32d481, type: 2}
+    biomeSurfaceRuleTile: {fileID: 11400000, guid: 6c0ec40b173c7a0478f083cbad79f883, type: 2}
     biomeResourceEntries: 01000000
     cantGenerateNextTo:
-    - 
+    - AlphaSub1
     isSubBiome: 1
     subBiomeOf: Alpha
     origin: {x: 0, y: 0}
-  - biomeName: Alpha
+  - biomeName: Beta
     biomeID: 0
     Temperature: 30
     biomeColor32:
       serializedVersion: 2
-      rgba: 65310
-    biomeSurfaceRuleTile: {fileID: 11400000, guid: ef0cf0e4939414c438a43b97fb32d481, type: 2}
+      rgba: 16383
+    biomeSurfaceRuleTile: {fileID: 11400000, guid: 4a6d04d6d2992c94285722a2424f6312, type: 2}
     biomeResourceEntries: 01000000
-    cantGenerateNextTo:
-    - 
+    cantGenerateNextTo: []
     isSubBiome: 0
     subBiomeOf: 
+    origin: {x: 0, y: 0}
+  - biomeName: BetaSub1
+    biomeID: 0
+    Temperature: 30
+    biomeColor32:
+      serializedVersion: 2
+      rgba: 16383
+    biomeSurfaceRuleTile: {fileID: 11400000, guid: eb729895eb0db634d9b967d7d60c89fb, type: 2}
+    biomeResourceEntries: 01000000
+    cantGenerateNextTo:
+    - BetaSub2
+    isSubBiome: 1
+    subBiomeOf: Beta
+    origin: {x: 0, y: 0}
+  - biomeName: BetaSub2
+    biomeID: 0
+    Temperature: 30
+    biomeColor32:
+      serializedVersion: 2
+      rgba: 16383
+    biomeSurfaceRuleTile: {fileID: 11400000, guid: 745e91b1f148d3442899e98d8d586231, type: 2}
+    biomeResourceEntries: 01000000
+    cantGenerateNextTo: []
+    isSubBiome: 1
+    subBiomeOf: Beta
     origin: {x: 0, y: 0}
   LandmassCustomMap: {fileID: 0}
   LandmassMap: {fileID: 0}
