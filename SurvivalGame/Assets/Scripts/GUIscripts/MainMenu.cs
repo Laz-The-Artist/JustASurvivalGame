@@ -131,6 +131,7 @@ public class MainMenu : MonoBehaviour {
         }
         config.worldSize = int.Parse(worldSizeDropDown.options[worldSizeDropDown.value].text);
         config.chunkSize = int.Parse(chunkSizeDropDown.options[chunkSizeDropDown.value].text);
+        
         FileHelperUtil.saveFile(config, GameLocationUtil.gameSavesLoc + "worldGenConfig.json");
         
         //Loading the world scene and the world itslef

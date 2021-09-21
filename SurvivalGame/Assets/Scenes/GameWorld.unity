@@ -2167,10 +2167,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HUD: {fileID: 30122973}
-  pauseMenu: {fileID: 1079411830}
-  loadingScreen: {fileID: 694936494}
   hudState: 0
+  pauseMenu: {fileID: 1079411830}
   pauseMenuState: 0
+  loadingScreen: {fileID: 694936494}
+  loadingScreenState: 0
+  loadingBar: {fileID: 639719469}
+  loadingStatusMessage: {fileID: 1872669110}
+  worldEngine: {fileID: 1490017198}
 --- !u!1 &413218766
 GameObject:
   m_ObjectHideFlags: 0
@@ -8611,6 +8615,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1490017197}
+  - component: {fileID: 1490017198}
   m_Layer: 0
   m_Name: GameWorld
   m_TagString: Untagged
@@ -8635,6 +8640,32 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1490017198
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1490017196}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bddb2231220e52c4e90c7cdc01680a53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IngameMenu: {fileID: 336802695}
+  bypassLoadConfig: 0
+  loadExisting: 0
+  worldName: 
+  genRandomSeed: 0
+  worldSeed: 0
+  worldSize: 0
+  chunkSize: 0
+  cellularFillPercentage: 54
+  cellularSmoothingCyclesAmount: 20
+  landmassTexture: {fileID: 0}
+  isLoadingWorld: 1
+  worldStatus: 
+  worldLoadAmount: 0
 --- !u!1 &1499737878
 GameObject:
   m_ObjectHideFlags: 0

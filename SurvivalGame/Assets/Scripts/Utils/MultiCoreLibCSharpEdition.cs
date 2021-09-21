@@ -35,9 +35,31 @@ namespace MultiCoreLibCSE {
             File.WriteAllText(location, jsonString);
         }
         
-        public static Object loadFile(String location) {
-            string jsonString = File.ReadAllText(location);
-            return JsonUtility.FromJson<SaveGenConfig>(jsonString);
+    }
+
+    public static class MathHelperUtil {
+        public static float scale(float FromMin, float FromMax, float ToMin, float ToMax, float value) {
+
+            float OldRange = (FromMax - FromMin);
+            float NewRange = (ToMax - ToMin);
+            float NewValue = (((value - FromMin) * NewRange) / OldRange) + ToMin;
+
+            return NewValue;
         }
+    
+        public static int closestNumber(int input, int dividableBy) {
+            int q = input / dividableBy;
+      
+            int n1 = dividableBy * q;
+      
+            int n2 = (input * dividableBy) > 0 ? (dividableBy * (q + 1)) : (dividableBy * (q - 1));
+
+            if (Mathf.Abs(input - n1) < Mathf.Abs(input - n2)) {
+                return n1;
+            }
+        
+            return n2;     
+        }
+        
     }
 }
