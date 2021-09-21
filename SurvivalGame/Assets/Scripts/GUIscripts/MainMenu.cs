@@ -6,6 +6,7 @@ using UnityEngine;
 using MultiCoreLibCSE;
 using TMPro;
 using UnityEditorInternal;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour {
@@ -27,6 +28,10 @@ public class MainMenu : MonoBehaviour {
     public TMP_InputField worldSeedInputField;
     public TMP_Dropdown worldSizeDropDown;
     public TMP_Dropdown chunkSizeDropDown;
+
+    [Header("Loading Screen")]
+    public Canvas loadingScreen;
+    public Image loadingBar;
     
     void Start() {
         
@@ -52,6 +57,9 @@ public class MainMenu : MonoBehaviour {
             case MenuScreen.SETTINGS:
                 loadSettingsMenu();
                 break;
+            case MenuScreen.LOADING:
+                loadLoadingScreen();
+                break;
 
         }
 
@@ -69,19 +77,28 @@ public class MainMenu : MonoBehaviour {
         menuMain.transform.gameObject.SetActive(true);
         menuPlay.transform.gameObject.SetActive(false);
         menuSettings.transform.gameObject.SetActive(false);
+        loadingScreen.transform.gameObject.SetActive(false);
     }
     void loadPlayMenu() {
         menuMain.transform.gameObject.SetActive(false);
         menuPlay.transform.gameObject.SetActive(true);
         menuSettings.transform.gameObject.SetActive(false);
+        loadingScreen.transform.gameObject.SetActive(false);
     }
     void loadSettingsMenu() {
         menuMain.transform.gameObject.SetActive(false);
         menuPlay.transform.gameObject.SetActive(false);
         menuSettings.transform.gameObject.SetActive(true);
+        loadingScreen.transform.gameObject.SetActive(false);
     }
-    
-    
+    void loadLoadingScreen() {
+        menuMain.transform.gameObject.SetActive(false);
+        menuPlay.transform.gameObject.SetActive(false);
+        menuSettings.transform.gameObject.SetActive(false);
+        loadingScreen.transform.gameObject.SetActive(true);
+    }
+
+
     void loadPlaySubLoadMenu() {
         subMenuPlayGen.transform.gameObject.SetActive(false);
         subMenuPlayLoad.transform.gameObject.SetActive(true);
@@ -102,6 +119,7 @@ public class MainMenu : MonoBehaviour {
 
 
     public void generateWorldAction() {
+        //Preparation - Generate world gen info/config
         WorldConfig config = new WorldConfig();
         config.loadExisting = false;
         config.worldName = worldNameInputField.text;
@@ -114,6 +132,20 @@ public class MainMenu : MonoBehaviour {
         config.worldSize = int.Parse(worldSizeDropDown.options[worldSizeDropDown.value].text);
         config.chunkSize = int.Parse(chunkSizeDropDown.options[chunkSizeDropDown.value].text);
         FileHelperUtil.saveFile(config, GameLocationUtil.gameSavesLoc + "worldGenConfig.json");
+        
+        //Loading the world scene and the world itslef
+        StartCoroutine(LoadSceneAsync("GameWorld"));
+    }
+    
+    public IEnumerator LoadSceneAsync(string sceneToLoad) {
+        
+        AsyncOperation SceneLoadOp = SceneManager.LoadSceneAsync(sceneToLoad);
+
+        while (!SceneLoadOp.isDone) {
+            loadingBar.fillAmount = SceneLoadOp.progress;
+            yield return null;
+        }
+        
     }
 
     public void setReverseOfISActive(GameObject toDeactivate) {
@@ -121,19 +153,19 @@ public class MainMenu : MonoBehaviour {
     }
 }
 
-[System.Serializable]
 public enum MenuScreen {
     MAIN,
     PLAY,
-    SETTINGS
+    SETTINGS,
+    LOADING
 }
 
-[System.Serializable]
 public enum SubMenuScreenOfPlay {
     LOAD,
     GEN
 }
 
+[System.Serializable]
 public class WorldConfig {
     public bool loadExisting;
     public String worldName;

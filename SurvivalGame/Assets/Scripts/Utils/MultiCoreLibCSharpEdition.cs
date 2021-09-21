@@ -34,5 +34,10 @@ namespace MultiCoreLibCSE {
             string jsonString = JsonUtility.ToJson(saveObject, true);
             File.WriteAllText(location, jsonString);
         }
+        
+        public static Object loadFile(String location) {
+            string jsonString = File.ReadAllText(location);
+            return JsonUtility.FromJson<SaveGenConfig>(jsonString);
+        }
     }
 }

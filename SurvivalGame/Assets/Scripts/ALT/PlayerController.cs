@@ -5,12 +5,9 @@ public class PlayerController : MonoBehaviour {
         public float MovementSpeed = 5f;
         public Rigidbody2D rb2D;
         public int PlayerTemp;
-        public GameObject EscapeMenu;
     [Header("Animation Settings")]
         public Animator PlayerAnimator;
     [Space]
-        public GameObject World;
-        WorldGeneratorV3 WorldGenScript;
 
     Vector2 Movement;
 
@@ -21,9 +18,6 @@ public class PlayerController : MonoBehaviour {
 
         Movement.x = Input.GetAxisRaw("Horizontal");
         Movement.y = Input.GetAxisRaw("Vertical");
-        if (Input.GetKeyDown("escape")) {
-            EscapeMenu.SetActive(!EscapeMenu.activeSelf);
-        }
 
         //Calc player temp and effects related
         //CalcPlayerTemp(); i said i cant sry
@@ -71,13 +65,13 @@ public class PlayerController : MonoBehaviour {
 
     void CalcPlayerTemp() {
         //no i cant sry.
-        if (WorldGenScript.CurrentBiomeTemp < 0) {
+        /**if (WorldGenScript.CurrentBiomeTemp < 0) {
             PlayerTemp = WorldGenScript.CurrentBiomeTemp*2 - WorldGenScript.CurrentBiomeTemp/3;
         } else if (WorldGenScript.CurrentBiomeTemp >= 0) {
             PlayerTemp = 36 - WorldGenScript.CurrentBiomeTemp / 3;
             //PlayerTemp = 36 + (((WorldGenScript.CurrentBiomeTemp / 2) * WorldGenScript.CurrentBiomeTemp) / 36);
         }
-        //
+        **/
 
     }
 }
