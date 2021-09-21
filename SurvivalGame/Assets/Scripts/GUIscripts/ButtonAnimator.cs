@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,6 +26,11 @@ public class ButtonAnimator : MonoBehaviour {
     }
 
     private void OnMouseExit() {
+        isSelected = false;
+        buttonAnimator.Play("JasgButtonHoverExit");
+    }
+
+    private void OnDisable() {
         isSelected = false;
         buttonAnimator.Play("JasgButtonHoverExit");
     }

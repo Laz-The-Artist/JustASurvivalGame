@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using Object = System.Object;
 
 namespace MultiCoreLibCSE {
     
@@ -29,5 +30,9 @@ namespace MultiCoreLibCSE {
     
     public static class FileHelperUtil {
 
+        public static void saveFile(Object saveObject, String location) {
+            string jsonString = JsonUtility.ToJson(saveObject, true);
+            File.WriteAllText(location, jsonString);
+        }
     }
 }

@@ -17,9 +17,9 @@ TagManager:
   - below
   - above
   - 
-  - 
-  - 
-  - 
+  - ui-menus
+  - ui-bg-particles
+  - ui-bg
   - 
   - 
   - 
@@ -56,4 +56,13 @@ TagManager:
     locked: 0
   - name: UI
     uniqueID: 4059657355
+    locked: 0
+  - name: ui-menus
+    uniqueID: 978840255
+    locked: 0
+  - name: ui-particle
+    uniqueID: 2343924333
+    locked: 0
+  - name: ui-bg
+    uniqueID: 2561302637
     locked: 0

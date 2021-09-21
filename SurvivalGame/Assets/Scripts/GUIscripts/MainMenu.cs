@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using MultiCoreLibCSE;
+using TMPro;
 using UnityEditorInternal;
+using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour {
 
@@ -18,6 +20,13 @@ public class MainMenu : MonoBehaviour {
     public SubMenuScreenOfPlay subMenuPlayPage = SubMenuScreenOfPlay.LOAD;
     public Canvas subMenuPlayLoad;
     public Canvas subMenuPlayGen;
+
+    [Header("Play Submenu - Gen")] 
+    public TMP_InputField worldNameInputField;
+    public Toggle shouldGenRandomSeedToggle;
+    public TMP_InputField worldSeedInputField;
+    public TMP_Dropdown worldSizeDropDown;
+    public TMP_Dropdown chunkSizeDropDown;
     
     void Start() {
         
@@ -90,8 +99,26 @@ public class MainMenu : MonoBehaviour {
     public void setSubMenuStateOfPlay(String inputState) {
         SubMenuScreenOfPlay.TryParse(inputState, out subMenuPlayPage);
     }
-    
 
+
+    public void generateWorldAction() {
+        WorldConfig config = new WorldConfig();
+        config.loadExisting = false;
+        config.worldName = worldNameInputField.text;
+        config.genRandomSeed = shouldGenRandomSeedToggle.isOn;
+        if (!shouldGenRandomSeedToggle.isOn) {
+            config.worldSeed = int.Parse(worldSeedInputField.text);
+        }else {
+            config.worldSeed = 0;
+        }
+        config.worldSize = int.Parse(worldSizeDropDown.options[worldSizeDropDown.value].text);
+        config.chunkSize = int.Parse(chunkSizeDropDown.options[chunkSizeDropDown.value].text);
+        FileHelperUtil.saveFile(config, GameLocationUtil.gameSavesLoc + "worldGenConfig.json");
+    }
+
+    public void setReverseOfISActive(GameObject toDeactivate) {
+        toDeactivate.SetActive(!toDeactivate.activeSelf);
+    }
 }
 
 [System.Serializable]
@@ -105,5 +132,14 @@ public enum MenuScreen {
 public enum SubMenuScreenOfPlay {
     LOAD,
     GEN
+}
+
+public class WorldConfig {
+    public bool loadExisting;
+    public String worldName;
+    public bool genRandomSeed;
+    public int worldSeed;
+    public int worldSize;
+    public int chunkSize;
 }
 
