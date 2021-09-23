@@ -1,0 +1,10 @@
+{
+    "c_1": "GameRules down below:",
+    "s_GameRuleDoDayCycle": false,
+    "c_2": "Runtime Data below:",
+    "s_CurrentMinutes": 0.0,
+    "s_CurrentHours": 8.0,
+    "s_CurrentDays": 0.0,
+    "s_PlayerCoordX": 0.0,
+    "s_PlayerCoordY": 0.0
+}

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class IngameMenu : MonoBehaviour {
@@ -37,8 +38,14 @@ public class IngameMenu : MonoBehaviour {
             HUD.transform.gameObject.SetActive(hudState);
         }
 
-        loadingScreen.transform.gameObject.SetActive(worldEngine.isLoadingWorld);
-        
+        if (worldEngine.isLoadingWorld) {
+            loadingScreen.transform.gameObject.SetActive(true);
+        }else if (loadingScreenState) {
+            loadingScreen.transform.gameObject.SetActive(true);
+        }else {
+            loadingScreen.transform.gameObject.SetActive(false);
+        }
+
         if (worldEngine.isLoadingWorld) {
             updateLoadingScreen();
         }
@@ -48,6 +55,22 @@ public class IngameMenu : MonoBehaviour {
     public void updateLoadingScreen() {
         loadingBar.fillAmount = worldEngine.worldLoadAmount;
         loadingStatusMessage.text = worldEngine.worldStatus;
+    }
+
+    public void ExitToMainMenu() {
+        loadingScreenState = true;
+        StartCoroutine(LoadSceneAsync("MainMenu"));
+    }
+
+    public IEnumerator LoadSceneAsync(string sceneToLoad) {
+        
+        AsyncOperation SceneLoadOp = SceneManager.LoadSceneAsync(sceneToLoad);
+
+        while (!SceneLoadOp.isDone) {
+            loadingBar.fillAmount = SceneLoadOp.progress;
+            yield return null;
+        }
+        
     }
 
 }

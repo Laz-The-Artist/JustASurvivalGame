@@ -6,7 +6,7 @@ using UnityEngine;
 public class ButtonAnimator : MonoBehaviour {
     
     Animator buttonAnimator;
-    private bool isSelected;
+    public bool isSelected;
     
     void Start() {
         buttonAnimator = this.GetComponent<Animator>();

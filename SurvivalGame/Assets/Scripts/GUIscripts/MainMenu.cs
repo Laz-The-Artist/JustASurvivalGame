@@ -28,6 +28,7 @@ public class MainMenu : MonoBehaviour {
     public TMP_InputField worldSeedInputField;
     public TMP_Dropdown worldSizeDropDown;
     public TMP_Dropdown chunkSizeDropDown;
+    public TMP_Dropdown landmassGeneratorDropDown;
 
     [Header("Loading Screen")]
     public Canvas loadingScreen;
@@ -131,6 +132,7 @@ public class MainMenu : MonoBehaviour {
         }
         config.worldSize = int.Parse(worldSizeDropDown.options[worldSizeDropDown.value].text);
         config.chunkSize = int.Parse(chunkSizeDropDown.options[chunkSizeDropDown.value].text);
+        config.landmassGeneratorType = (LandmassGenerator)landmassGeneratorDropDown.value;
         
         FileHelperUtil.saveFile(config, GameLocationUtil.gameSavesLoc + "worldGenConfig.json");
         
@@ -174,5 +176,6 @@ public class WorldConfig {
     public int worldSeed;
     public int worldSize;
     public int chunkSize;
+    public LandmassGenerator landmassGeneratorType;
 }
 

@@ -11,16 +11,16 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/cafb29d5233847fbb4edcf8d7c32b1e3299c90/93/b519fe6a/List`1.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/f7f0a900fdf94a2a9316bb3d4c5aa3e8144200/1b/101a3722/KeyCode.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Game/JasgWorldEngine.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/f7f0a900fdf94a2a9316bb3d4c5aa3e8144200/d5/c1237913/Vector2Int.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/cafb29d5233847fbb4edcf8d7c32b1e3299c90/9d/f2056472/Task.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/cafb29d5233847fbb4edcf8d7c32b1e3299c90/9d/f2056472/Task.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/62FFEEB7-EC02-4BEA-B61E-5FBF8D44AC5B/4e/316c2461/Array.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/8f9a7ea347a44ffdad6c91b550598ccd52e178/91/331124ac/Func`1.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/f7f0a900fdf94a2a9316bb3d4c5aa3e8144200/d6/2b17f3ac/SceneManager.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/cafb29d5233847fbb4edcf8d7c32b1e3299c90/93/b519fe6a/List`1.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Game/JasgWorldEngine.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/f7f0a900fdf94a2a9316bb3d4c5aa3e8144200/7b/7bdf173d/Vector2.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/f7f0a900fdf94a2a9316bb3d4c5aa3e8144200/6f/b07fe433/GameObject.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/f7f0a900fdf94a2a9316bb3d4c5aa3e8144200/d6/2b17f3ac/SceneManager.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/f7f0a900fdf94a2a9316bb3d4c5aa3e8144200/fb/3299da06/Vector3.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/963c3a1707f0469aac8b8356a8d18b5d6e00/7a/4db9a407/Input.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
@@ -124,7 +124,8 @@
       <workItem from="1630858785367" duration="2005000" />
       <workItem from="1631213127380" duration="7615000" />
       <workItem from="1631547803079" duration="1668000" />
-      <workItem from="1632171383158" duration="32560000" />
+      <workItem from="1632171383158" duration="32592000" />
+      <workItem from="1632420571635" duration="6408000" />
     </task>
     <servers />
   </component>
